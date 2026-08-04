@@ -47,13 +47,29 @@ def _rate_limited_get(url, params, retries=3):
 
 
 def get_todays_games():
-    """Returns today's scheduled WNBA games."""
-    today = datetime.date.today().isoformat()
+    """
+    Returns today's scheduled (not-yet-finished) WNBA games.
+
+    Real bug found via live testing: balldontlie buckets games by the UTC
+    calendar date of their start time. A US evening tip-off (e.g. 9pm ET
+    or later) very often lands on the NEXT UTC day. So querying only
+    "today" (UTC) can pick up a leftover already-finished game from late
+    last night (US time) while completely missing tonight's actual game,
+    which UTC-wise falls under tomorrow. Fix: query both today's and
+    tomorrow's UTC dates and filter out anything already finished
+    (status == "post") — this reliably surfaces tonight's real game
+    regardless of which UTC date bucket it happens to land in.
+    """
+    today = datetime.date.today()
+    tomorrow = today + datetime.timedelta(days=1)
+
     data = _rate_limited_get(
         f"{BALLDONTLIE_WNBA_BASE_URL}/games",
-        params={"dates[]": today},
+        params={"dates[]": [today.isoformat(), tomorrow.isoformat()]},
     )
-    return data.get("data", [])
+    games = data.get("data", [])
+
+    return [g for g in games if g.get("status") != "post"]
 
 
 def get_team_recent_games(team_id, num_games=10, max_pages=6):
