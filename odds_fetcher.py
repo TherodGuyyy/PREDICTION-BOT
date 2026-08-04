@@ -130,6 +130,16 @@ def _get_totals_markets():
     sport_id = _get_basketball_sport_id()
     markets = _get("/markets", {"language": "en"})
 
+    # keywords that indicate this is NOT a full-game total (a quarter, a
+    # half, a single team's total, or a player prop) — these all use the
+    # same marketType="totals" classification but with wildly different,
+    # much smaller line values, which is exactly what caused a quarter or
+    # half total (~49.5) to get treated as if it were a full-game total.
+    exclude_keywords = [
+        "quarter", "1st", "2nd", "3rd", "4th", "first", "second", "third", "fourth",
+        "half", "period", "team", "player", "points by",
+    ]
+
     results = []
     for m in markets:
         if m.get("sportId") != sport_id:
@@ -138,6 +148,8 @@ def _get_totals_markets():
             continue
         name = m.get("marketName", "").lower()
         if "over" not in name and "under" not in name and "total" not in name:
+            continue
+        if any(kw in name for kw in exclude_keywords):
             continue
 
         outcomes = m.get("outcomes", [])

@@ -11,7 +11,7 @@ live and you can watch how it performs.
 """
 
 import math
-from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV
+from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV, MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL
 
 HOME_ADVANTAGE = 0.06  # flat bump in win probability for the home team
 
@@ -146,6 +146,13 @@ def find_totals_value_tip(game, predicted, totals_odds_list):
     for entry in totals_odds_list:
         line = entry["line"]
         if line is None:
+            continue
+        if not (MIN_PLAUSIBLE_TOTAL <= line <= MAX_PLAUSIBLE_TOTAL):
+            # safety net: a full-game WNBA total is essentially always in
+            # this range. Anything outside it is almost certainly a
+            # quarter/half/team/player sub-market that slipped through
+            # the market-name filtering upstream — skip it outright
+            # rather than ever risk tipping on it.
             continue
         prob_over, prob_under = prob_over_under(predicted, line)
 

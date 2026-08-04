@@ -44,6 +44,15 @@ TOTAL_POINTS_STD_DEV = 13.0  # approximate game-to-game variability in WNBA
                           # reasonable starting estimate, not derived from your
                           # actual league data yet — worth revisiting once
                           # there's a few weeks of real totals outcomes logged.
+MIN_PLAUSIBLE_TOTAL = 120  # hard safety bound: a real full-game WNBA combined
+MAX_PLAUSIBLE_TOTAL = 220  # score is essentially always in this range. Any
+                          # totals line outside it is almost certainly NOT a
+                          # full-game market (a quarter, half, team, or player
+                          # total slipped through) and is discarded before it
+                          # can ever become a tip — this is what stops a bug
+                          # like matching a quarter-total line from producing
+                          # a nonsensical real tip again, even if the market
+                          # name-based filtering misses a future edge case.
 
 # --- Sport (for when we add more leagues later, this keeps things labeled) ---
 SPORT_LABEL = "WNBA"
