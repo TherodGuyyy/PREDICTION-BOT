@@ -11,7 +11,7 @@ import datetime
 from config import MAX_TIPS_PER_DAY, SPORT_LABEL
 from stats_fetcher import get_todays_games, team_form_summary
 from analysis import find_value_tip, predicted_total, find_totals_value_tip
-from odds_fetcher import get_match_odds, get_totals_odds
+from odds_fetcher import get_match_odds, get_totals_odds, debug_fixture_status
 from telegram_sender import send_tips
 
 
@@ -51,7 +51,8 @@ def run():
             else:
                 print("  Moneyline: no value found on either side.")
         else:
-            print("  Moneyline: couldn't find/match odds for this game.")
+            reason = debug_fixture_status(home["full_name"], away["full_name"], today)
+            print(f"  Moneyline: couldn't find/match odds — {reason}")
 
         # --- totals (over/under) ---
         totals_odds = get_totals_odds(home["full_name"], away["full_name"], today)
@@ -68,7 +69,8 @@ def run():
             else:
                 print(f"  Totals: no value found (our predicted total: {round(predicted, 1)}).")
         else:
-            print("  Totals: no totals odds available for this game.")
+            reason = debug_fixture_status(home["full_name"], away["full_name"], today)
+            print(f"  Totals: no totals odds available — {reason}")
 
     # rank by edge, keep only the best MAX_TIPS_PER_DAY across both types
     all_tips.sort(key=lambda t: t["edge"], reverse=True)

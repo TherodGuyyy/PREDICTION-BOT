@@ -191,6 +191,28 @@ def _find_fixture(home_team_name, away_team_name, date_str):
     return None, None
 
 
+def debug_fixture_status(home_team_name, away_team_name, date_str):
+    """
+    Returns a short human-readable diagnostic string explaining exactly
+    why a game's odds might be missing — used to make GitHub Actions
+    logs self-explanatory without needing to run anything locally.
+    """
+    fixture, _ = _find_fixture(home_team_name, away_team_name, date_str)
+    if not fixture:
+        all_fixtures = _get_wnba_fixtures_for_date(date_str)
+        names = [f"{f.get('participant1Name')} vs {f.get('participant2Name')}" for f in all_fixtures]
+        return (
+            f"no fixture matched '{home_team_name}' vs '{away_team_name}' — "
+            f"OddsPapi fixtures found today: {names}"
+        )
+
+    return (
+        f"fixture matched (id={fixture.get('fixtureId')}), "
+        f"status={fixture.get('statusName')}, hasOdds={fixture.get('hasOdds')}, "
+        f"startTime={fixture.get('startTime')}"
+    )
+
+
 def _get_odds_for_fixture(fixture_id):
     """
     Fetches (and caches) the FULL odds response for a fixture — this
