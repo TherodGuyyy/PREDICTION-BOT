@@ -23,7 +23,7 @@ Key facts about their schema, confirmed via live testing:
 """
 
 import time
-import math
+import datetime
 import requests
 from config import ODDSPAPI_API_KEY
 
@@ -158,15 +158,32 @@ def _get_totals_markets():
 
 
 def _get_wnba_fixtures_for_date(date_str):
-    """date_str: 'YYYY-MM-DD'. Returns fixtures on that day for WNBA."""
+    """
+    date_str: 'YYYY-MM-DD'. Returns fixtures for that day for WNBA.
+
+    IMPORTANT: the query window is deliberately wider than just that one
+    UTC calendar day. WNBA games often tip off late enough in US time
+    (e.g. 9-10pm ET, or even later for West Coast teams) that they cross
+    into the NEXT UTC day. A strict "today 00:00 to 23:59 UTC" window can
+    completely miss tonight's actual game, while still matching an
+    already-finished OLDER meeting between the same two teams that
+    happens to fall inside that narrow window — which is exactly the
+    bug this fixed (a "Finished" fixture from ~9pm the previous US
+    evening was getting matched instead of tonight's upcoming game).
+    So we query from today 00:00 UTC through tomorrow 12:00 UTC, which
+    comfortably covers even the latest West Coast tip-offs.
+    """
     if date_str in _fixtures_cache:
         return _fixtures_cache[date_str]
 
     tournament_id = _get_wnba_tournament_id()
+    start = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    end = start + datetime.timedelta(days=1, hours=12)
+
     fixtures = _get("/fixtures", {
         "tournamentId": tournament_id,
         "from": f"{date_str}T00:00:00Z",
-        "to": f"{date_str}T23:59:59Z",
+        "to": end.strftime("%Y-%m-%dT%H:%M:%SZ"),
     })
     _fixtures_cache[date_str] = fixtures
     return fixtures
@@ -178,17 +195,36 @@ def _names_match(a, b):
 
 
 def _find_fixture(home_team_name, away_team_name, date_str):
-    """Returns (fixture, home_is_participant1) or (None, None)."""
+    """
+    Returns (fixture, home_is_participant1) or (None, None).
+
+    Because the query window (see _get_wnba_fixtures_for_date) is wider
+    than one calendar day, it's possible to find MORE than one past
+    meeting between the same two teams — an old finished game plus
+    tonight's upcoming one. When that happens, we deliberately prefer a
+    fixture that hasn't finished yet (Pre-Game/Live) over a Finished
+    one, since a finished game can never have current odds anyway and
+    tonight's game is what we actually care about.
+    """
     fixtures = _get_wnba_fixtures_for_date(date_str)
+    matches = []
 
     for f in fixtures:
         p1, p2 = f.get("participant1Name", ""), f.get("participant2Name", "")
         if _names_match(p1, home_team_name) and _names_match(p2, away_team_name):
-            return f, True
-        if _names_match(p1, away_team_name) and _names_match(p2, home_team_name):
-            return f, False
+            matches.append((f, True))
+        elif _names_match(p1, away_team_name) and _names_match(p2, home_team_name):
+            matches.append((f, False))
 
-    return None, None
+    if not matches:
+        return None, None
+
+    # prefer a non-finished fixture if one exists among the matches
+    not_finished = [m for m in matches if m[0].get("statusName") != "Finished"]
+    if not_finished:
+        return not_finished[0]
+
+    return matches[0]
 
 
 def debug_fixture_status(home_team_name, away_team_name, date_str):
@@ -314,7 +350,6 @@ def get_totals_odds(home_team_name, away_team_name, date_str):
 
 if __name__ == "__main__":
     import json
-    import datetime
 
     print("Basketball sportId:", _get_basketball_sport_id())
     print("WNBA tournamentId:", _get_wnba_tournament_id())
