@@ -28,7 +28,8 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "PASTE_YOUR_CHAT_ID_HERE")
 
 # --- Tip rules ---
 MIN_ODDS = 1.40          # never post a tip below this
-MAX_TIPS_PER_DAY = 5     # hard cap, across all sports eventually (WNBA only for now)
+WNBA_MAX_TIPS_PER_DAY = 5   # separate cap for WNBA (moneyline + totals combined)
+TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 8 total between the two
 MIN_EDGE = 0.03          # only tip if our estimated fair probability beats the
                           # market-implied probability by at least this much (3%)
                           # — this is what keeps the bot from just tipping favorites
@@ -53,6 +54,40 @@ MAX_PLAUSIBLE_TOTAL = 220  # score is essentially always in this range. Any
                           # like matching a quarter-total line from producing
                           # a nonsensical real tip again, even if the market
                           # name-based filtering misses a future edge case.
+MAX_PLAUSIBLE_PROB = 0.97  # hard safety cap, applies to ALL models (WNBA
+                          # moneyline, WNBA totals, tennis). A real edge from
+                          # a simple model like this should essentially never
+                          # look like 97%+ certainty. If it does, that's a
+                          # signal something's mismatched (wrong market,
+                          # stale data, a fixture that doesn't really match)
+                          # — not a signal the model is unusually confident.
+                          # A tip whose estimated probability exceeds this is
+                          # blocked outright regardless of the reason.
+
+# --- Tennis data (Jeff Sackmann's free tennis_atp / tennis_wta archives) ---
+# Free, well-structured, community-maintained — but NOT live. Updates can lag
+# by days to weeks depending on how busy the tour is. Credit: Jeff Sackmann,
+# https://github.com/JeffSackmann/tennis_atp and tennis_wta (Creative Commons
+# Attribution-NonCommercial-ShareAlike — personal non-commercial use is fine,
+# just crediting him, which this comment + the README do).
+ATP_MATCHES_URL = "https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_matches_{year}.csv"
+WTA_MATCHES_URL = "https://raw.githubusercontent.com/JeffSackmann/tennis_wta/master/wta_matches_{year}.csv"
+TENNIS_MIN_MATCHES_FOR_ANALYSIS = 5  # a player needs at least this many recent
+                          # matches on record before the bot will tip either
+                          # side of their match — same small-sample protection
+                          # as MIN_GAMES_FOR_ANALYSIS, adapted for tennis
+TENNIS_SURFACE_MIN_MATCHES = 3  # minimum matches on THIS SPECIFIC SURFACE
+                          # before surface-specific form is trusted over
+                          # overall form — a player with 1 clay match this
+                          # year shouldn't have their clay "form" taken
+                          # seriously yet
+TENNIS_MAX_MATCHES_PER_RUN = 25  # safety cap — a Grand Slam first round can
+                          # have 60+ singles matches with odds posted in one
+                          # day. Analyzing all of them isn't just slow, it
+                          # risks burning through OddsPapi's free-tier
+                          # request quota fast. If there are more live
+                          # matches than this cap, the bot analyzes the
+                          # first N found rather than trying everything.
 
 # --- Sport (for when we add more leagues later, this keeps things labeled) ---
 SPORT_LABEL = "WNBA"

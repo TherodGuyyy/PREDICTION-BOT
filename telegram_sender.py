@@ -13,10 +13,21 @@ def format_tip_message(tip, game_date):
             f"💰 Odds: {tip['odds']}\n"
             f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% chance "
             f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
+            f"📈 Edge: {tip['edge']*100:.1f}%\n"
+            f"🔍 market_id: {tip.get('market_id', 'unknown')}"
+        )
+
+    if tip["type"] == "tennis":
+        return (
+            f"🎾 *{tip['player']}* to beat {tip['opponent']}\n"
+            f"📅 {game_date}\n"
+            f"💰 Odds: {tip['odds']}\n"
+            f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% win chance "
+            f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
             f"📈 Edge: {tip['edge']*100:.1f}%"
         )
 
-    # moneyline
+    # moneyline (WNBA)
     return (
         f"🏀 *{tip['team']}* to beat {tip['opponent']}\n"
         f"📅 {game_date}\n"
@@ -31,6 +42,8 @@ def _tip_label(tip):
     """Short identifier for a tip, used in error logging only."""
     if tip["type"] == "totals":
         return f"{tip['side']} {tip['line']} ({tip['matchup']})"
+    if tip["type"] == "tennis":
+        return tip["player"]
     return tip["team"]
 
 

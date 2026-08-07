@@ -11,9 +11,19 @@ live and you can watch how it performs.
 """
 
 import math
-from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV, MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL
+from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV, MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_PROB
 
 HOME_ADVANTAGE = 0.06  # flat bump in win probability for the home team
+
+
+def _prob_is_plausible(prob):
+    """
+    Safety net: an estimated probability this extreme almost always means
+    something is mismatched (wrong market, stale odds, a fixture that
+    doesn't really correspond to the odds data) rather than genuine model
+    confidence. See MAX_PLAUSIBLE_PROB in config.py for the full reasoning.
+    """
+    return prob <= MAX_PLAUSIBLE_PROB
 
 
 def estimate_win_probability(home_form, away_form):
@@ -54,7 +64,7 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds):
 
     if home_odds and home_odds >= MIN_ODDS:
         edge = prob_home - implied_probability(home_odds)
-        if edge >= MIN_EDGE:
+        if edge >= MIN_EDGE and _prob_is_plausible(prob_home):
             candidates.append({
                 "type": "moneyline",
                 "team": game["home_team"]["full_name"],
@@ -68,7 +78,7 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds):
 
     if away_odds and away_odds >= MIN_ODDS:
         edge = prob_away - implied_probability(away_odds)
-        if edge >= MIN_EDGE:
+        if edge >= MIN_EDGE and _prob_is_plausible(prob_away):
             candidates.append({
                 "type": "moneyline",
                 "team": game["visitor_team"]["full_name"],
@@ -159,13 +169,14 @@ def find_totals_value_tip(game, predicted, totals_odds_list):
         over_odds = entry.get("over_odds")
         if over_odds and over_odds >= MIN_ODDS:
             edge = prob_over - implied_probability(over_odds)
-            if edge >= MIN_EDGE:
+            if edge >= MIN_EDGE and _prob_is_plausible(prob_over):
                 candidates.append({
                     "type": "totals",
                     "matchup": matchup,
                     "side": "over",
                     "line": line,
                     "odds": over_odds,
+                    "market_id": entry.get("market_id"),
                     "our_estimated_prob": round(prob_over, 3),
                     "market_implied_prob": round(implied_probability(over_odds), 3),
                     "edge": round(edge, 3),
@@ -174,13 +185,14 @@ def find_totals_value_tip(game, predicted, totals_odds_list):
         under_odds = entry.get("under_odds")
         if under_odds and under_odds >= MIN_ODDS:
             edge = prob_under - implied_probability(under_odds)
-            if edge >= MIN_EDGE:
+            if edge >= MIN_EDGE and _prob_is_plausible(prob_under):
                 candidates.append({
                     "type": "totals",
                     "matchup": matchup,
                     "side": "under",
                     "line": line,
                     "odds": under_odds,
+                    "market_id": entry.get("market_id"),
                     "our_estimated_prob": round(prob_under, 3),
                     "market_implied_prob": round(implied_probability(under_odds), 3),
                     "edge": round(edge, 3),

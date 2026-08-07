@@ -330,7 +330,7 @@ def get_totals_odds(home_team_name, away_team_name, date_str):
 
     odds_data = _get_odds_for_fixture(fixture["fixtureId"])
 
-    # best_by_line: line -> {"over_odds": ..., "under_odds": ...}
+    # best_by_line: line -> {"over_odds": ..., "under_odds": ..., "market_id": ...}
     best_by_line = {}
 
     for book_slug, book_data in odds_data.get("bookmakerOdds", {}).items():
@@ -348,14 +348,14 @@ def get_totals_odds(home_team_name, away_team_name, date_str):
                 continue
 
             line = tm["line"]
-            entry = best_by_line.setdefault(line, {"over_odds": None, "under_odds": None})
+            entry = best_by_line.setdefault(line, {"over_odds": None, "under_odds": None, "market_id": tm["market_id"]})
             if over_price is not None and (entry["over_odds"] is None or over_price > entry["over_odds"]):
                 entry["over_odds"] = over_price
             if under_price is not None and (entry["under_odds"] is None or under_price > entry["under_odds"]):
                 entry["under_odds"] = under_price
 
     return [
-        {"line": line, "over_odds": v["over_odds"], "under_odds": v["under_odds"]}
+        {"line": line, "over_odds": v["over_odds"], "under_odds": v["under_odds"], "market_id": v["market_id"]}
         for line, v in sorted(best_by_line.items())
     ]
 
