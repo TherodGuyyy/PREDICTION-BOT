@@ -1,0 +1,35 @@
+name: Run Diagnostics (mobile-friendly test)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run WNBA odds diagnostics
+        env:
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+        run: python odds_fetcher.py
+        continue-on-error: true
+
+      - name: Run tennis odds diagnostics
+        env:
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+        run: python tennis_odds_fetcher.py
+        continue-on-error: true
+
+      - name: Run tennis stats diagnostics
+        run: python tennis_stats_fetcher.py
+        continue-on-error: true
