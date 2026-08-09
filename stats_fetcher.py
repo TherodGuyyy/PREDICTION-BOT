@@ -55,10 +55,18 @@ def get_todays_games():
     or later) very often lands on the NEXT UTC day. So querying only
     "today" (UTC) can pick up a leftover already-finished game from late
     last night (US time) while completely missing tonight's actual game,
-    which UTC-wise falls under tomorrow. Fix: query both today's and
-    tomorrow's UTC dates and filter out anything already finished
-    (status == "post") — this reliably surfaces tonight's real game
-    regardless of which UTC date bucket it happens to land in.
+    which UTC-wise falls under tomorrow.
+
+    First fix (querying both today's and tomorrow's UTC dates) solved
+    that, but over-corrected: it also pulled in the ENTIRE following
+    day's real slate, not just tonight's spillover — confirmed live when
+    the same team showed up in two different "today" matchups at once,
+    which is impossible. Second fix: after combining today+tomorrow's
+    UTC buckets, apply a precise cutoff on each game's actual start time
+    — anything starting before ~11:00 UTC tomorrow is comfortably within
+    "tonight" (covers even the latest Pacific-time tip-offs, which land
+    around 03:00-05:00 UTC the next day), while the real following day's
+    slate starts much later than that and gets correctly excluded.
     """
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
@@ -69,7 +77,19 @@ def get_todays_games():
     )
     games = data.get("data", [])
 
-    return [g for g in games if g.get("status") != "post"]
+    cutoff = datetime.datetime.combine(tomorrow, datetime.time(11, 0), tzinfo=datetime.timezone.utc)
+
+    def _is_tonight(game):
+        game_time_str = game.get("date", "")
+        try:
+            game_time = datetime.datetime.strptime(game_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                tzinfo=datetime.timezone.utc)
+        except (ValueError, TypeError):
+            return True  # if we can't parse it, don't silently drop a real game — let it through and let later steps handle it
+        return game_time < cutoff
+
+    games = [g for g in games if g.get("status") != "post" and _is_tonight(g)]
+    return games
 
 
 def get_team_recent_games(team_id, num_games=10, max_pages=6):
