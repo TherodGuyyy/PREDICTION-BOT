@@ -28,8 +28,8 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "PASTE_YOUR_CHAT_ID_HERE")
 
 # --- Tip rules ---
 MIN_ODDS = 1.40          # never post a tip below this
-WNBA_MAX_TIPS_PER_DAY = 5   # separate cap for WNBA (moneyline + totals combined)
-TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 8 total between the two
+WNBA_MAX_TIPS_PER_DAY = 8   # separate cap for WNBA (moneyline + totals combined)
+TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 11 total between the two
 MIN_EDGE = 0.03          # only tip if our estimated fair probability beats the
                           # market-implied probability by at least this much (3%)
                           # — this is what keeps the bot from just tipping favorites
