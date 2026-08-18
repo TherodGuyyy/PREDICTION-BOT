@@ -11,7 +11,7 @@ combined pool — so a big tennis day can't crowd out WNBA tips or vice versa.
 
 import datetime
 from config import WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, SPORT_LABEL, TENNIS_MAX_MATCHES_PER_RUN
-from stats_fetcher import get_todays_games, team_form_summary
+from stats_fetcher import get_todays_games, team_form_summary, get_head_to_head_record
 from analysis import find_value_tip, predicted_total, find_totals_value_tip
 from odds_fetcher import get_match_odds, get_totals_odds, debug_fixture_status
 from tennis_stats_fetcher import player_form_summary
@@ -22,6 +22,7 @@ from tennis_odds_fetcher import (
     _get_tennis_fixtures_for_date,
 )
 from telegram_sender import send_tips
+from tip_tracker import log_tips, grade_pending_tips
 
 
 def run_wnba(today, all_tips):
@@ -32,18 +33,45 @@ def run_wnba(today, all_tips):
         print("No WNBA games today.")
         return
 
+    try:
+        game_date = datetime.date.fromisoformat(today)
+    except ValueError:
+        game_date = datetime.date.today()
+
     for game in games:
         home = game["home_team"]
         away = game["visitor_team"]
         print(f"Analyzing: {away['full_name']} @ {home['full_name']}")
 
         try:
-            home_form = team_form_summary(home["id"])
-            away_form = team_form_summary(away["id"])
+            home_form = team_form_summary(home["id"], as_of_date=game_date)
+            away_form = team_form_summary(away["id"], as_of_date=game_date)
 
             if not home_form or not away_form:
                 print("  Skipping — not enough recent-game data yet.")
                 continue
+
+            rest_note = ""
+            if home_form.get("days_rest") is not None and away_form.get("days_rest") is not None:
+                rest_note = f" (rest: {home['full_name']} {home_form['days_rest']}d, " \
+                            f"{away['full_name']} {away_form['days_rest']}d)"
+            pace_note = ""
+            if home_form.get("pace") and away_form.get("pace"):
+                pace_note = f" | pace: {home['full_name']} {home_form['pace']:.1f}, " \
+                            f"{away['full_name']} {away_form['pace']:.1f} poss/game"
+            else:
+                pace_note = " | pace: unavailable (using basic totals model)"
+            print(f"  Form — {home['full_name']}: {home_form['win_pct']:.2f} win%, "
+                  f"{away['full_name']}: {away_form['win_pct']:.2f} win%{rest_note}{pace_note}")
+
+            h2h = None
+            try:
+                h2h = get_head_to_head_record(home["id"], away["id"])
+                if h2h:
+                    print(f"  Head-to-head: {home['full_name']} won "
+                          f"{h2h['team_a_win_pct']*100:.0f}% of last {h2h['matchups_found']} meetings.")
+            except Exception as e:
+                print(f"  Couldn't fetch head-to-head record (continuing without it): {e}")
 
             # --- moneyline ---
             odds = get_match_odds(home["full_name"], away["full_name"], today)
@@ -51,6 +79,7 @@ def run_wnba(today, all_tips):
                 tip = find_value_tip(
                     game, home_form, away_form,
                     odds.get("home_odds"), odds.get("away_odds"),
+                    h2h=h2h,
                 )
                 if tip:
                     print(f"  MONEYLINE TIP: {tip['team']} @ {tip['odds']} (edge {tip['edge']})")
@@ -171,6 +200,15 @@ def run_tennis(today, all_tips):
 
 def run():
     today = datetime.date.today().isoformat()
+
+    # grade yesterday's (and any older still-pending) WNBA tips against
+    # real results FIRST, before analyzing today's games — keeps the
+    # track record as fresh as possible each time this runs
+    try:
+        grade_pending_tips()
+    except Exception as e:
+        print(f"[Grading] Skipped due to error (won't block today's run): {e}")
+
     wnba_tips = []
     tennis_tips = []
 
@@ -183,12 +221,21 @@ def run():
     wnba_tips.sort(key=lambda t: t["edge"], reverse=True)
     tennis_tips.sort(key=lambda t: t["edge"], reverse=True)
 
-    final_tips = wnba_tips[:WNBA_MAX_TIPS_PER_DAY] + tennis_tips[:TENNIS_MAX_TIPS_PER_DAY]
+    final_wnba_tips = wnba_tips[:WNBA_MAX_TIPS_PER_DAY]
+    final_tennis_tips = tennis_tips[:TENNIS_MAX_TIPS_PER_DAY]
+    final_tips = final_wnba_tips + final_tennis_tips
 
     print(f"\nSending {len(final_tips)} tip(s) to Telegram "
-          f"({min(len(wnba_tips), WNBA_MAX_TIPS_PER_DAY)} WNBA, "
-          f"{min(len(tennis_tips), TENNIS_MAX_TIPS_PER_DAY)} tennis)...")
+          f"({len(final_wnba_tips)} WNBA, {len(final_tennis_tips)} tennis)...")
     send_tips(final_tips, today)
+
+    # log only the WNBA tips that actually went out, so future runs can
+    # grade them against real results (tip_tracker.log_tips ignores
+    # tennis entries on its own, but keeping this explicit here too)
+    try:
+        log_tips(final_wnba_tips, today)
+    except Exception as e:
+        print(f"[Logging] Couldn't write tips_log.json (tips were still sent): {e}")
 
 
 if __name__ == "__main__":

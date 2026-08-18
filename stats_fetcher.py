@@ -55,18 +55,10 @@ def get_todays_games():
     or later) very often lands on the NEXT UTC day. So querying only
     "today" (UTC) can pick up a leftover already-finished game from late
     last night (US time) while completely missing tonight's actual game,
-    which UTC-wise falls under tomorrow.
-
-    First fix (querying both today's and tomorrow's UTC dates) solved
-    that, but over-corrected: it also pulled in the ENTIRE following
-    day's real slate, not just tonight's spillover — confirmed live when
-    the same team showed up in two different "today" matchups at once,
-    which is impossible. Second fix: after combining today+tomorrow's
-    UTC buckets, apply a precise cutoff on each game's actual start time
-    — anything starting before ~11:00 UTC tomorrow is comfortably within
-    "tonight" (covers even the latest Pacific-time tip-offs, which land
-    around 03:00-05:00 UTC the next day), while the real following day's
-    slate starts much later than that and gets correctly excluded.
+    which UTC-wise falls under tomorrow. Fix: query both today's and
+    tomorrow's UTC dates and filter out anything already finished
+    (status == "post") — this reliably surfaces tonight's real game
+    regardless of which UTC date bucket it happens to land in.
     """
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
@@ -77,19 +69,22 @@ def get_todays_games():
     )
     games = data.get("data", [])
 
-    cutoff = datetime.datetime.combine(tomorrow, datetime.time(11, 0), tzinfo=datetime.timezone.utc)
+    return [g for g in games if g.get("status") != "post"]
 
-    def _is_tonight(game):
-        game_time_str = game.get("date", "")
-        try:
-            game_time = datetime.datetime.strptime(game_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
-                tzinfo=datetime.timezone.utc)
-        except (ValueError, TypeError):
-            return True  # if we can't parse it, don't silently drop a real game — let it through and let later steps handle it
-        return game_time < cutoff
 
-    games = [g for g in games if g.get("status") != "post" and _is_tonight(g)]
-    return games
+def get_finished_games_for_date(date_str):
+    """
+    Returns all FINISHED WNBA games for a specific past date (YYYY-MM-DD).
+    Used by tip_tracker.py to grade yesterday's (or older) tips against
+    actual results — separate from get_todays_games(), which is scoped
+    to today/tomorrow and deliberately excludes finished games.
+    """
+    data = _rate_limited_get(
+        f"{BALLDONTLIE_WNBA_BASE_URL}/games",
+        params={"dates[]": [date_str]},
+    )
+    games = data.get("data", [])
+    return [g for g in games if g.get("status") == "post"]
 
 
 def get_team_recent_games(team_id, num_games=10, max_pages=6):
@@ -125,12 +120,195 @@ def get_team_recent_games(team_id, num_games=10, max_pages=6):
     return finished[:num_games]
 
 
-def team_form_summary(team_id):
+def _parse_game_date(date_str):
+    """
+    balldontlie game dates come back as either 'YYYY-MM-DD' or a full
+    ISO timestamp depending on endpoint — handle both rather than
+    assuming one format and silently failing rest-day math on the other.
+    """
+    if not date_str:
+        return None
+    try:
+        return datetime.date.fromisoformat(date_str[:10])
+    except (ValueError, TypeError):
+        return None
+
+
+def get_days_rest(team_id, as_of_date, recent_games=None):
+    """
+    Days between a team's most recent COMPLETED game and as_of_date
+    (the date of the upcoming game we're analyzing). Returns None if we
+    don't have a usable prior game on record — callers should treat
+    that as "unknown", not as "fully rested".
+
+    as_of_date: a datetime.date.
+    recent_games: pass in an already-fetched get_team_recent_games()
+    result to avoid a second API call when the caller already has it.
+    """
+    games = recent_games if recent_games is not None else get_team_recent_games(team_id)
+    if not games:
+        return None
+
+    last_game_date = _parse_game_date(games[0].get("date"))
+    if last_game_date is None:
+        return None
+
+    days = (as_of_date - last_game_date).days
+    if days < 0:
+        # shouldn't happen (would mean the "recent" game is in the
+        # future relative to as_of_date) — treat as unknown rather than
+        # reporting a nonsensical negative rest value
+        return None
+    return days
+
+
+def get_head_to_head_record(team_a_id, team_b_id, num_matchups=5, max_pages=4):
+    """
+    Looks at the two teams' shared game history (this season + last, same
+    reasoning as get_team_recent_games falling back a year) and returns
+    team_a's win % in matchups specifically against team_b.
+
+    Returns None if there aren't at least 2 head-to-head games on record
+    — same small-sample protection philosophy as MIN_GAMES_FOR_ANALYSIS.
+    A single head-to-head game is closer to noise than signal.
+    """
+    current_season = datetime.date.today().year
+    matchups = []
+
+    for season in (current_season, current_season - 1):
+        cursor = None
+        for _ in range(max_pages):
+            params = {
+                "team_ids[]": [team_a_id, team_b_id],
+                "seasons[]": season,
+                "per_page": 25,
+            }
+            if cursor:
+                params["cursor"] = cursor
+
+            payload = _rate_limited_get(f"{BALLDONTLIE_WNBA_BASE_URL}/games", params=params)
+            page_games = payload.get("data", [])
+
+            # team_ids[] with two ids returns games involving EITHER team —
+            # filter down to games where BOTH teams played each other
+            for g in page_games:
+                ids_in_game = {g["home_team"]["id"], g["visitor_team"]["id"]}
+                if ids_in_game == {team_a_id, team_b_id} and g.get("status") == "post":
+                    matchups.append(g)
+
+            cursor = payload.get("meta", {}).get("next_cursor")
+            if not cursor:
+                break
+
+        if len(matchups) >= num_matchups:
+            break
+
+    if len(matchups) < 2:
+        return None
+
+    matchups.sort(key=lambda g: g["date"], reverse=True)
+    matchups = matchups[:num_matchups]
+
+    a_wins = 0
+    for g in matchups:
+        a_is_home = g["home_team"]["id"] == team_a_id
+        a_score = g["home_score"] if a_is_home else g["away_score"]
+        b_score = g["away_score"] if a_is_home else g["home_score"]
+        if a_score > b_score:
+            a_wins += 1
+
+    return {
+        "matchups_found": len(matchups),
+        "team_a_win_pct": a_wins / len(matchups),
+    }
+
+
+def get_team_pace(team_id, num_games=10, recent_games=None):
+    """
+    Estimates the team's average possessions per game over its last
+    `num_games` completed games, using the standard simplified pace
+    formula: POSS ≈ FGA + 0.44*FTA + TOV - OREB, summed across all
+    players on the team for each game, then averaged.
+
+    Returns None (not a crash) if:
+      - the /stats endpoint isn't available on this API tier (401/403),
+      - or the response doesn't have the fields this formula needs.
+    Both cases are logged loudly so a silent tier limitation doesn't
+    quietly masquerade as "team just has no pace data". Callers
+    (team_form_summary) must treat None as "unknown", same rule as
+    days_rest — never assume a default pace.
+
+    This makes one /stats call PER GAME (not per team), on top of the
+    existing games call — meaningfully more API usage than the rest of
+    this file. Given the free tier's 5 req/min pacing already in
+    _rate_limited_get, expect this to add real time to a run.
+    """
+    games = recent_games if recent_games is not None else get_team_recent_games(team_id, num_games=num_games)
+    if not games:
+        return None
+
+    possessions_per_game = []
+
+    for g in games:
+        game_id = g.get("id")
+        if game_id is None:
+            continue
+
+        try:
+            payload = _rate_limited_get(
+                f"{BALLDONTLIE_WNBA_BASE_URL}/stats",
+                params={"game_ids[]": game_id, "team_ids[]": team_id, "per_page": 25},
+            )
+        except requests.HTTPError as e:
+            status = e.response.status_code if e.response is not None else "?"
+            print(f"  PACE: /stats endpoint returned {status} for game {game_id} — "
+                  f"this WNBA tier may not include box-score stats. Skipping pace adjustment.")
+            return None
+
+        player_rows = payload.get("data", [])
+        if not player_rows:
+            # no player rows for this game/team combo — skip this game
+            # rather than treating it as zero possessions
+            continue
+
+        try:
+            fga = sum(r.get("fga") or 0 for r in player_rows)
+            fta = sum(r.get("fta") or 0 for r in player_rows)
+            tov = sum(r.get("turnover") or 0 for r in player_rows)
+            oreb = sum(r.get("oreb") or 0 for r in player_rows)
+        except (TypeError, AttributeError):
+            print(f"  PACE: unexpected /stats response shape for game {game_id} — skipping pace adjustment.")
+            return None
+
+        game_poss = fga + (0.44 * fta) + tov - oreb
+        if game_poss > 0:
+            possessions_per_game.append(game_poss)
+
+    if len(possessions_per_game) < MIN_GAMES_FOR_ANALYSIS:
+        # not enough usable games to trust a pace average — same
+        # small-sample guard as team_form_summary
+        return None
+
+    return sum(possessions_per_game) / len(possessions_per_game)
+
+
+def team_form_summary(team_id, as_of_date=None, include_pace=True):
     """
     Turns a team's recent games into simple numbers the analysis step can use:
-    win %, average point differential, and a naive momentum score
-    (recent games weighted slightly more than older ones within the window).
+    win %, average point differential, a naive momentum score
+    (recent games weighted slightly more than older ones within the window),
+    days of rest heading into the game being analyzed, and (if available)
+    estimated pace.
+
+    as_of_date: date of the upcoming game (defaults to today) — used only
+    to compute days_rest; doesn't affect which games count as "recent".
+    include_pace: set False to skip the extra /stats calls entirely
+    (useful for a quick smoke test, or if you've confirmed your tier
+    doesn't support it and don't want the wasted requests every run).
     """
+    if as_of_date is None:
+        as_of_date = datetime.date.today()
+
     games = get_team_recent_games(team_id)
     if len(games) < MIN_GAMES_FOR_ANALYSIS:
         # not enough completed games yet to trust the sample — e.g. this
@@ -155,6 +333,11 @@ def team_form_summary(team_id):
     avg_point_diff = sum(point_diffs) / len(point_diffs)
     avg_points_scored = sum(points_scored) / len(points_scored)
     avg_points_allowed = sum(points_allowed) / len(points_allowed)
+    days_rest = get_days_rest(team_id, as_of_date, recent_games=games)
+
+    pace = None
+    if include_pace:
+        pace = get_team_pace(team_id, recent_games=games)
 
     return {
         "games_sampled": len(games),
@@ -162,6 +345,8 @@ def team_form_summary(team_id):
         "avg_point_diff": avg_point_diff,
         "avg_points_scored": avg_points_scored,
         "avg_points_allowed": avg_points_allowed,
+        "days_rest": days_rest,  # None if unknown — analysis.py must handle that
+        "pace": pace,            # None if unavailable — analysis.py must handle that
     }
 
 

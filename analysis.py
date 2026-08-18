@@ -15,6 +15,27 @@ from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV, MIN_PLAUSIBLE_TOTAL
 
 HOME_ADVANTAGE = 0.06  # flat bump in win probability for the home team
 
+# Rest-day adjustment. WNBA has a much tighter schedule than NBA (no
+# rest-friendly scheduling), so back-to-backs are a real signal. This
+# compares the two teams' days_rest and nudges the score toward whichever
+# team is fresher, capped so a huge rest gap (e.g. one team just came off
+# an All-Star break) doesn't dominate the whole estimate.
+REST_WEIGHT = 0.02   # probability-score nudge per day of rest advantage
+REST_DIFF_CAP = 3    # cap the rest-day difference considered, in days
+
+# Head-to-head adjustment. Only applied when there's at least 2 matchups
+# on record (see get_head_to_head_record) — a single game is noise, not
+# signal. Weighted lightly relative to recent form and rank, since two
+# teams' overall form already captures most of what h2h would add, and
+# h2h samples are small by nature.
+H2H_WEIGHT = 0.4
+
+# Fatigue adjustment on predicted totals. A team on zero days rest tends
+# to shoot/defend slightly worse than a normally-rested team — small,
+# not dramatic. Applied per team, so two exhausted teams facing each
+# other get a bigger combined knock than one fresh team vs one tired one.
+FATIGUE_TOTAL_PENALTY = 2.0  # points shaved off the total per team on 0 days rest
+
 
 def _prob_is_plausible(prob):
     """
@@ -26,9 +47,41 @@ def _prob_is_plausible(prob):
     return prob <= MAX_PLAUSIBLE_PROB
 
 
-def estimate_win_probability(home_form, away_form):
+def _rest_score_component(home_form, away_form):
+    """
+    Returns a small score nudge favoring whichever team has more rest.
+    Returns 0.0 if either team's rest is unknown (get_days_rest can
+    return None) rather than guessing — an unknown shouldn't silently
+    become "assume fully rested".
+    """
+    home_rest = home_form.get("days_rest")
+    away_rest = away_form.get("days_rest")
+    if home_rest is None or away_rest is None:
+        return 0.0
+
+    diff = home_rest - away_rest
+    diff = max(-REST_DIFF_CAP, min(REST_DIFF_CAP, diff))
+    return diff * REST_WEIGHT
+
+
+def _h2h_score_component(h2h):
+    """
+    h2h: dict from stats_fetcher.get_head_to_head_record(home_id, away_id),
+    oriented so team_a == home team. Returns 0.0 if there's no h2h data
+    or too small a sample (get_head_to_head_record already enforces the
+    minimum, but this stays defensive since callers may pass None).
+    """
+    if not h2h:
+        return 0.0
+    # center on 0.5 so a 50/50 h2h record contributes nothing
+    return (h2h["team_a_win_pct"] - 0.5) * H2H_WEIGHT
+
+
+def estimate_win_probability(home_form, away_form, h2h=None):
     """
     home_form / away_form: dicts from stats_fetcher.team_form_summary()
+    h2h: optional dict from stats_fetcher.get_head_to_head_record(home_id,
+         away_id) — pass None if unavailable or under the minimum sample.
     Returns (prob_home_wins, prob_away_wins) — two floats that sum to 1.0.
     """
     # Difference in recent win% and point differential, weighted.
@@ -38,7 +91,13 @@ def estimate_win_probability(home_form, away_form):
     win_pct_diff = home_form["win_pct"] - away_form["win_pct"]
     point_diff_diff = home_form["avg_point_diff"] - away_form["avg_point_diff"]
 
-    score = (win_pct_diff * 1.2) + (point_diff_diff * 0.03) + HOME_ADVANTAGE
+    score = (
+        (win_pct_diff * 1.2)
+        + (point_diff_diff * 0.03)
+        + HOME_ADVANTAGE
+        + _rest_score_component(home_form, away_form)
+        + _h2h_score_component(h2h)
+    )
 
     # logistic squash into a 0-1 probability
     prob_home = 1 / (1 + math.exp(-score * 3))
@@ -51,14 +110,15 @@ def implied_probability(decimal_odds):
     return 1 / decimal_odds
 
 
-def find_value_tip(game, home_form, away_form, home_odds, away_odds):
+def find_value_tip(game, home_form, away_form, home_odds, away_odds, h2h=None):
     """
     game: the raw game dict from balldontlie (for team names / matchup label)
     home_odds / away_odds: decimal odds for each side, from your odds feed
+    h2h: optional dict from stats_fetcher.get_head_to_head_record(home_id, away_id)
     Returns a tip dict if either side clears MIN_ODDS + MIN_EDGE, else None.
     If BOTH sides clear it (rare), returns the one with the bigger edge.
     """
-    prob_home, prob_away = estimate_win_probability(home_form, away_form)
+    prob_home, prob_away = estimate_win_probability(home_form, away_form, h2h=h2h)
 
     candidates = []
 
@@ -112,16 +172,79 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds):
 # same as the moneyline model.
 
 
-def predicted_total(home_form, away_form):
+def _fatigue_total_adjustment(home_form, away_form):
     """
-    Simple total-points estimate: average of (home's scoring tendency +
-    away's defensive tendency) and (away's scoring tendency + home's
-    defensive tendency). This accounts for both teams' offense AND
-    defense, not just one side's average.
+    Small downward nudge on the predicted total for each team playing on
+    zero days rest (back-to-back) — tired teams shoot and defend
+    marginally worse. Returns 0.0 for a team whose rest is unknown,
+    same "unknown isn't assumed rested" rule as the win-probability side.
+    """
+    penalty = 0.0
+    for form in (home_form, away_form):
+        if form.get("days_rest") == 0:
+            penalty += FATIGUE_TOTAL_PENALTY
+    return penalty
+
+
+def _predicted_total_basic(home_form, away_form):
+    """
+    Original totals estimate, used as a fallback when pace data isn't
+    available for one or both teams (e.g. the /stats endpoint isn't on
+    your balldontlie tier — see get_team_pace()'s docstring). Averages
+    scoring tendency against the opponent's defensive tendency.
     """
     home_side = (home_form["avg_points_scored"] + away_form["avg_points_allowed"]) / 2
     away_side = (away_form["avg_points_scored"] + home_form["avg_points_allowed"]) / 2
     return home_side + away_side
+
+
+def _predicted_total_pace_based(home_form, away_form):
+    """
+    Pace-adjusted totals estimate. Two teams that both average 80 points
+    could get there via very different possession counts — the basic
+    formula above can't tell those apart, so a team's pace shift (new
+    rotation, an injury to a ball-handler) won't show up in the total
+    until raw scoring averages drift, which lags real changes.
+
+    This instead separates SCORING RATE (points per 100 possessions)
+    from PACE (possessions per game), estimates the pace this specific
+    matchup will likely play at (average of both teams' pace), and
+    multiplies rate by that shared pace — the standard way pace-adjusted
+    projections are done. Requires pace to be present for both teams;
+    predicted_total() falls back to _predicted_total_basic otherwise.
+    """
+    home_pace = home_form["pace"]
+    away_pace = away_form["pace"]
+    game_pace = (home_pace + away_pace) / 2
+
+    home_off_rating = (home_form["avg_points_scored"] / home_pace) * 100
+    home_def_rating = (home_form["avg_points_allowed"] / home_pace) * 100
+    away_off_rating = (away_form["avg_points_scored"] / away_pace) * 100
+    away_def_rating = (away_form["avg_points_allowed"] / away_pace) * 100
+
+    expected_home_score = ((home_off_rating + away_def_rating) / 2) * (game_pace / 100)
+    expected_away_score = ((away_off_rating + home_def_rating) / 2) * (game_pace / 100)
+
+    return expected_home_score + expected_away_score
+
+
+def predicted_total(home_form, away_form):
+    """
+    Predicted combined score for the game. Uses the pace-adjusted
+    estimate when both teams have usable pace data (see get_team_pace),
+    otherwise falls back to the basic scoring-average estimate — same
+    "unknown isn't silently assumed" rule used elsewhere in this file.
+    Either way, applies the fatigue adjustment for teams on 0 days rest.
+    """
+    home_pace = home_form.get("pace")
+    away_pace = away_form.get("pace")
+
+    if home_pace and away_pace:
+        base_total = _predicted_total_pace_based(home_form, away_form)
+    else:
+        base_total = _predicted_total_basic(home_form, away_form)
+
+    return base_total - _fatigue_total_adjustment(home_form, away_form)
 
 
 def _normal_cdf(x, mean, std_dev):
