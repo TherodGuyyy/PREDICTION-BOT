@@ -227,57 +227,55 @@ def get_team_pace(team_id, num_games=10, recent_games=None):
     """
     Estimates the team's average possessions per game over its last
     `num_games` completed games, using the standard simplified pace
-    formula: POSS ≈ FGA + 0.44*FTA + TOV - OREB, summed across all
-    players on the team for each game, then averaged.
+    formula: POSS ≈ FGA + 0.44*FTA + TOV - OREB.
+
+    Uses /wnba/v1/team_stats — NOT /wnba/v1/stats (that path is
+    NBA-only and returns a 404 for WNBA; confirmed against balldontlie's
+    published OpenAPI spec). WNBA team_stats already gives TEAM-level
+    totals per game directly, so this needs only ONE extra API call per
+    team (passing all recent game_ids at once), not one call per game —
+    much cheaper than a naive per-player-per-game approach would be.
 
     Returns None (not a crash) if:
-      - the /stats endpoint isn't available on this API tier (401/403),
+      - the endpoint isn't available on this API tier (401/403),
       - or the response doesn't have the fields this formula needs.
     Both cases are logged loudly so a silent tier limitation doesn't
     quietly masquerade as "team just has no pace data". Callers
     (team_form_summary) must treat None as "unknown", same rule as
     days_rest — never assume a default pace.
-
-    This makes one /stats call PER GAME (not per team), on top of the
-    existing games call — meaningfully more API usage than the rest of
-    this file. Given the free tier's 5 req/min pacing already in
-    _rate_limited_get, expect this to add real time to a run.
     """
     games = recent_games if recent_games is not None else get_team_recent_games(team_id, num_games=num_games)
     if not games:
         return None
 
+    game_ids = [g["id"] for g in games if g.get("id") is not None]
+    if not game_ids:
+        return None
+
+    try:
+        payload = _rate_limited_get(
+            f"{BALLDONTLIE_WNBA_BASE_URL}/team_stats",
+            params={"game_ids[]": game_ids, "team_ids[]": team_id, "per_page": 25},
+        )
+    except requests.HTTPError as e:
+        status = e.response.status_code if e.response is not None else "?"
+        print(f"  PACE: /team_stats endpoint returned {status} for team {team_id} — "
+              f"this WNBA tier may not include team box-score stats. Skipping pace adjustment.")
+        return None
+
+    rows = payload.get("data", [])
+    if not rows:
+        return None
+
     possessions_per_game = []
-
-    for g in games:
-        game_id = g.get("id")
-        if game_id is None:
-            continue
-
+    for row in rows:
         try:
-            payload = _rate_limited_get(
-                f"{BALLDONTLIE_WNBA_BASE_URL}/stats",
-                params={"game_ids[]": game_id, "team_ids[]": team_id, "per_page": 25},
-            )
-        except requests.HTTPError as e:
-            status = e.response.status_code if e.response is not None else "?"
-            print(f"  PACE: /stats endpoint returned {status} for game {game_id} — "
-                  f"this WNBA tier may not include box-score stats. Skipping pace adjustment.")
-            return None
-
-        player_rows = payload.get("data", [])
-        if not player_rows:
-            # no player rows for this game/team combo — skip this game
-            # rather than treating it as zero possessions
-            continue
-
-        try:
-            fga = sum(r.get("fga") or 0 for r in player_rows)
-            fta = sum(r.get("fta") or 0 for r in player_rows)
-            tov = sum(r.get("turnover") or 0 for r in player_rows)
-            oreb = sum(r.get("oreb") or 0 for r in player_rows)
-        except (TypeError, AttributeError):
-            print(f"  PACE: unexpected /stats response shape for game {game_id} — skipping pace adjustment.")
+            fga = row.get("fga") or 0
+            fta = row.get("fta") or 0
+            tov = row.get("turnovers") or 0  # WNBA team_stats uses "turnovers" (plural) — different from the player-level "turnover" field
+            oreb = row.get("oreb") or 0
+        except AttributeError:
+            print(f"  PACE: unexpected /team_stats response shape for team {team_id} — skipping pace adjustment.")
             return None
 
         game_poss = fga + (0.44 * fta) + tov - oreb
