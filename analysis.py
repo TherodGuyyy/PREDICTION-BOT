@@ -11,7 +11,11 @@ live and you can watch how it performs.
 """
 
 import math
-from config import MIN_ODDS, MIN_EDGE, TOTAL_POINTS_STD_DEV, MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_PROB
+from config import (
+    MIN_ODDS, MIN_EDGE, MIN_EDGE_SUBMARKET, TOTAL_POINTS_STD_DEV,
+    MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_PROB,
+    HALF_TOTAL_PROPORTION, QUARTER_TOTAL_PROPORTION,
+)
 
 HOME_ADVANTAGE = 0.06  # flat bump in win probability for the home team
 
@@ -172,46 +176,42 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds, h2h=None):
 # same as the moneyline model.
 
 
-def _fatigue_total_adjustment(home_form, away_form):
+def _fatigue_score_penalty(form):
     """
-    Small downward nudge on the predicted total for each team playing on
-    zero days rest (back-to-back) — tired teams shoot and defend
-    marginally worse. Returns 0.0 for a team whose rest is unknown,
-    same "unknown isn't assumed rested" rule as the win-probability side.
+    Points shaved off THIS team's own predicted score if they're playing
+    on zero days rest. Returns 0.0 if rest is unknown — same
+    "unknown isn't assumed rested" rule used elsewhere.
     """
-    penalty = 0.0
-    for form in (home_form, away_form):
-        if form.get("days_rest") == 0:
-            penalty += FATIGUE_TOTAL_PENALTY
-    return penalty
+    return FATIGUE_TOTAL_PENALTY if form.get("days_rest") == 0 else 0.0
 
 
-def _predicted_total_basic(home_form, away_form):
+def _predicted_scores_basic(home_form, away_form):
     """
     Original totals estimate, used as a fallback when pace data isn't
-    available for one or both teams (e.g. the /stats endpoint isn't on
-    your balldontlie tier — see get_team_pace()'s docstring). Averages
-    scoring tendency against the opponent's defensive tendency.
+    available for one or both teams (e.g. the /team_stats endpoint isn't
+    on your balldontlie tier — see get_team_pace()'s docstring). Averages
+    each team's scoring tendency against the opponent's defensive
+    tendency. Returns (home_score, away_score).
     """
-    home_side = (home_form["avg_points_scored"] + away_form["avg_points_allowed"]) / 2
-    away_side = (away_form["avg_points_scored"] + home_form["avg_points_allowed"]) / 2
-    return home_side + away_side
+    home_score = (home_form["avg_points_scored"] + away_form["avg_points_allowed"]) / 2
+    away_score = (away_form["avg_points_scored"] + home_form["avg_points_allowed"]) / 2
+    return home_score, away_score
 
 
-def _predicted_total_pace_based(home_form, away_form):
+def _predicted_scores_pace_based(home_form, away_form):
     """
-    Pace-adjusted totals estimate. Two teams that both average 80 points
-    could get there via very different possession counts — the basic
-    formula above can't tell those apart, so a team's pace shift (new
-    rotation, an injury to a ball-handler) won't show up in the total
-    until raw scoring averages drift, which lags real changes.
+    Pace-adjusted per-team score estimate. Two teams that both average 80
+    points could get there via very different possession counts — the
+    basic formula above can't tell those apart, so a team's pace shift
+    (new rotation, an injury to a ball-handler) won't show up until raw
+    scoring averages drift, which lags real changes.
 
-    This instead separates SCORING RATE (points per 100 possessions)
-    from PACE (possessions per game), estimates the pace this specific
-    matchup will likely play at (average of both teams' pace), and
-    multiplies rate by that shared pace — the standard way pace-adjusted
-    projections are done. Requires pace to be present for both teams;
-    predicted_total() falls back to _predicted_total_basic otherwise.
+    This separates SCORING RATE (points per 100 possessions) from PACE
+    (possessions per game), estimates the pace this specific matchup will
+    likely play at (average of both teams' pace), and multiplies rate by
+    that shared pace — the standard way pace-adjusted projections are
+    done. Requires pace for both teams; predicted_scores() falls back to
+    _predicted_scores_basic otherwise. Returns (home_score, away_score).
     """
     home_pace = home_form["pace"]
     away_pace = away_form["pace"]
@@ -225,26 +225,60 @@ def _predicted_total_pace_based(home_form, away_form):
     expected_home_score = ((home_off_rating + away_def_rating) / 2) * (game_pace / 100)
     expected_away_score = ((away_off_rating + home_def_rating) / 2) * (game_pace / 100)
 
-    return expected_home_score + expected_away_score
+    return expected_home_score, expected_away_score
 
 
-def predicted_total(home_form, away_form):
+def predicted_scores(home_form, away_form):
     """
-    Predicted combined score for the game. Uses the pace-adjusted
-    estimate when both teams have usable pace data (see get_team_pace),
-    otherwise falls back to the basic scoring-average estimate — same
-    "unknown isn't silently assumed" rule used elsewhere in this file.
-    Either way, applies the fatigue adjustment for teams on 0 days rest.
+    Predicted (home_score, away_score) for the full game — the shared
+    building block behind the game total, individual team totals, and
+    (via a flat proportion) half/quarter totals. Uses the pace-adjusted
+    estimate when both teams have usable pace data, otherwise the basic
+    scoring-average estimate. Applies each team's own fatigue penalty to
+    ITS OWN score (a back-to-back team's own total drops — this doesn't
+    get arbitrarily split across both teams the way a single combined
+    penalty would).
     """
     home_pace = home_form.get("pace")
     away_pace = away_form.get("pace")
 
     if home_pace and away_pace:
-        base_total = _predicted_total_pace_based(home_form, away_form)
+        home_score, away_score = _predicted_scores_pace_based(home_form, away_form)
     else:
-        base_total = _predicted_total_basic(home_form, away_form)
+        home_score, away_score = _predicted_scores_basic(home_form, away_form)
 
-    return base_total - _fatigue_total_adjustment(home_form, away_form)
+    home_score -= _fatigue_score_penalty(home_form)
+    away_score -= _fatigue_score_penalty(away_form)
+    return home_score, away_score
+
+
+def predicted_total(home_form, away_form):
+    """Predicted COMBINED score for the game — sum of predicted_scores()."""
+    home_score, away_score = predicted_scores(home_form, away_form)
+    return home_score + away_score
+
+
+def predicted_half_total(home_form, away_form, proportion=HALF_TOTAL_PROPORTION):
+    """
+    Predicted combined score for the first half — a flat proportion
+    (default 50%) of the full-game predicted total. This is a
+    simplification, not a half-specific model: balldontlie's free tier
+    has no period-by-period scoring history to learn a real split from.
+    Treat this as meaningfully less reliable than the full-game total.
+    """
+    return predicted_total(home_form, away_form) * proportion
+
+
+def predicted_quarter_total(home_form, away_form, proportion=QUARTER_TOTAL_PROPORTION):
+    """
+    Predicted combined score for a single quarter — a flat proportion
+    (default 25%) of the full-game predicted total. Same caveat as
+    predicted_half_total, more so: a single quarter is a smaller, higher-
+    variance sample, so this is the least reliable of the totals
+    estimates here. Its stricter MIN_EDGE_SUBMARKET threshold reflects
+    that.
+    """
+    return predicted_total(home_form, away_form) * proportion
 
 
 def _normal_cdf(x, mean, std_dev):
@@ -252,16 +286,100 @@ def _normal_cdf(x, mean, std_dev):
     return 0.5 * (1 + math.erf((x - mean) / (std_dev * math.sqrt(2))))
 
 
-def prob_over_under(predicted, line):
+def prob_over_under(predicted, line, std_dev=TOTAL_POINTS_STD_DEV):
     """
     Returns (prob_over, prob_under) for a given predicted total and a
     specific betting line, using a normal distribution around our
     prediction. E.g. if we predict 168 points and the line is 165.5,
     "over" should be somewhat more likely than "under".
+
+    std_dev defaults to the full-game TOTAL_POINTS_STD_DEV, but callers
+    predicting a smaller window (a half, a quarter, one team's score)
+    should pass a smaller std_dev — see HALF_STD_DEV / QUARTER_STD_DEV /
+    TEAM_STD_DEV below for how those are derived.
     """
-    prob_under = _normal_cdf(line, predicted, TOTAL_POINTS_STD_DEV)
+    prob_under = _normal_cdf(line, predicted, std_dev)
     prob_over = 1 - prob_under
     return prob_over, prob_under
+
+
+# Std devs for sub-markets, derived from TOTAL_POINTS_STD_DEV rather than
+# guessed independently, since we don't have real half/quarter/team-level
+# variance data (same limitation as the proportion-based predictions
+# above). Basketball scoring is reasonably modeled as a compound process
+# where variance scales roughly with time/possessions played — so a
+# window covering HALF_TOTAL_PROPORTION of the game gets sqrt(proportion)
+# of the full-game variance, not a flat proportional cut. This is a
+# standard approximation (used e.g. in basketball live-total modeling),
+# not something tuned on your actual results yet.
+HALF_STD_DEV = TOTAL_POINTS_STD_DEV * math.sqrt(HALF_TOTAL_PROPORTION)
+QUARTER_STD_DEV = TOTAL_POINTS_STD_DEV * math.sqrt(QUARTER_TOTAL_PROPORTION)
+# One team's score variance, assuming both teams contribute roughly equal
+# variance to the combined total: Var(total) = Var(home) + Var(away), so
+# each team's std ≈ total_std / sqrt(2).
+TEAM_STD_DEV = TOTAL_POINTS_STD_DEV / math.sqrt(2)
+
+
+def _find_totals_candidates(matchup_label, tip_type, predicted, totals_odds_list, std_dev, min_edge,
+                             line_range=None, extra_fields=None):
+    """
+    Shared core for every totals-style market (full-game, team, half,
+    quarter): given a predicted number and a list of {"line", "over_odds",
+    "under_odds"} entries, returns every candidate tip that clears
+    min_edge, tagged with tip_type. line_range, if given, is an
+    (min, max) sanity bound — same safety-net philosophy as
+    MIN_PLAUSIBLE_TOTAL/MAX_PLAUSIBLE_TOTAL: if a line falls way outside
+    what's plausible for this market type, it's almost certainly a
+    mismatched market that slipped through name-based filtering upstream,
+    and gets skipped rather than ever risking a nonsensical tip.
+    """
+    candidates = []
+    extra_fields = extra_fields or {}
+
+    for entry in totals_odds_list:
+        line = entry.get("line")
+        if line is None:
+            continue
+        if line_range and not (line_range[0] <= line <= line_range[1]):
+            continue
+
+        prob_over, prob_under = prob_over_under(predicted, line, std_dev=std_dev)
+
+        over_odds = entry.get("over_odds")
+        if over_odds and over_odds >= MIN_ODDS:
+            edge = prob_over - implied_probability(over_odds)
+            if edge >= min_edge and _prob_is_plausible(prob_over):
+                candidates.append({
+                    "type": tip_type,
+                    "matchup": matchup_label,
+                    "side": "over",
+                    "line": line,
+                    "odds": over_odds,
+                    "market_id": entry.get("market_id"),
+                    "our_estimated_prob": round(prob_over, 3),
+                    "market_implied_prob": round(implied_probability(over_odds), 3),
+                    "edge": round(edge, 3),
+                    **extra_fields,
+                })
+
+        under_odds = entry.get("under_odds")
+        if under_odds and under_odds >= MIN_ODDS:
+            edge = prob_under - implied_probability(under_odds)
+            if edge >= min_edge and _prob_is_plausible(prob_under):
+                candidates.append({
+                    "type": tip_type,
+                    "matchup": matchup_label,
+                    "side": "under",
+                    "line": line,
+                    "odds": under_odds,
+                    "market_id": entry.get("market_id"),
+                    "our_estimated_prob": round(prob_under, 3),
+                    "market_implied_prob": round(implied_probability(under_odds), 3),
+                    "edge": round(edge, 3),
+                    **extra_fields,
+                })
+
+    return candidates
 
 
 def find_totals_value_tip(game, predicted, totals_odds_list):
@@ -273,55 +391,88 @@ def find_totals_value_tip(game, predicted, totals_odds_list):
     Returns the single best-edge tip across all available lines/sides
     that clears MIN_ODDS + MIN_EDGE, or None.
     """
-    candidates = []
     matchup = f"{game['visitor_team']['full_name']} @ {game['home_team']['full_name']}"
+    candidates = _find_totals_candidates(
+        matchup, "totals", predicted, totals_odds_list,
+        std_dev=TOTAL_POINTS_STD_DEV, min_edge=MIN_EDGE,
+        line_range=(MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL),
+    )
+    if not candidates:
+        return None
+    return max(candidates, key=lambda c: c["edge"])
 
-    for entry in totals_odds_list:
-        line = entry["line"]
-        if line is None:
-            continue
-        if not (MIN_PLAUSIBLE_TOTAL <= line <= MAX_PLAUSIBLE_TOTAL):
-            # safety net: a full-game WNBA total is essentially always in
-            # this range. Anything outside it is almost certainly a
-            # quarter/half/team/player sub-market that slipped through
-            # the market-name filtering upstream — skip it outright
-            # rather than ever risk tipping on it.
-            continue
-        prob_over, prob_under = prob_over_under(predicted, line)
 
-        over_odds = entry.get("over_odds")
-        if over_odds and over_odds >= MIN_ODDS:
-            edge = prob_over - implied_probability(over_odds)
-            if edge >= MIN_EDGE and _prob_is_plausible(prob_over):
-                candidates.append({
-                    "type": "totals",
-                    "matchup": matchup,
-                    "side": "over",
-                    "line": line,
-                    "odds": over_odds,
-                    "market_id": entry.get("market_id"),
-                    "our_estimated_prob": round(prob_over, 3),
-                    "market_implied_prob": round(implied_probability(over_odds), 3),
-                    "edge": round(edge, 3),
-                })
+# ---------------------------------------------------------------------------
+# Expanded totals sub-markets: individual team totals, first-half totals,
+# quarter totals. See config.py's ENABLE_TEAM_TOTALS / ENABLE_HALF_TOTALS /
+# ENABLE_QUARTER_TOTALS comments for what's genuinely modeled here vs. what's
+# a flat-proportion simplification, and MIN_EDGE_SUBMARKET for why half/
+# quarter tips require a bigger edge than the main markets.
+# ---------------------------------------------------------------------------
 
-        under_odds = entry.get("under_odds")
-        if under_odds and under_odds >= MIN_ODDS:
-            edge = prob_under - implied_probability(under_odds)
-            if edge >= MIN_EDGE and _prob_is_plausible(prob_under):
-                candidates.append({
-                    "type": "totals",
-                    "matchup": matchup,
-                    "side": "under",
-                    "line": line,
-                    "odds": under_odds,
-                    "market_id": entry.get("market_id"),
-                    "our_estimated_prob": round(prob_under, 3),
-                    "market_implied_prob": round(implied_probability(under_odds), 3),
-                    "edge": round(edge, 3),
-                })
+def find_team_totals_value_tip(game, home_form, away_form, team_totals_odds):
+    """
+    team_totals_odds: dict from odds_fetcher.get_team_totals_odds():
+        {"home": [{"line", "over_odds", "under_odds"}, ...],
+         "away": [{"line", "over_odds", "under_odds"}, ...]}
+    Uses predicted_scores() — the SAME per-team numbers behind the main
+    game total, no proportion guessing involved — so this gets the
+    normal MIN_EDGE, not the stricter sub-market threshold.
+    Returns the single best-edge tip across both teams' lines, or None.
+    """
+    home_score, away_score = predicted_scores(home_form, away_form)
+    home_name = game["home_team"]["full_name"]
+    away_name = game["visitor_team"]["full_name"]
+
+    candidates = []
+    candidates += _find_totals_candidates(
+        home_name, "team_totals", home_score, team_totals_odds.get("home", []),
+        std_dev=TEAM_STD_DEV, min_edge=MIN_EDGE,
+        extra_fields={"team": home_name, "opponent": away_name},
+    )
+    candidates += _find_totals_candidates(
+        away_name, "team_totals", away_score, team_totals_odds.get("away", []),
+        std_dev=TEAM_STD_DEV, min_edge=MIN_EDGE,
+        extra_fields={"team": away_name, "opponent": home_name},
+    )
 
     if not candidates:
         return None
+    return max(candidates, key=lambda c: c["edge"])
 
+
+def find_half_totals_value_tip(game, home_form, away_form, half_totals_odds):
+    """
+    half_totals_odds: list of {"line", "over_odds", "under_odds"} for the
+    FIRST HALF, from odds_fetcher.get_first_half_totals_odds().
+    predicted is a flat proportion of the full-game total (see
+    predicted_half_total's docstring) — uses MIN_EDGE_SUBMARKET, the
+    stricter threshold, to reflect that extra uncertainty.
+    """
+    matchup = f"{game['visitor_team']['full_name']} @ {game['home_team']['full_name']}"
+    predicted = predicted_half_total(home_form, away_form)
+    candidates = _find_totals_candidates(
+        matchup, "half_totals", predicted, half_totals_odds,
+        std_dev=HALF_STD_DEV, min_edge=MIN_EDGE_SUBMARKET,
+    )
+    if not candidates:
+        return None
+    return max(candidates, key=lambda c: c["edge"])
+
+
+def find_quarter_totals_value_tip(game, home_form, away_form, quarter_totals_odds, quarter_label="1st Quarter"):
+    """
+    quarter_totals_odds: list of {"line", "over_odds", "under_odds"} for a
+    single quarter, from odds_fetcher.get_quarter_totals_odds().
+    Same flat-proportion caveat as half totals, more so (smaller, higher-
+    variance sample) — uses MIN_EDGE_SUBMARKET.
+    """
+    matchup = f"{game['visitor_team']['full_name']} @ {game['home_team']['full_name']} ({quarter_label})"
+    predicted = predicted_quarter_total(home_form, away_form)
+    candidates = _find_totals_candidates(
+        matchup, "quarter_totals", predicted, quarter_totals_odds,
+        std_dev=QUARTER_STD_DEV, min_edge=MIN_EDGE_SUBMARKET,
+    )
+    if not candidates:
+        return None
     return max(candidates, key=lambda c: c["edge"])

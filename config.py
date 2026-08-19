@@ -28,8 +28,8 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "PASTE_YOUR_CHAT_ID_HERE")
 
 # --- Tip rules ---
 MIN_ODDS = 1.40          # never post a tip below this
-WNBA_MAX_TIPS_PER_DAY = 8   # separate cap for WNBA (moneyline + totals combined)
-TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 11 total between the two
+WNBA_MAX_TIPS_PER_DAY = 5   # separate cap for WNBA (moneyline + totals combined)
+TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 8 total between the two
 MIN_EDGE = 0.03          # only tip if our estimated fair probability beats the
                           # market-implied probability by at least this much (3%)
                           # — this is what keeps the bot from just tipping favorites
@@ -63,6 +63,31 @@ MAX_PLAUSIBLE_PROB = 0.97  # hard safety cap, applies to ALL models (WNBA
                           # — not a signal the model is unusually confident.
                           # A tip whose estimated probability exceeds this is
                           # blocked outright regardless of the reason.
+
+# --- Expanded totals markets (team / half / quarter) ---
+# balldontlie's free tier has no period-by-period scoring history, so these
+# CANNOT be built as genuine dedicated models the way the full-game total
+# is — there's no real data to learn a WNBA-specific first-half or
+# first-quarter scoring split from. What's built instead: individual TEAM
+# totals use the exact same per-team scoring/allowed data as everything else
+# (full rigor, no guessing). Half/quarter totals use a flat proportion of
+# the full-game predicted total — an honest simplification, not a
+# team-specific or league-verified split. Treat half/quarter tips as lower
+# confidence than the main markets; that's exactly why they get their own,
+# stricter edge requirement below.
+ENABLE_TEAM_TOTALS = True
+ENABLE_HALF_TOTALS = True
+ENABLE_QUARTER_TOTALS = True
+
+HALF_TOTAL_PROPORTION = 0.50   # flat assumption: first half ≈ 50% of the full-game total
+QUARTER_TOTAL_PROPORTION = 0.25  # flat assumption: any single quarter ≈ 25% of the full-game total
+
+MIN_EDGE_SUBMARKET = 0.06  # stricter than MIN_EDGE (0.03) — applied to half
+                          # and quarter totals specifically, since those
+                          # predictions rest on a flat proportion assumption
+                          # rather than real period-level data. A bigger
+                          # required edge is the guardrail against that
+                          # extra uncertainty producing a false-positive tip.
 
 # --- Tennis data (Jeff Sackmann's free tennis_atp / tennis_wta archives) ---
 # Free, well-structured, community-maintained — but NOT live. Updates can lag

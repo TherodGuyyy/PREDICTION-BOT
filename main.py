@@ -10,10 +10,19 @@ combined pool — so a big tennis day can't crowd out WNBA tips or vice versa.
 """
 
 import datetime
-from config import WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, SPORT_LABEL, TENNIS_MAX_MATCHES_PER_RUN
+from config import (
+    WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, SPORT_LABEL, TENNIS_MAX_MATCHES_PER_RUN,
+    ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS,
+)
 from stats_fetcher import get_todays_games, team_form_summary, get_head_to_head_record
-from analysis import find_value_tip, predicted_total, find_totals_value_tip
-from odds_fetcher import get_match_odds, get_totals_odds, debug_fixture_status
+from analysis import (
+    find_value_tip, predicted_total, find_totals_value_tip,
+    find_team_totals_value_tip, find_half_totals_value_tip, find_quarter_totals_value_tip,
+)
+from odds_fetcher import (
+    get_match_odds, get_totals_odds, debug_fixture_status,
+    get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
+)
 from tennis_stats_fetcher import player_form_summary
 from tennis_analysis import find_tennis_value_tip
 from tennis_odds_fetcher import (
@@ -92,6 +101,7 @@ def run_wnba(today, all_tips):
 
             # --- totals (over/under) ---
             totals_odds = get_totals_odds(home["full_name"], away["full_name"], today)
+            totals_tip = None
             if totals_odds:
                 predicted = predicted_total(home_form, away_form)
                 totals_tip = find_totals_value_tip(game, predicted, totals_odds)
@@ -107,6 +117,56 @@ def run_wnba(today, all_tips):
             else:
                 reason = debug_fixture_status(home["full_name"], away["full_name"], today)
                 print(f"  Totals: no totals odds available — {reason}")
+
+            # --- expanded sub-markets: only searched when the main total
+            # didn't clear the bar. See config.py's ENABLE_TEAM_TOTALS /
+            # ENABLE_HALF_TOTALS / ENABLE_QUARTER_TOTALS comments — half and
+            # quarter totals use a flat-proportion approximation of the
+            # full-game prediction (not a dedicated model, since free
+            # period-level data doesn't exist), so they need a bigger edge
+            # (MIN_EDGE_SUBMARKET) to tip. Individual team totals use the
+            # same real per-team numbers as everything else, no discount.
+            if not totals_tip:
+                sub_candidates = []
+
+                if ENABLE_TEAM_TOTALS:
+                    try:
+                        team_odds = get_team_totals_odds(home["full_name"], away["full_name"], today)
+                        if team_odds.get("home") or team_odds.get("away"):
+                            t = find_team_totals_value_tip(game, home_form, away_form, team_odds)
+                            if t:
+                                sub_candidates.append(t)
+                    except Exception as e:
+                        print(f"  Team totals lookup failed (continuing without it): {e}")
+
+                if ENABLE_HALF_TOTALS:
+                    try:
+                        half_odds = get_first_half_totals_odds(home["full_name"], away["full_name"], today)
+                        if half_odds:
+                            t = find_half_totals_value_tip(game, home_form, away_form, half_odds)
+                            if t:
+                                sub_candidates.append(t)
+                    except Exception as e:
+                        print(f"  Half-totals lookup failed (continuing without it): {e}")
+
+                if ENABLE_QUARTER_TOTALS:
+                    try:
+                        q1_odds = get_quarter_totals_odds(home["full_name"], away["full_name"], today, quarter_num=1)
+                        if q1_odds:
+                            t = find_quarter_totals_value_tip(game, home_form, away_form, q1_odds)
+                            if t:
+                                sub_candidates.append(t)
+                    except Exception as e:
+                        print(f"  Quarter-totals lookup failed (continuing without it): {e}")
+
+                if sub_candidates:
+                    best_sub = max(sub_candidates, key=lambda c: c["edge"])
+                    print(f"  EXPANDED-MARKET TIP ({best_sub['type']}): {best_sub['side']} "
+                          f"{best_sub['line']} @ {best_sub['odds']} (edge {best_sub['edge']})")
+                    all_tips.append(best_sub)
+                else:
+                    print("  No value found in expanded sub-markets either "
+                          "(or no sub-market odds were available for this game).")
 
         except Exception as e:
             # one bad game should never take down the whole run and lose

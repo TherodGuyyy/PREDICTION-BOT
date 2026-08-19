@@ -169,6 +169,233 @@ def _get_totals_markets():
     return _totals_markets
 
 
+# ---------------------------------------------------------------------------
+# Sub-markets: individual team totals, first-half totals, quarter totals.
+#
+# IMPORTANT CAVEAT: the moneyline and full-game-totals finders above were
+# built and confirmed against LIVE OddsPapi responses (per the module
+# docstring). The functions below follow the exact same pattern, but this
+# environment can't reach api.oddspapi.io directly to verify them the same
+# way — so the keyword matching here is a best-effort guess at how
+# OddsPapi names these sub-markets, not a confirmed fact. Run this file
+# directly (`python odds_fetcher.py`) and check the printed sub-market
+# lists against a real game before trusting these in production — if the
+# keywords below don't match OddsPapi's actual naming, these will just
+# silently find nothing (fail safe — no odds means no tip, never a wrong
+# tip) rather than error out, but you also won't get the sub-market tips
+# you're expecting until the keyword lists are corrected to match.
+# ---------------------------------------------------------------------------
+
+def _get_period_totals_markets(include_keywords, exclude_keywords=None):
+    """
+    Generic finder for a totals sub-market: returns markets whose name
+    contains ANY of include_keywords and NONE of exclude_keywords.
+    Includes "market_name" in each result (unlike the main totals finder)
+    so callers matching a specific TEAM can inspect the raw name.
+    """
+    sport_id = _get_basketball_sport_id()
+    markets = _get("/markets", {"language": "en"})
+    exclude_keywords = exclude_keywords or []
+
+    results = []
+    for m in markets:
+        if m.get("sportId") != sport_id:
+            continue
+        if m.get("marketType") != "totals":
+            continue
+        name = m.get("marketName", "").lower()
+        if "over" not in name and "under" not in name and "total" not in name:
+            continue
+        if not any(kw in name for kw in include_keywords):
+            continue
+        if any(kw in name for kw in exclude_keywords):
+            continue
+
+        outcomes = m.get("outcomes", [])
+        over_id = next((o["outcomeId"] for o in outcomes if o.get("outcomeName", "").lower() == "over"), None)
+        under_id = next((o["outcomeId"] for o in outcomes if o.get("outcomeName", "").lower() == "under"), None)
+        if over_id is None or under_id is None:
+            continue
+
+        results.append({
+            "market_id": m["marketId"],
+            "line": m.get("handicap"),
+            "over_id": over_id,
+            "under_id": under_id,
+            "market_name": m.get("marketName", ""),
+        })
+    return results
+
+
+_half_totals_markets = None
+
+
+def _get_first_half_totals_markets():
+    global _half_totals_markets
+    if _half_totals_markets is None:
+        _half_totals_markets = _get_period_totals_markets(
+            include_keywords=["1st half", "first half"],
+            exclude_keywords=["team", "quarter"],
+        )
+    return _half_totals_markets
+
+
+_quarter_totals_markets = {}  # keyed by quarter_num
+
+
+def _get_quarter_totals_markets(quarter_num=1):
+    if quarter_num not in _quarter_totals_markets:
+        keywords_by_quarter = {
+            1: ["1st quarter", "first quarter", "q1"],
+            2: ["2nd quarter", "second quarter", "q2"],
+            3: ["3rd quarter", "third quarter", "q3"],
+            4: ["4th quarter", "fourth quarter", "q4"],
+        }
+        include = keywords_by_quarter.get(quarter_num)
+        if not include:
+            return []
+        _quarter_totals_markets[quarter_num] = _get_period_totals_markets(
+            include_keywords=include,
+            exclude_keywords=["team", "half"],
+        )
+    return _quarter_totals_markets[quarter_num]
+
+
+_team_totals_markets = None
+
+
+def _get_team_totals_markets():
+    global _team_totals_markets
+    if _team_totals_markets is None:
+        _team_totals_markets = _get_period_totals_markets(
+            include_keywords=["team total", "team points"],
+            exclude_keywords=["half", "quarter"],
+        )
+    return _team_totals_markets
+
+
+def _best_odds_by_line(fixture_id, markets):
+    """
+    Shared aggregation: given a fixture and a list of market defs (each
+    with market_id/line/over_id/under_id), returns the best (highest)
+    over/under price per distinct line across all bookmakers. Same core
+    logic as get_totals_odds, factored out so the sub-market functions
+    below don't each reimplement it.
+    """
+    if not markets:
+        return {}
+
+    odds_data = _get_odds_for_fixture(fixture_id)
+    best_by_line = {}
+
+    for book_slug, book_data in odds_data.get("bookmakerOdds", {}).items():
+        book_markets = book_data.get("markets", {})
+        for tm in markets:
+            market = book_markets.get(str(tm["market_id"]))
+            if not market:
+                continue
+            outcomes = market.get("outcomes", {})
+
+            over_price = outcomes.get(str(tm["over_id"]), {}).get("players", {}).get("0", {}).get("price")
+            under_price = outcomes.get(str(tm["under_id"]), {}).get("players", {}).get("0", {}).get("price")
+            if over_price is None and under_price is None:
+                continue
+
+            line = tm["line"]
+            key = (line, tm["market_id"])  # keep markets distinct even if lines happen to collide
+            entry = best_by_line.setdefault(key, {
+                "line": line, "over_odds": None, "under_odds": None,
+                "market_id": tm["market_id"], "market_name": tm.get("market_name", ""),
+            })
+            if over_price is not None and (entry["over_odds"] is None or over_price > entry["over_odds"]):
+                entry["over_odds"] = over_price
+            if under_price is not None and (entry["under_odds"] is None or under_price > entry["under_odds"]):
+                entry["under_odds"] = under_price
+
+    return best_by_line
+
+
+def get_first_half_totals_odds(home_team_name, away_team_name, date_str):
+    """
+    Returns first-half totals lines, same shape as get_totals_odds():
+    [{"line": 82.5, "over_odds": 1.9, "under_odds": 1.9, "market_id": ...}, ...]
+    Empty list if the fixture/odds aren't found, or (see module-level
+    caveat above) if this WNBA odds feed doesn't label half markets the
+    way this code expects yet.
+    """
+    fixture, _ = _find_fixture(home_team_name, away_team_name, date_str)
+    if not fixture or not fixture.get("hasOdds"):
+        return []
+    markets = _get_first_half_totals_markets()
+    best_by_line = _best_odds_by_line(fixture["fixtureId"], markets)
+    return [
+        {"line": v["line"], "over_odds": v["over_odds"], "under_odds": v["under_odds"], "market_id": v["market_id"]}
+        for v in sorted(best_by_line.values(), key=lambda v: (v["line"] is None, v["line"]))
+        if v["line"] is not None
+    ]
+
+
+def get_quarter_totals_odds(home_team_name, away_team_name, date_str, quarter_num=1):
+    """
+    Returns totals lines for a single quarter (default: 1st), same shape
+    as get_totals_odds(). Same empty-list-on-not-found behavior as
+    get_first_half_totals_odds.
+    """
+    fixture, _ = _find_fixture(home_team_name, away_team_name, date_str)
+    if not fixture or not fixture.get("hasOdds"):
+        return []
+    markets = _get_quarter_totals_markets(quarter_num)
+    best_by_line = _best_odds_by_line(fixture["fixtureId"], markets)
+    return [
+        {"line": v["line"], "over_odds": v["over_odds"], "under_odds": v["under_odds"], "market_id": v["market_id"]}
+        for v in sorted(best_by_line.values(), key=lambda v: (v["line"] is None, v["line"]))
+        if v["line"] is not None
+    ]
+
+
+def get_team_totals_odds(home_team_name, away_team_name, date_str):
+    """
+    Returns individual-team totals lines, split by team:
+    {"home": [{"line", "over_odds", "under_odds", "market_id"}, ...],
+     "away": [...]}
+    A market is assigned to a team by checking whether that team's name
+    appears in the market's raw name (e.g. "Las Vegas Aces Total Points")
+    — if a market can't be confidently matched to either team, it's
+    skipped rather than guessed at.
+    """
+    fixture, _ = _find_fixture(home_team_name, away_team_name, date_str)
+    if not fixture or not fixture.get("hasOdds"):
+        return {"home": [], "away": []}
+
+    markets = _get_team_totals_markets()
+    if not markets:
+        return {"home": [], "away": []}
+
+    home_markets, away_markets = [], []
+    for m in markets:
+        name = m.get("market_name", "")
+        home_match = _names_match(home_team_name, name)
+        away_match = _names_match(away_team_name, name)
+        if home_match and not away_match:
+            home_markets.append(m)
+        elif away_match and not home_match:
+            away_markets.append(m)
+        # if both or neither match (ambiguous / unrelated market), skip it —
+        # never guess which team a total belongs to
+
+    home_by_line = _best_odds_by_line(fixture["fixtureId"], home_markets)
+    away_by_line = _best_odds_by_line(fixture["fixtureId"], away_markets)
+
+    def _to_list(by_line):
+        return [
+            {"line": v["line"], "over_odds": v["over_odds"], "under_odds": v["under_odds"], "market_id": v["market_id"]}
+            for v in sorted(by_line.values(), key=lambda v: (v["line"] is None, v["line"]))
+            if v["line"] is not None
+        ]
+
+    return {"home": _to_list(home_by_line), "away": _to_list(away_by_line)}
+
+
 def _get_wnba_fixtures_for_date(date_str):
     """
     date_str: 'YYYY-MM-DD'. Returns fixtures for that day for WNBA.
@@ -375,9 +602,29 @@ if __name__ == "__main__":
 
     print("\nSearching for totals (over/under) market definitions...")
     totals = _get_totals_markets()
-    print(f"Found {len(totals)} totals line(s):")
+    print(f"Found {len(totals)} full-game totals line(s):")
     for t in totals:
         print(f"  line {t['line']}  (market_id={t['market_id']}, over_id={t['over_id']}, under_id={t['under_id']})")
+
+    print("\nSearching for SUB-MARKET definitions (team / half / quarter totals)...")
+    print("NOTE: these keyword matches are unverified against live OddsPapi data —")
+    print("if a section below is empty but you expect that market to exist for")
+    print("today's games, the keyword lists in odds_fetcher.py need adjusting.")
+
+    half_markets = _get_first_half_totals_markets()
+    print(f"\nFirst-half totals: found {len(half_markets)} market(s)")
+    for m in half_markets:
+        print(f"  '{m['market_name']}'  line={m['line']}  market_id={m['market_id']}")
+
+    q1_markets = _get_quarter_totals_markets(1)
+    print(f"\n1st-quarter totals: found {len(q1_markets)} market(s)")
+    for m in q1_markets:
+        print(f"  '{m['market_name']}'  line={m['line']}  market_id={m['market_id']}")
+
+    team_markets = _get_team_totals_markets()
+    print(f"\nIndividual team totals: found {len(team_markets)} market(s)")
+    for m in team_markets:
+        print(f"  '{m['market_name']}'  line={m['line']}  market_id={m['market_id']}")
 
     today = datetime.date.today().isoformat()
     print(f"\nFixtures today ({today}):")
@@ -401,5 +648,10 @@ if __name__ == "__main__":
 
         totals_odds = get_totals_odds(p1, p2, today)
         print("Totals result:", totals_odds)
+
+        print("\nSub-market results (may be empty — see note above):")
+        print("Team totals:", get_team_totals_odds(p1, p2, today))
+        print("First-half totals:", get_first_half_totals_odds(p1, p2, today))
+        print("1st-quarter totals:", get_quarter_totals_odds(p1, p2, today, quarter_num=1))
     else:
         print("\nNo fixture with hasOdds=true right now — try again closer to game time.")
