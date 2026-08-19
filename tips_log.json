@@ -43,8 +43,8 @@
     "tip_id": "2026-08-18_totals_2",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "196"
   },
   {
     "type": "totals",
@@ -75,8 +75,8 @@
     "tip_id": "2026-08-18_totals_4",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "162"
   },
   {
     "type": "moneyline",
@@ -90,8 +90,8 @@
     "tip_id": "2026-08-18_moneyline_5",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "77-85"
   },
   {
     "type": "moneyline",
@@ -136,8 +136,8 @@
     "tip_id": "2026-08-18_totals_1",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "196"
   },
   {
     "type": "totals",
@@ -168,8 +168,8 @@
     "tip_id": "2026-08-18_totals_3",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "162"
   },
   {
     "type": "totals",
@@ -214,6 +214,53 @@
     "tip_id": "2026-08-18_moneyline_6",
     "game_date": "2026-08-18",
     "logged_at": "2026-08-18",
+    "status": "lost",
+    "actual_result": "77-85"
+  },
+  {
+    "type": "totals",
+    "matchup": "Minnesota Lynx @ Golden State Valkyries",
+    "side": "over",
+    "line": 162.5,
+    "odds": 1.97,
+    "market_id": 11130,
+    "our_estimated_prob": 0.82,
+    "market_implied_prob": 0.508,
+    "edge": 0.312,
+    "tip_id": "2026-08-19_totals_0",
+    "game_date": "2026-08-19",
+    "logged_at": "2026-08-19",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Tempo @ Washington Mystics",
+    "side": "over",
+    "line": 166.5,
+    "odds": 1.88,
+    "market_id": 11138,
+    "our_estimated_prob": 0.809,
+    "market_implied_prob": 0.532,
+    "edge": 0.277,
+    "tip_id": "2026-08-19_totals_1",
+    "game_date": "2026-08-19",
+    "logged_at": "2026-08-19",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Minnesota Lynx",
+    "opponent": "Golden State Valkyries",
+    "side": "away",
+    "odds": 2.22,
+    "our_estimated_prob": 0.707,
+    "market_implied_prob": 0.45,
+    "edge": 0.257,
+    "tip_id": "2026-08-19_moneyline_2",
+    "game_date": "2026-08-19",
+    "logged_at": "2026-08-19",
     "status": "pending",
     "actual_result": null
   }
