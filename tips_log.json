@@ -246,8 +246,8 @@
     "tip_id": "2026-08-19_totals_1",
     "game_date": "2026-08-19",
     "logged_at": "2026-08-19",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "175"
   },
   {
     "type": "moneyline",
