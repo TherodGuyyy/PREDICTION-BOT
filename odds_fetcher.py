@@ -48,13 +48,38 @@ _all_markets_raw = None           # RAW /v4/markets response, fetched ONCE per r
                                    # through a run.
 
 
-def _get(path, params, retries=2):
+def _get(path, params, retries=3):
+    """
+    retries=3 (up from 2) and now retries on THREE failure modes, not
+    just 429:
+      - 429 (rate limited) — retried, as before
+      - 5xx (OddsPapi's own server erroring) — these are usually
+        transient blips on their end, not something wrong with our
+        request, so worth riding out with backoff rather than giving up
+        on the whole game after one bad response
+      - network-level failures (read timeouts, connection resets) — these
+        never even reach the status-code check below, since they raise
+        before requests.get() returns a response at all. A single slow
+        response used to take the whole game down immediately; now it
+        gets the same backoff-and-retry treatment as the others.
+    A persistent, non-transient outage on OddsPapi's side will still
+    fail after exhausting retries — this doesn't paper over a real
+    outage, just stops one transient hiccup from skipping a whole game.
+    """
     params = {**params, "apiKey": ODDSPAPI_API_KEY}
     for attempt in range(retries + 1):
-        resp = requests.get(f"{BASE_URL}{path}", params=params, timeout=15)
-        if resp.status_code == 429 and attempt < retries:
+        try:
+            resp = requests.get(f"{BASE_URL}{path}", params=params, timeout=20)
+        except requests.exceptions.RequestException:
+            if attempt < retries:
+                time.sleep(2 * (attempt + 1))
+                continue
+            raise
+
+        if resp.status_code in (429, 500, 502, 503, 504) and attempt < retries:
             time.sleep(2 * (attempt + 1))
             continue
+
         resp.raise_for_status()
         return resp.json()
 
