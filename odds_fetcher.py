@@ -36,6 +36,16 @@ _moneyline_market = None          # (market_id, outcome_a_id, outcome_b_id)
 _totals_markets = None            # list of {market_id, handicap, over_id, under_id}
 _fixtures_cache = {}              # date_str -> fixtures list
 _odds_cache = {}                  # fixture_id -> raw /v4/odds response
+_all_markets_raw = None           # RAW /v4/markets response, fetched ONCE per run and
+                                   # reused by every market finder below (moneyline,
+                                   # totals, team totals, half totals, quarter totals).
+                                   # Each finder used to independently re-fetch the full
+                                   # markets catalog — harmless in isolation, but on a
+                                   # rate-limited free tier, 5 separate full-catalog
+                                   # fetches (one per finder) instead of 1 shared one is
+                                   # exactly the kind of thing that burns through a
+                                   # request budget fast and triggers 429s partway
+                                   # through a run.
 
 
 def _get(path, params, retries=2):
@@ -47,6 +57,22 @@ def _get(path, params, retries=2):
             continue
         resp.raise_for_status()
         return resp.json()
+
+
+def _get_all_basketball_markets():
+    """
+    Fetches OddsPapi's full /v4/markets catalog ONCE per run and caches
+    it — every market finder (moneyline, totals, team totals, half
+    totals, quarter totals) filters from this single cached list instead
+    of each hitting /v4/markets independently. This is the fix for a
+    real issue: those 5 finders used to each fetch the whole catalog
+    separately, which on a rate-limited free tier could burn through
+    the request budget before a run even got through its first game.
+    """
+    global _all_markets_raw
+    if _all_markets_raw is None:
+        _all_markets_raw = _get("/markets", {"language": "en"})
+    return _all_markets_raw
 
 
 def _get_basketball_sport_id():
@@ -93,7 +119,7 @@ def _get_moneyline_market():
         return _moneyline_market
 
     sport_id = _get_basketball_sport_id()
-    markets = _get("/markets", {"language": "en"})
+    markets = _get_all_basketball_markets()
 
     candidates = [
         m for m in markets
@@ -128,7 +154,7 @@ def _get_totals_markets():
         return _totals_markets
 
     sport_id = _get_basketball_sport_id()
-    markets = _get("/markets", {"language": "en"})
+    markets = _get_all_basketball_markets()
 
     # keywords that indicate this is NOT a full-game total (a quarter, a
     # half, a single team's total, or a player prop) — these all use the
@@ -194,7 +220,7 @@ def _get_period_totals_markets(include_keywords, exclude_keywords=None):
     so callers matching a specific TEAM can inspect the raw name.
     """
     sport_id = _get_basketball_sport_id()
-    markets = _get("/markets", {"language": "en"})
+    markets = _get_all_basketball_markets()
     exclude_keywords = exclude_keywords or []
 
     results = []
