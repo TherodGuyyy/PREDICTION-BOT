@@ -230,7 +230,7 @@
     "tip_id": "2026-08-19_totals_0",
     "game_date": "2026-08-19",
     "logged_at": "2026-08-19",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -261,7 +261,7 @@
     "tip_id": "2026-08-19_moneyline_2",
     "game_date": "2026-08-19",
     "logged_at": "2026-08-19",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   }
 ]
