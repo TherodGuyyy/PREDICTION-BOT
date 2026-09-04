@@ -14,9 +14,15 @@ BALLDONTLIE_API_KEY = os.getenv("BALLDONTLIE_API_KEY", "PASTE_YOUR_KEY_HERE")
 BALLDONTLIE_BASE_URL = "https://api.balldontlie.io/v1"
 BALLDONTLIE_WNBA_BASE_URL = "https://api.balldontlie.io/wnba/v1"  # WNBA-specific endpoints
 
-# --- OddsPapi (free tier — WNBA odds) ---
-# Sign up free at https://oddspapi.io/signup (no card needed), copy your
-# API key from your account page, paste it here (or set as env var).
+# --- TheRundown (free tier — WNBA + tennis odds) ---
+# Sign up free at https://therundown.io/api (no card needed), grab your key
+# from the account dashboard, and set it as a GitHub Actions repo secret
+# named THERUNDOWN_API_KEY (Settings -> Secrets and variables -> Actions).
+# Replaces OddsPapi as of the odds-provider swap — see README for why.
+THERUNDOWN_API_KEY = os.getenv("THERUNDOWN_API_KEY", "PASTE_YOUR_KEY_HERE")
+
+# --- OddsPapi (OLD — kept only so this file doesn't break if something
+# still imports it; no longer used by odds_fetcher.py / tennis_odds_fetcher.py) ---
 ODDSPAPI_API_KEY = os.getenv("ODDSPAPI_API_KEY", "PASTE_YOUR_KEY_HERE")
 
 # --- Telegram ---
