@@ -116,6 +116,59 @@ def get_player_recent_matches(player_name, tour, num_matches=15):
     return normalized[:num_matches]
 
 
+_tournament_surface_cache = {}  # lowercased tourney_name -> surface
+
+
+def get_tournament_surface(tournament_name):
+    """
+    Looks up the real court surface for a tournament by name, using
+    Sackmann's own data (which includes tourney_name + surface per match)
+    rather than trusting OddsPapi to provide a surface field — it doesn't
+    (confirmed live: OddsPapi tennis fixtures have no surface/courtSurface/
+    surfaceType key at all, ever, so the old "check a few field names then
+    default to Hard" logic was silently defaulting to Hard on EVERY single
+    match, including clay and grass ones, which is why the surface-specific
+    signal (the most heavily-weighted factor in the model) was never
+    actually working despite no visible errors).
+
+    Returns the surface string (e.g. 'Hard', 'Clay', 'Grass') or None if no
+    tournament name in Sackmann's current/previous-year data matches —
+    callers should treat None as "couldn't determine, fall back honestly"
+    rather than silently guessing.
+    """
+    if not tournament_name:
+        return None
+
+    if not _tournament_surface_cache:
+        current_year = datetime.date.today().year
+        for tour in ("atp", "wta"):
+            for year in (current_year, current_year - 1):
+                for row in _fetch_matches_csv(tour, year):
+                    name = (row.get("tourney_name") or "").strip()
+                    surface = (row.get("surface") or "").strip()
+                    if name and surface:
+                        key = name.lower()
+                        # keep the first (most recent, since current_year is
+                        # tried first) surface seen for a given tourney name
+                        if key not in _tournament_surface_cache:
+                            _tournament_surface_cache[key] = surface
+
+    target = tournament_name.strip().lower()
+
+    # exact match first
+    if target in _tournament_surface_cache:
+        return _tournament_surface_cache[target]
+
+    # fuzzy fallback — OddsPapi's tournament naming (e.g. "US Open") and
+    # Sackmann's (e.g. "Us Open") can differ in formatting/qualifiers
+    # ("... Qualifying", city name inclusion, etc.)
+    for name, surface in _tournament_surface_cache.items():
+        if name in target or target in name:
+            return surface
+
+    return None
+
+
 def _surface_matches(match_surface, target_surface):
     """
     Loose surface comparison — the match data (Sackmann) and the live

@@ -23,7 +23,7 @@ from odds_fetcher import (
     get_match_odds, get_totals_odds, debug_fixture_status,
     get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
 )
-from tennis_stats_fetcher import player_form_summary
+from tennis_stats_fetcher import player_form_summary, get_tournament_surface
 from tennis_analysis import find_tennis_value_tip
 from tennis_odds_fetcher import (
     get_match_odds as get_tennis_match_odds,
@@ -205,17 +205,22 @@ def run_tennis(today, all_tips):
         player_b = fixture["participant2Name"]
 
         try:
-            # NOTE: it's not confirmed whether OddsPapi's fixture objects
-            # reliably include a surface field for tennis (couldn't verify
-            # this live while building). Checking a few plausible field
-            # names defensively; if none are present, this is flagged loudly
-            # rather than silently guessing "Hard" and quietly breaking the
-            # surface-specific analysis you asked for.
-            surface = fixture.get("surface") or fixture.get("courtSurface") or fixture.get("surfaceType")
+            # CONFIRMED live: OddsPapi's tennis fixtures never include a
+            # surface/courtSurface/surfaceType field, so we derive the real
+            # surface from Sackmann's own data instead, by looking up the
+            # fixture's tournamentName. This was silently defaulting to
+            # "Hard" on every single match before — including clay and grass
+            # tournaments — which quietly broke the surface-specific signal
+            # (the most heavily-weighted factor in the model) without ever
+            # throwing a visible error.
+            surface = (
+                fixture.get("surface") or fixture.get("courtSurface") or fixture.get("surfaceType")
+                or get_tournament_surface(fixture.get("tournamentName"))
+            )
             if not surface:
-                print(f"  WARNING: no surface field found on this fixture (checked 'surface', "
-                      f"'courtSurface', 'surfaceType') — defaulting to Hard, but this needs a real "
-                      f"fix. Raw fixture keys: {list(fixture.keys())}")
+                print(f"  WARNING: couldn't determine surface for tournament "
+                      f"'{fixture.get('tournamentName')}' from any source (OddsPapi fixture fields "
+                      f"or Sackmann tournament-name lookup) — defaulting to Hard for this match only.")
                 surface = "Hard"
 
             print(f"Analyzing: {player_a} vs {player_b} ({surface})")
