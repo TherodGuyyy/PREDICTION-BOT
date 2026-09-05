@@ -71,14 +71,58 @@ MARKET_TEAM_TOTAL = 94
 _sports_cache = None  # raw /sports response, fetched once and reused
 
 
+class RundownAuthError(RuntimeError):
+    """
+    Raised specifically when TheRundown rejects the API key (401/403), or
+    when the key was never configured in the first place. Deliberately a
+    distinct exception type (not a generic HTTPError) so this can never
+    be confused with a rate limit, a 404, or a network blip — auth
+    failures need a completely different fix than those do, and main.py's
+    per-fixture error handling shouldn't retry or shrug this one off.
+    """
+    pass
+
+
+def _describe_key_for_diagnostics(key):
+    """
+    Never prints the full key (it's a secret), but gives enough to tell
+    at a glance whether the right key is even being loaded — this is
+    exactly the kind of thing that turns a 5-minute fix into a 5-hour one
+    if you can't see it.
+    """
+    if not key:
+        return "EMPTY — the THERUNDOWN_API_KEY environment variable isn't set at all"
+    if key == "PASTE_YOUR_KEY_HERE":
+        return "the placeholder default value — THERUNDOWN_API_KEY was never actually set to your real key"
+    if len(key) <= 8:
+        return f"'{key}' (only {len(key)} characters — looks too short to be a real API key)"
+    return f"'{key[:4]}...{key[-4:]}' ({len(key)} characters)"
+
+
 def _get(path, params=None, retries=3):
     """
     GET against TheRundown, with the same three-failure-mode retry
     behavior the OddsPapi client used (429, 5xx, network-level errors) —
     that logic wasn't specific to OddsPapi, it's just sound practice for
     any free-tier API, so it's preserved here as-is.
+
+    401/403 responses are NOT retried (retrying a rejected key 3 times
+    just burns time for the same guaranteed failure) — instead they raise
+    RundownAuthError immediately, with a clear breakdown of what's most
+    likely wrong and what to check, rather than a generic "401
+    Unauthorized" with no next step.
     """
     global _last_request_time
+
+    if not THERUNDOWN_API_KEY or THERUNDOWN_API_KEY == "PASTE_YOUR_KEY_HERE":
+        raise RundownAuthError(
+            "THERUNDOWN_API_KEY is "
+            f"{_describe_key_for_diagnostics(THERUNDOWN_API_KEY)} — no request was even sent. "
+            "Fix: in your GitHub repo, go to Settings -> Secrets and variables -> Actions, and confirm "
+            "a secret named EXACTLY 'THERUNDOWN_API_KEY' exists with your real key from "
+            "https://therundown.io/api pasted as the value (no quotes, no extra spaces/newline)."
+        )
+
     params = dict(params or {})
     headers = {"X-TheRundown-Key": THERUNDOWN_API_KEY}
 
@@ -97,6 +141,22 @@ def _get(path, params=None, retries=3):
             raise
 
         _last_request_time = time.time()
+
+        if resp.status_code in (401, 403):
+            raise RundownAuthError(
+                f"TheRundown rejected the API key with a {resp.status_code} error on {path}. "
+                f"Key being used: {_describe_key_for_diagnostics(THERUNDOWN_API_KEY)}. "
+                "Most likely causes, in order of how often this actually turns out to be the problem: "
+                "(1) the GitHub Actions secret is named slightly differently than 'THERUNDOWN_API_KEY' "
+                "(check for a typo, extra space, or wrong case), "
+                "(2) the key was copied with a leading/trailing space or an extra quote character "
+                "when it was pasted into the secret, "
+                "(3) the key is real but hasn't finished activating on TheRundown's dashboard yet "
+                "(can take a few minutes after signup), "
+                "(4) the key was regenerated/revoked on TheRundown's dashboard since it was saved here. "
+                "Compare the secret's value in Settings -> Secrets and variables -> Actions against what's "
+                "shown in your TheRundown account dashboard right now, character for character."
+            )
 
         if resp.status_code in (429, 500, 502, 503, 504) and attempt < retries:
             time.sleep(2 * (attempt + 1))
