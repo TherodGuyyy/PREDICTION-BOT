@@ -27,6 +27,7 @@ from config import (
 # cached per run — one fetch per (tour, year) no matter how many players
 # we look up against it
 _matches_cache = {}
+_fetch_diagnostics_printed = set()  # (tour, year) pairs we've already logged this run
 
 
 def _fetch_matches_csv(tour, year):
@@ -34,23 +35,70 @@ def _fetch_matches_csv(tour, year):
     tour: 'atp' or 'wta'. year: int.
     Returns a list of dict rows (csv.DictReader output), or an empty list
     if that year's file doesn't exist yet (e.g. very early in a new year)
-    or the fetch fails for any reason — callers should treat an empty
-    list as "no data available", not crash.
+    or the fetch fails for any reason.
+
+    IMPORTANT: every failure mode below prints a ONE-LINE diagnostic
+    (once per tour/year per run, not once per player/match — this gets
+    called dozens of times a run, so it stays readable) explaining WHY
+    it came back empty. This function is the single shared root behind
+    BOTH the surface lookup (get_tournament_surface) and player form
+    (get_player_recent_matches/player_form_summary) — if this silently
+    returns [] for every call, you get two confusing-looking symptoms
+    at once (every surface defaulting to Hard, AND even famous players
+    with hundreds of real matches on record getting skipped as "not
+    enough data") that look unrelated but have one shared cause. Before
+    this fix, that cause was invisible; a 404, a network timeout, and a
+    genuinely-not-created-yet file all produced the exact same silent
+    empty list, indistinguishable from each other or from a real player
+    just not having played much.
     """
     cache_key = (tour, year)
     if cache_key in _matches_cache:
         return _matches_cache[cache_key]
+
+    def _log_once(message):
+        if cache_key not in _fetch_diagnostics_printed:
+            print(f"  [tennis data] {tour.upper()} {year}: {message}")
+            _fetch_diagnostics_printed.add(cache_key)
 
     url_template = ATP_MATCHES_URL if tour == "atp" else WTA_MATCHES_URL
     url = url_template.format(year=year)
 
     try:
         resp = requests.get(url, timeout=20)
-        resp.raise_for_status()
-        reader = csv.DictReader(io.StringIO(resp.text))
-        rows = list(reader)
-    except requests.RequestException:
+    except requests.RequestException as e:
+        _log_once(f"network error fetching {url} ({type(e).__name__}: {e}) — "
+                   f"treating as no data available this run.")
         rows = []
+        _matches_cache[cache_key] = rows
+        return rows
+
+    if resp.status_code == 404:
+        _log_once(f"got 404 (file doesn't exist) at {url} — expected/normal if {year} is the "
+                   f"current year and hasn't been created yet on Sackmann's repo, but NOT normal "
+                   f"for a past year.")
+        rows = []
+        _matches_cache[cache_key] = rows
+        return rows
+
+    if resp.status_code != 200:
+        _log_once(f"got HTTP {resp.status_code} fetching {url} — treating as no data available "
+                   f"this run.")
+        rows = []
+        _matches_cache[cache_key] = rows
+        return rows
+
+    reader = csv.DictReader(io.StringIO(resp.text))
+    rows = list(reader)
+
+    if not rows:
+        _log_once(f"got HTTP 200 from {url} but parsed ZERO rows from it — the file exists but "
+                   f"came back empty or in an unexpected format. Worth checking that URL directly "
+                   f"in a browser if this keeps happening.")
+    elif "tourney_name" not in rows[0]:
+        _log_once(f"got {len(rows)} row(s) from {url} but the expected 'tourney_name' column isn't "
+                   f"there — got these columns instead: {list(rows[0].keys())}. Sackmann's CSV "
+                   f"format may have changed.")
 
     _matches_cache[cache_key] = rows
     return rows
@@ -120,6 +168,7 @@ def get_player_recent_matches(player_name, tour, num_matches=15):
 
 
 _tournament_surface_cache = {}  # lowercased tourney_name -> surface
+_surface_cache_build_logged = False
 
 
 def get_tournament_surface(tournament_name):
@@ -139,6 +188,7 @@ def get_tournament_surface(tournament_name):
     callers should treat None as "couldn't determine, fall back honestly"
     rather than silently guessing.
     """
+    global _surface_cache_build_logged
     if not tournament_name:
         return None
 
@@ -156,6 +206,11 @@ def get_tournament_surface(tournament_name):
                         if key not in _tournament_surface_cache:
                             _tournament_surface_cache[key] = surface
 
+        if not _surface_cache_build_logged:
+            print(f"  [tennis data] tournament-surface lookup table built from Sackmann data: "
+                  f"{len(_tournament_surface_cache)} distinct tournament name(s) cached this run.")
+            _surface_cache_build_logged = True
+
     target = tournament_name.strip().lower()
 
     # exact match first
@@ -164,7 +219,11 @@ def get_tournament_surface(tournament_name):
 
     # fuzzy fallback — OddsPapi's tournament naming (e.g. "US Open") and
     # Sackmann's (e.g. "Us Open") can differ in formatting/qualifiers
-    # ("... Qualifying", city name inclusion, etc.)
+    # ("... Qualifying", city name inclusion, etc.). TheRundown's naming
+    # in particular can be a long descriptive string like "US Open -
+    # Round 3 - Arthur Ashe Stadium: Player A at Player B - <timestamp>"
+    # rather than a clean tournament name, so this checks substring
+    # containment BOTH ways.
     for name, surface in _tournament_surface_cache.items():
         if name in target or target in name:
             return surface

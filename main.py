@@ -12,7 +12,7 @@ combined pool — so a big tennis day can't crowd out WNBA tips or vice versa.
 import datetime
 from config import (
     WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, SPORT_LABEL, TENNIS_MAX_MATCHES_PER_RUN,
-    ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS,
+    ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS, TENNIS_MIN_MATCHES_FOR_ANALYSIS,
 )
 from stats_fetcher import get_todays_games, team_form_summary, get_head_to_head_record
 from analysis import (
@@ -23,7 +23,9 @@ from odds_fetcher import (
     get_match_odds, get_totals_odds, debug_fixture_status,
     get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
 )
-from tennis_stats_fetcher import player_form_summary, get_tournament_surface, get_head_to_head
+from tennis_stats_fetcher import (
+    player_form_summary, get_tournament_surface, get_head_to_head, get_player_recent_matches,
+)
 from tennis_analysis import find_tennis_value_tip
 from tennis_odds_fetcher import (
     get_match_odds as get_tennis_match_odds,
@@ -237,7 +239,14 @@ def run_tennis(today, all_tips):
             b_form = player_form_summary(player_b, tour, surface)
 
             if not a_form or not b_form:
-                print("  Skipping — not enough recent match data for one or both players.")
+                a_count = len(get_player_recent_matches(player_a, tour))
+                b_count = len(get_player_recent_matches(player_b, tour))
+                print(f"  Skipping — not enough recent match data "
+                      f"({player_a}: {a_count} found, {player_b}: {b_count} found; "
+                      f"need {TENNIS_MIN_MATCHES_FOR_ANALYSIS}+). If either count is 0 for a "
+                      f"well-known player, that's a sign the Sackmann data fetch itself is failing "
+                      f"this run, not that the player lacks data — check the '[tennis data]' lines "
+                      f"printed above for the actual reason.")
                 continue
 
             stale_days = max(a_form["most_recent_match_days_ago"], b_form["most_recent_match_days_ago"])
