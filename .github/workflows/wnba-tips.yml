@@ -1,5 +1,5 @@
 name: WNBA Tips Bot
-
+ 
 on:
   schedule:
     # Runs at 14:00 UTC daily (adjust if you want a different time —
@@ -8,33 +8,34 @@ on:
     # 14:00 UTC = 15:00 in Lagos.
     - cron: "0 14 * * *"
   workflow_dispatch: {}   # lets you manually trigger a run from the Actions tab, for testing
-
+ 
 permissions:
   contents: write   # needed so the workflow can commit tips_log.json back to the repo
-
+ 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
-
+ 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
+ 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
+ 
       - name: Run the bot
         env:
           BALLDONTLIE_API_KEY: ${{ secrets.BALLDONTLIE_API_KEY }}
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
           ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python main.py
-
+ 
       # tips_log.json is how tip_tracker.py builds a track record of
       # predicted vs. actual results over time (see tip_tracker.py's
       # docstring). GitHub Actions runners are ephemeral — nothing
@@ -49,3 +50,4 @@ jobs:
           git add tips_log.json
           git diff --cached --quiet || git commit -m "Update tips log [skip ci]"
           git push || true
+ 
