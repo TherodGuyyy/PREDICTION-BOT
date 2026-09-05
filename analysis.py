@@ -81,6 +81,36 @@ def _h2h_score_component(h2h):
     return (h2h["team_a_win_pct"] - 0.5) * H2H_WEIGHT
 
 
+def _predicted_margin(home_form, away_form):
+    """
+    Predicted point margin (home - away) for THIS specific matchup.
+
+    Prefers the pace-adjusted estimate — the same offense/defense-rating,
+    pace-normalized calculation predicted_scores() already uses for the
+    totals model — over the raw historical win_pct/point-diff comparison,
+    whenever both teams have usable pace data. Two teams with identical
+    win% and point-diff averages can still be genuinely different once
+    you account for pace and opponent-adjusted scoring/defensive rating;
+    predicted_scores() already computes exactly that, but the moneyline
+    model was never using it — this was a real gap, not a design choice.
+
+    Falls back to the raw avg_point_diff comparison when pace data isn't
+    available for one or both teams (get_team_pace() can return None —
+    see its docstring), same fallback predicted_scores() itself uses.
+
+    Deliberately does NOT include predicted_scores()'s own fatigue
+    penalty — days-rest is already its own signal here via
+    _rest_score_component, so folding it in a second time here would
+    double-count it.
+    """
+    home_pace = home_form.get("pace")
+    away_pace = away_form.get("pace")
+    if home_pace and away_pace:
+        home_score, away_score = _predicted_scores_pace_based(home_form, away_form)
+        return home_score - away_score
+    return home_form["avg_point_diff"] - away_form["avg_point_diff"]
+
+
 def estimate_win_probability(home_form, away_form, h2h=None):
     """
     home_form / away_form: dicts from stats_fetcher.team_form_summary()
@@ -88,16 +118,17 @@ def estimate_win_probability(home_form, away_form, h2h=None):
          away_id) — pass None if unavailable or under the minimum sample.
     Returns (prob_home_wins, prob_away_wins) — two floats that sum to 1.0.
     """
-    # Difference in recent win% and point differential, weighted.
-    # These weights are a reasonable starting point, not tuned on real
-    # results yet — worth revisiting once you have a few weeks of tips
-    # logged against actual outcomes.
+    # Difference in recent win%, and predicted point margin (pace-
+    # adjusted when available — see _predicted_margin's docstring for
+    # why this matters). These weights are a reasonable starting point,
+    # not tuned on real results yet — worth revisiting once you have a
+    # few weeks of tips logged against actual outcomes.
     win_pct_diff = home_form["win_pct"] - away_form["win_pct"]
-    point_diff_diff = home_form["avg_point_diff"] - away_form["avg_point_diff"]
+    margin = _predicted_margin(home_form, away_form)
 
     score = (
         (win_pct_diff * 1.2)
-        + (point_diff_diff * 0.03)
+        + (margin * 0.03)
         + HOME_ADVANTAGE
         + _rest_score_component(home_form, away_form)
         + _h2h_score_component(h2h)

@@ -119,6 +119,17 @@ TENNIS_MAX_MATCHES_PER_RUN = 25  # safety cap — a Grand Slam first round can
                           # request quota fast. If there are more live
                           # matches than this cap, the bot analyzes the
                           # first N found rather than trying everything.
+TENNIS_H2H_MIN_MATCHUPS = 2  # need at least this many past meetings between
+                          # the two players on record before head-to-head is
+                          # trusted as a signal — one past meeting is a
+                          # coin-flip, not a pattern, same small-sample
+                          # protection philosophy as everything else here
+TENNIS_H2H_YEARS_BACK = 5  # how many years back (from the current year) to
+                          # search Sackmann's archives for meetings between
+                          # this specific pair of players. 5 years balances
+                          # catching genuine rivalries against fetching a
+                          # pile of years' worth of data for players who've
+                          # simply never met
 
 # --- Sport (for when we add more leagues later, this keeps things labeled) ---
 SPORT_LABEL = "WNBA"

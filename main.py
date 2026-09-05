@@ -23,7 +23,7 @@ from odds_fetcher import (
     get_match_odds, get_totals_odds, debug_fixture_status,
     get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
 )
-from tennis_stats_fetcher import player_form_summary, get_tournament_surface
+from tennis_stats_fetcher import player_form_summary, get_tournament_surface, get_head_to_head
 from tennis_analysis import find_tennis_value_tip
 from tennis_odds_fetcher import (
     get_match_odds as get_tennis_match_odds,
@@ -225,10 +225,16 @@ def run_tennis(today, all_tips):
 
             print(f"Analyzing: {player_a} vs {player_b} ({surface})")
 
-            # we don't know which tour (ATP/WTA) a fixture belongs to from
-            # OddsPapi directly, so try ATP first, then WTA, for stats lookup
-            a_form = player_form_summary(player_a, "atp", surface) or player_form_summary(player_a, "wta", surface)
-            b_form = player_form_summary(player_b, "atp", surface) or player_form_summary(player_b, "wta", surface)
+            # TheRundown tells us which tour (ATP/WTA) this fixture is on
+            # directly (fixture["tour"], set by tennis_odds_fetcher.py's
+            # event-to-fixture adapter) — OddsPapi never told us this, so
+            # the old code had to guess by trying ATP then WTA for every
+            # single player lookup. Using the known tour is both faster
+            # (half the stats lookups) and more correct (no risk of a
+            # same-named ATP/WTA player mismatch, however rare).
+            tour = fixture.get("tour", "atp")
+            a_form = player_form_summary(player_a, tour, surface)
+            b_form = player_form_summary(player_b, tour, surface)
 
             if not a_form or not b_form:
                 print("  Skipping — not enough recent match data for one or both players.")
@@ -245,9 +251,15 @@ def run_tennis(today, all_tips):
                 print(f"  Couldn't find/match odds — {reason}")
                 continue
 
+            h2h = get_head_to_head(player_a, player_b, tour)
+            if h2h:
+                print(f"  Head-to-head: {player_a} leads/trails at "
+                      f"{h2h['player_a_win_pct']:.0%} across {h2h['matchups_found']} past meeting(s).")
+
             tip = find_tennis_value_tip(
                 player_a, player_b, a_form, b_form,
                 odds.get("player_a_odds"), odds.get("player_b_odds"),
+                h2h=h2h,
             )
             if tip:
                 print(f"  TENNIS TIP: {tip['player']} @ {tip['odds']} (edge {tip['edge']})")

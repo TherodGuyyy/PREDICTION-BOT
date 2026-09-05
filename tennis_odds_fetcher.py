@@ -28,13 +28,23 @@ production, same as odds_fetcher.py.
 import datetime
 import rundown_client as rc
 
-_tour_sport_ids = {}  # "atp" / "wta" -> sport_id
+# CONFIRMED directly from TheRundown's own changelog (docs.therundown.io/
+# changelog): "Added ATP Tennis (sport ID 38) and WTA Tennis (sport ID 39)
+# as first-class leagues." Using these fixed IDs instead of name-matching
+# against /sports — live testing showed TheRundown's actual sport_name
+# field for tennis doesn't literally contain the string "ATP Tennis" the
+# way find_sport_id() was searching for (the WNBA lookup worked fine
+# since "WNBA" is short and exact; tennis's real name field is phrased
+# differently). Rather than guess at the real phrasing, these two IDs are
+# authoritative straight from TheRundown's own release notes.
+_TOUR_SPORT_IDS = {"atp": 38, "wta": 39}
+_tour_sport_ids = {}  # "atp" / "wta" -> sport_id (kept as a cache/override point)
 _fixtures_cache = {}  # date_str -> list of fixture-shaped dicts
 
 
 def _get_tour_sport_id(tour):
     if tour not in _tour_sport_ids:
-        _tour_sport_ids[tour] = rc.find_sport_id(f"{tour.upper()} Tennis")
+        _tour_sport_ids[tour] = _TOUR_SPORT_IDS[tour]
     return _tour_sport_ids[tour]
 
 

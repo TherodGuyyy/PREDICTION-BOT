@@ -19,7 +19,10 @@ import csv
 import io
 import datetime
 import requests
-from config import ATP_MATCHES_URL, WTA_MATCHES_URL, TENNIS_MIN_MATCHES_FOR_ANALYSIS, TENNIS_SURFACE_MIN_MATCHES
+from config import (
+    ATP_MATCHES_URL, WTA_MATCHES_URL, TENNIS_MIN_MATCHES_FOR_ANALYSIS,
+    TENNIS_SURFACE_MIN_MATCHES, TENNIS_H2H_MIN_MATCHUPS, TENNIS_H2H_YEARS_BACK,
+)
 
 # cached per run — one fetch per (tour, year) no matter how many players
 # we look up against it
@@ -235,6 +238,40 @@ def player_form_summary(player_name, tour, surface):
         "surface_win_pct": surface_win_pct,
         "surface_sample_size": surface_sample_size,
         "most_recent_match_days_ago": most_recent_match_days_ago,
+    }
+
+
+def get_head_to_head(player_a_name, player_b_name, tour):
+    """
+    Scans Sackmann's match archives for this tour — current year back
+    through TENNIS_H2H_YEARS_BACK years — for direct meetings between
+    these two named players.
+
+    Returns None if fewer than TENNIS_H2H_MIN_MATCHUPS meetings are on
+    record (one past meeting is a coin-flip, not a pattern — same
+    small-sample protection as the surface/overall form checks above).
+    Otherwise returns {"matchups_found": int, "player_a_win_pct": float}.
+    """
+    current_year = datetime.date.today().year
+    meetings_total = 0
+    meetings_a_won = 0
+
+    for year in range(current_year, current_year - TENNIS_H2H_YEARS_BACK, -1):
+        for row in _fetch_matches_csv(tour, year):
+            winner = row.get("winner_name", "")
+            loser = row.get("loser_name", "")
+            if _names_match(winner, player_a_name) and _names_match(loser, player_b_name):
+                meetings_total += 1
+                meetings_a_won += 1
+            elif _names_match(winner, player_b_name) and _names_match(loser, player_a_name):
+                meetings_total += 1
+
+    if meetings_total < TENNIS_H2H_MIN_MATCHUPS:
+        return None
+
+    return {
+        "matchups_found": meetings_total,
+        "player_a_win_pct": meetings_a_won / meetings_total,
     }
 
 
