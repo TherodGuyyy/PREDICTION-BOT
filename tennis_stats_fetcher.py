@@ -258,7 +258,7 @@ def _surface_matches(match_surface, target_surface):
     return a == b or a in b or b in a
 
 
-def player_form_summary(player_name, tour, surface):
+def player_form_summary(player_name, tour, surface, matches=None):
     """
     Returns a form summary for this player, or None if there isn't enough
     recent match data to trust (protects against small-sample noise, same
@@ -266,8 +266,19 @@ def player_form_summary(player_name, tour, surface):
 
     surface: the surface of the UPCOMING match we're analyzing (e.g.
     'Hard', 'Clay', 'Grass') — used to pull out surface-specific form.
+
+    matches: optional pre-fetched list of normalized match dicts (same
+    shape get_player_recent_matches returns, most-recent-first). Pass
+    this when the caller wants to supply a MERGED source (e.g. Sackmann's
+    archive combined with this bot's own self-built results archive —
+    see tennis_archiver.get_merged_recent_matches) rather than relying on
+    Sackmann alone, which is confirmed to be unreliable at times (can lag
+    over a year, or intermittently fail entirely from certain network
+    contexts — see tennis_stats_fetcher.py's fetch diagnostics). If not
+    given, falls back to the original Sackmann-only behavior.
     """
-    matches = get_player_recent_matches(player_name, tour)
+    if matches is None:
+        matches = get_player_recent_matches(player_name, tour)
     if len(matches) < TENNIS_MIN_MATCHES_FOR_ANALYSIS:
         return None
 

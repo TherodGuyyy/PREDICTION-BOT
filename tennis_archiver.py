@@ -32,7 +32,7 @@ import datetime
 
 import rundown_client as rc
 from tennis_odds_fetcher import _get_tennis_fixtures_for_date
-from tennis_stats_fetcher import get_tournament_surface
+from tennis_stats_fetcher import get_tournament_surface, get_player_recent_matches
 from tennis_rankings import get_current_rank
 from telegram_sender import send_alert
 
@@ -117,6 +117,79 @@ def _determine_winner(fixture):
         _winner_diagnostic_logged_this_run = True
 
     return None
+
+
+def _archived_match_to_normalized(match, player_name):
+    """
+    Converts one archive entry into the SAME shape
+    tennis_stats_fetcher.get_player_recent_matches() produces, from the
+    given player's perspective, so the two sources can be merged and
+    treated identically by player_form_summary().
+    """
+    is_a = _names_match(match["player_a"], player_name)
+    won = (match["winner"] == "player_a") if is_a else (match["winner"] == "player_b")
+    opponent = match["player_b"] if is_a else match["player_a"]
+    player_rank = match["player_a_rank"] if is_a else match["player_b_rank"]
+    opponent_rank = match["player_b_rank"] if is_a else match["player_a_rank"]
+
+    return {
+        "date": datetime.date.fromisoformat(match["date"]),
+        "surface": match["surface"],
+        "won": won,
+        "player_rank": player_rank,
+        "opponent_name": opponent,
+        "opponent_rank": opponent_rank,
+    }
+
+
+def _names_match(a, b):
+    a, b = (a or "").lower(), (b or "").lower()
+    return a in b or b in a
+
+
+def get_player_archived_matches(player_name):
+    """
+    Returns this player's matches from the self-built archive (NOT
+    Sackmann's), most-recent-first, in the same normalized shape
+    get_player_recent_matches() uses.
+    """
+    archive = _load_archive()
+    matches = [
+        _archived_match_to_normalized(m, player_name)
+        for m in archive["matches"]
+        if _names_match(m["player_a"], player_name) or _names_match(m["player_b"], player_name)
+    ]
+    matches.sort(key=lambda m: m["date"], reverse=True)
+    return matches
+
+
+def get_merged_recent_matches(player_name, tour, num_matches=15):
+    """
+    Combines Sackmann's archive (via tennis_stats_fetcher, which can lag
+    or intermittently fail — see its own diagnostics) with this bot's
+    self-built results archive (guaranteed current, but starts from
+    empty and grows over time), most-recent-first, deduplicated by
+    (date, opponent) so a match that somehow appears in both sources
+    isn't double-counted.
+
+    This is the RECOMMENDED way to get a player's match history now —
+    pass the result into tennis_stats_fetcher.player_form_summary(...,
+    matches=this_result) instead of letting it call Sackmann alone.
+    """
+    sackmann_matches = get_player_recent_matches(player_name, tour, num_matches=num_matches)
+    own_matches = get_player_archived_matches(player_name)
+
+    seen = set()
+    merged = []
+    for m in sackmann_matches + own_matches:
+        key = (m["date"], m["opponent_name"].lower() if m["opponent_name"] else None)
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(m)
+
+    merged.sort(key=lambda m: m["date"], reverse=True)
+    return merged[:num_matches]
 
 
 def record_completed_matches():

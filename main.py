@@ -24,8 +24,9 @@ from odds_fetcher import (
     get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
 )
 from tennis_stats_fetcher import (
-    player_form_summary, get_tournament_surface, get_head_to_head, get_player_recent_matches,
+    player_form_summary, get_tournament_surface, get_head_to_head,
 )
+from tennis_rankings import get_current_rank
 from tennis_analysis import find_tennis_value_tip
 from tennis_odds_fetcher import (
     get_match_odds as get_tennis_match_odds,
@@ -236,18 +237,37 @@ def run_tennis(today, all_tips):
             # (half the stats lookups) and more correct (no risk of a
             # same-named ATP/WTA player mismatch, however rare).
             tour = fixture.get("tour", "atp")
-            a_form = player_form_summary(player_a, tour, surface)
-            b_form = player_form_summary(player_b, tour, surface)
+            # merges Sackmann's archive (can lag or intermittently fail —
+            # see tennis_stats_fetcher.py's fetch diagnostics) with this
+            # bot's own self-built results archive (guaranteed current,
+            # starts empty and grows over time) — see
+            # tennis_archiver.get_merged_recent_matches for why this is
+            # now the primary path rather than Sackmann alone
+            a_matches = tennis_archiver.get_merged_recent_matches(player_a, tour)
+            b_matches = tennis_archiver.get_merged_recent_matches(player_b, tour)
+            a_form = player_form_summary(player_a, tour, surface, matches=a_matches)
+            b_form = player_form_summary(player_b, tour, surface, matches=b_matches)
+
+            # Wikipedia's rankings are updated weekly and current right
+            # now, regardless of how old the underlying match data is —
+            # prefer that over a rank pulled from a possibly year-old
+            # match, falling back to the match-derived rank if Wikipedia
+            # is unavailable this run
+            if a_form:
+                a_form["current_rank"] = get_current_rank(player_a, tour) or a_form["current_rank"]
+            if b_form:
+                b_form["current_rank"] = get_current_rank(player_b, tour) or b_form["current_rank"]
 
             if not a_form or not b_form:
-                a_count = len(get_player_recent_matches(player_a, tour))
-                b_count = len(get_player_recent_matches(player_b, tour))
+                a_count = len(a_matches)
+                b_count = len(b_matches)
                 print(f"  Skipping — not enough recent match data "
                       f"({player_a}: {a_count} found, {player_b}: {b_count} found; "
-                      f"need {TENNIS_MIN_MATCHES_FOR_ANALYSIS}+). If either count is 0 for a "
-                      f"well-known player, that's a sign the Sackmann data fetch itself is failing "
-                      f"this run, not that the player lacks data — check the '[tennis data]' lines "
-                      f"printed above for the actual reason.")
+                      f"need {TENNIS_MIN_MATCHES_FOR_ANALYSIS}+ from Sackmann + the self-built archive "
+                      f"combined). If both counts are 0 for a well-known player, that's still worth "
+                      f"checking the '[tennis data]' lines above — but a nonzero count that's just "
+                      f"under the threshold is now more likely genuine (the self-built archive starts "
+                      f"empty and grows slowly, a few matches at a time).")
                 continue
 
             stale_days = max(a_form["most_recent_match_days_ago"], b_form["most_recent_match_days_ago"])
