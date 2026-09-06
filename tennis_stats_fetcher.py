@@ -22,6 +22,7 @@ import requests
 from config import (
     ATP_MATCHES_URL, WTA_MATCHES_URL, TENNIS_MIN_MATCHES_FOR_ANALYSIS,
     TENNIS_SURFACE_MIN_MATCHES, TENNIS_H2H_MIN_MATCHUPS, TENNIS_H2H_YEARS_BACK,
+    TENNIS_DATA_LOOKBACK_YEARS,
 )
 
 # cached per run — one fetch per (tour, year) no matter how many players
@@ -119,26 +120,35 @@ def _parse_tourney_date(date_str):
 
 def get_player_recent_matches(player_name, tour, num_matches=15):
     """
-    Returns this player's most recent matches (current year, falling back
-    to also including last year's file if the current year alone doesn't
-    have enough), most recent first. Each entry is normalized to:
+    Returns this player's most recent matches, most recent first, pulled
+    starting from the current year's file and walking backward through up
+    to TENNIS_DATA_LOOKBACK_YEARS previous years, stopping as soon as
+    enough matches are found.
+
+    Each entry is normalized to:
     {"date": date, "surface": str, "won": bool, "player_rank": int|None,
      "opponent_name": str, "opponent_rank": int|None}
+
+    NOTE: walking back further than just "last year" is deliberate —
+    confirmed live that Sackmann's repo can lag by MORE than a full year
+    (neither the current year's nor the previous year's file existed yet
+    in one real run, while the year before that did). This fixes "no
+    data found at all" for a real player with a real history; it does
+    NOT make old data look current — see player_form_summary's
+    most_recent_match_days_ago, which main.py uses to refuse acting on
+    data that's actually stale, regardless of how many years back this
+    had to look to find it.
     """
     current_year = datetime.date.today().year
-    all_rows = _fetch_matches_csv(tour, current_year)
+    matches = []
 
-    # if the current year doesn't have enough of this player's matches yet
-    # (e.g. very early in the season), also pull last year's file so we're
-    # not starving the model of data in January/February
-    matches = [r for r in all_rows if _names_match(r.get("winner_name", ""), player_name)
-               or _names_match(r.get("loser_name", ""), player_name)]
-
-    if len(matches) < num_matches:
-        prev_rows = _fetch_matches_csv(tour, current_year - 1)
-        prev_matches = [r for r in prev_rows if _names_match(r.get("winner_name", ""), player_name)
+    for year in range(current_year, current_year - TENNIS_DATA_LOOKBACK_YEARS, -1):
+        rows = _fetch_matches_csv(tour, year)
+        year_matches = [r for r in rows if _names_match(r.get("winner_name", ""), player_name)
                          or _names_match(r.get("loser_name", ""), player_name)]
-        matches = matches + prev_matches
+        matches.extend(year_matches)
+        if len(matches) >= num_matches:
+            break
 
     normalized = []
     for r in matches:
@@ -195,7 +205,7 @@ def get_tournament_surface(tournament_name):
     if not _tournament_surface_cache:
         current_year = datetime.date.today().year
         for tour in ("atp", "wta"):
-            for year in (current_year, current_year - 1):
+            for year in range(current_year, current_year - TENNIS_DATA_LOOKBACK_YEARS, -1):
                 for row in _fetch_matches_csv(tour, year):
                     name = (row.get("tourney_name") or "").strip()
                     surface = (row.get("surface") or "").strip()

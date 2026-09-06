@@ -34,6 +34,15 @@ from bs4 import BeautifulSoup
 
 RANKINGS_URL = "https://en.wikipedia.org/api/rest_v1/page/html/Current_tennis_rankings"
 
+# Wikimedia's API blocks requests with no identifying User-Agent (or a
+# generic default one) with a 403 — confirmed live. Their etiquette
+# policy asks for a descriptive header identifying the client and a
+# contact point; this is the fix, not a workaround for something we did
+# wrong.
+_REQUEST_HEADERS = {
+    "User-Agent": "PredictionBotTennisRankings/1.0 (personal project; free-tier tennis tips bot)"
+}
+
 _rankings_cache = {}  # "atp" / "wta" -> {player_name_lower: rank_int}
 
 # a table caption/heading counts as the singles-rankings table for a tour
@@ -137,7 +146,7 @@ def _fetch_rankings(tour):
     tour_label = "ATP" if tour == "atp" else "WTA"
 
     try:
-        resp = requests.get(RANKINGS_URL, timeout=20)
+        resp = requests.get(RANKINGS_URL, headers=_REQUEST_HEADERS, timeout=20)
         resp.raise_for_status()
     except requests.RequestException as e:
         print(f"  [tennis rankings] network error fetching Wikipedia rankings ({type(e).__name__}: {e}) "

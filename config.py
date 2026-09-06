@@ -130,6 +130,23 @@ TENNIS_H2H_YEARS_BACK = 5  # how many years back (from the current year) to
                           # catching genuine rivalries against fetching a
                           # pile of years' worth of data for players who've
                           # simply never met
+TENNIS_DATA_LOOKBACK_YEARS = 5  # how many years back to walk when looking
+                          # for ANY usable match/surface data for a player
+                          # or tournament, if the current year's file isn't
+                          # there yet. CONFIRMED LIVE (Sept 2026): assuming
+                          # "current year, or worst case last year" was a
+                          # real, false assumption — Sackmann's repo can lag
+                          # by MORE than one full year (neither 2025 nor
+                          # 2026 existed yet when this was checked, while
+                          # 2024 did). This won't make stale data look
+                          # fresh — main.py's separate staleness check
+                          # (skip if most recent match on record is >21
+                          # days old) still correctly refuses to treat
+                          # last-known-form as current form. It just means
+                          # "no data at all" (a code-side failure) and
+                          # "data exists but it's genuinely old" (an
+                          # external data-lag problem) are no longer
+                          # indistinguishable from each other.
 
 # --- Sport (for when we add more leagues later, this keeps things labeled) ---
 SPORT_LABEL = "WNBA"
