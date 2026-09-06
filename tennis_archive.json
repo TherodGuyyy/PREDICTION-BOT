@@ -119,6 +119,16 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "04ba6aa9c9988afd1b946cde7f6cfb32",
+      "date": "2026-09-05",
+      "player_a": "Naomi Osaka",
+      "player_b": "Elise Mertens",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 13,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": false
