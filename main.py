@@ -34,6 +34,7 @@ from tennis_odds_fetcher import (
 )
 from telegram_sender import send_tips
 from tip_tracker import log_tips, grade_pending_tips
+import tennis_archiver
 
 
 def run_wnba(today, all_tips):
@@ -294,6 +295,15 @@ def run():
         grade_pending_tips()
     except Exception as e:
         print(f"[Grading] Skipped due to error (won't block today's run): {e}")
+
+    # silently build the self-maintained tennis results archive (see
+    # tennis_archiver.py) — runs quietly every time, sends a Telegram
+    # alert on its own once the 10-players-with-5+-matches milestone is
+    # reached, and never blocks today's tips if something goes wrong
+    try:
+        tennis_archiver.record_completed_matches()
+    except Exception as e:
+        print(f"[Tennis archive] Skipped due to error (won't block today's run): {e}")
 
     wnba_tips = []
     tennis_tips = []

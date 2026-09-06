@@ -104,6 +104,33 @@ def _tip_label(tip):
     return tip["team"]
 
 
+def send_alert(message):
+    """
+    Sends a plain, one-off alert message — for things that aren't a tip
+    (send_tips is specifically shaped for tip dicts). Used by
+    tennis_archiver.py's milestone notification. Same fail-safe behavior
+    as send_tips: falls back to a plain-text retry if Markdown formatting
+    causes the send to fail, rather than silently dropping the alert.
+    """
+    try:
+        resp = requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            data={"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"},
+            timeout=15,
+        )
+        if not resp.ok:
+            print(f"  Telegram alert send failed: {resp.status_code} {resp.text}. Retrying as plain text...")
+            plain_resp = requests.post(
+                f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+                data={"chat_id": TELEGRAM_CHAT_ID, "text": message},
+                timeout=15,
+            )
+            if not plain_resp.ok:
+                print(f"  Plain-text alert retry ALSO failed: {plain_resp.status_code} {plain_resp.text}")
+    except requests.RequestException as e:
+        print(f"  Telegram alert send error: {e}")
+
+
 def send_tips(tips, game_date):
     if not tips:
         return
