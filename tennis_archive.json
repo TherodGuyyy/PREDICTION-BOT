@@ -1929,7 +1929,427 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "d26c50645bf884ba14e6099b9039716e",
+      "date": "2026-09-13",
+      "player_a": "Alexander Zverev",
+      "player_b": "Ben Shelton",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 2,
+      "player_b_rank": 4
+    },
+    {
+      "fixture_id": "d1de2032060d0e691b55215f69bfdb55",
+      "date": "2026-09-13",
+      "player_a": "Tessa Johanna Brockmann",
+      "player_b": "Aran Teixido Garcia",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a6d76223fc3613ea9c0d48fcff73a4b6",
+      "date": "2026-09-13",
+      "player_a": "Dalila Spiteri",
+      "player_b": "Mell Reasco Gonzalez",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "2736e672859bcd3330382e2915160f08",
+      "date": "2026-09-13",
+      "player_a": "Carole Monnet",
+      "player_b": "Katrina Scott",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "af961eea0f14be5d2f26f25b794c7cdf",
+      "date": "2026-09-13",
+      "player_a": "Nadiia Kichenok",
+      "player_b": "Nao Hibino",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "b9dfddf1ccd1baf89c672b03c8b9a62f",
+      "date": "2026-09-13",
+      "player_a": "Sara Sorribes Tormo",
+      "player_b": "Caroline Dolehide",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f6bb28a069e1bb1ad5975e54c03851da",
+      "date": "2026-09-13",
+      "player_a": "Justina Mikulskyte",
+      "player_b": "Chloe Paquet",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e4ec9719465eb4f648573f7e8a3b31bc",
+      "date": "2026-09-13",
+      "player_a": "You Xiaodi",
+      "player_b": "Victoria Bosio",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "4e6c207c1a2736da8479657643284b1b",
+      "date": "2026-09-13",
+      "player_a": "Peyton Stearns",
+      "player_b": "Emiliana Arango",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "7f5c316bdd79bdd0b6ea4b0ac7863cb7",
+      "date": "2026-09-13",
+      "player_a": "Alycia Parks",
+      "player_b": "Varvara Lepchenko",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a5e75c800f33687938915e8294e8709d",
+      "date": "2026-09-13",
+      "player_a": "Whitney Osuigwe",
+      "player_b": "Anastasia Tikhonova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f104664454f298358347f5a9abae2fc0",
+      "date": "2026-09-13",
+      "player_a": "Hayu Kinoshita",
+      "player_b": "Cadence Brace",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "aca1689773de386a5bc0c446e5bf7127",
+      "date": "2026-09-13",
+      "player_a": "Panna Udvardy",
+      "player_b": "Lois Boisson",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "3d3cc5ca6986b89fa694f191ef9c1273",
+      "date": "2026-09-13",
+      "player_a": "Darja Vidmanova",
+      "player_b": "Janice Tjen",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1ecb5ccf464ce9658579bd1be74189b3",
+      "date": "2026-09-13",
+      "player_a": "Cristina Bucsa",
+      "player_b": "Bianca Andreescu",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "47c25c35b9ba1eab4924404e76e32204",
+      "date": "2026-09-13",
+      "player_a": "Martina Colmegna",
+      "player_b": "Gabriella Price",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a8e3b0d2672dc5db50b91e2057ea20b1",
+      "date": "2026-09-13",
+      "player_a": "Radka Zelnickova",
+      "player_b": "Kaja Najzer",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e1d84086f691eb9dbcdcfe2fa92a7eb0",
+      "date": "2026-09-13",
+      "player_a": "Lea Boskovic",
+      "player_b": "Raluka Serban",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "08ebced10fcf179c1528e814ff03df9d",
+      "date": "2026-09-13",
+      "player_a": "Ruth Roura Llaverias",
+      "player_b": "Madison Sieg",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "6cc8ab7fd7fb70e977ac7c6e3dad3260",
+      "date": "2026-09-13",
+      "player_a": "Nastasja Schunk",
+      "player_b": "Dalila Jakupovic",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9e7c8a254bceff08c45bc8dfaf0e7de2",
+      "date": "2026-09-13",
+      "player_a": "Elena Malygina",
+      "player_b": "Gabriella Da Silva Fick",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "bcb1abb29ef952c16cff195898f85b2f",
+      "date": "2026-09-13",
+      "player_a": "Angelina Voloshchuk",
+      "player_b": "Ariana Arseneault",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "72933ffa892828fdcc325b3d2feaa8eb",
+      "date": "2026-09-13",
+      "player_a": "Polona Hercog",
+      "player_b": "Julie Struplova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "287e86ba6a4dcb3ffee77a9ee4f6a63c",
+      "date": "2026-09-13",
+      "player_a": "Lola Radivojevic",
+      "player_b": "Noemi Basiletti",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "8e4e58a38b41fb1f013967e312326fe3",
+      "date": "2026-09-13",
+      "player_a": "Aran Teixido Garcia",
+      "player_b": "Diletta Cherubini",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "d1ee386bec813828418378f726b724d4",
+      "date": "2026-09-13",
+      "player_a": "Sofia Johnson",
+      "player_b": "Malaika Rapolu",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "df8fde096dca4e8c640ecb181535fa4f",
+      "date": "2026-09-13",
+      "player_a": "Reese Brantmeier",
+      "player_b": "Kylie Collins",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "2be4de21d69116e25059875d8fb091b0",
+      "date": "2026-09-13",
+      "player_a": "Joelle Lilly Sophie Steur",
+      "player_b": "Dalila Spiteri",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f2861072716739aa4dcfd855f803b909",
+      "date": "2026-09-13",
+      "player_a": "Barbora Palicova",
+      "player_b": "Gina Feistel",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "59731b97c9ea099880a41f038307a4c7",
+      "date": "2026-09-13",
+      "player_a": "Deborah Chiesa",
+      "player_b": "Lucija Ciric Bagaric",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e86f333454eddc2e71b9c0061cff1992",
+      "date": "2026-09-13",
+      "player_a": "Arantxa Rus",
+      "player_b": "Samira De Stefano",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e6946d304a7dad179e0f7b64d3e1f2ea",
+      "date": "2026-09-13",
+      "player_a": "Katarzyna Kawa",
+      "player_b": "Maria Garcia Cid",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "5c86bf4214e93ef5d82ed3667ac8f4b1",
+      "date": "2026-09-13",
+      "player_a": "Mariia Nozdrachova",
+      "player_b": "Kayla Cross",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9fbbd8308f40d048c1074dfc11d0a826",
+      "date": "2026-09-13",
+      "player_a": "Jeline Vandromme",
+      "player_b": "Carla Tomai",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f2629eedd89faac1a143aa9224dd3ded",
+      "date": "2026-09-13",
+      "player_a": "Miriam Bulgaru",
+      "player_b": "Lina Gjorcheska",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "eb09e48055673841c302f8f2df4900ac",
+      "date": "2026-09-13",
+      "player_a": "Sana Garakani",
+      "player_b": "Lisa Pigato",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "d4f25beab65bbf1a36dfc9664b7ab0e6",
+      "date": "2026-09-13",
+      "player_a": "Giorgia Pedone",
+      "player_b": "Denisa Zoldakova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e36eda292b974ec7692014ed0a7a75b5",
+      "date": "2026-09-13",
+      "player_a": "Andrea Lazaro Garcia",
+      "player_b": "Carlota Martinez Cirez",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "160f9454796b7c4a14a5a3a3cf86cd1b",
+      "date": "2026-09-13",
+      "player_a": "Nuria Brancaccio",
+      "player_b": "Despina Papamichail",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0122905a0e47923b1a15ae23efeb9703",
+      "date": "2026-09-13",
+      "player_a": "Erika Andreeva",
+      "player_b": "Viktoria Hruncakova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "060d0cf9935e3ffcab40586684bf7319",
+      "date": "2026-09-13",
+      "player_a": "Eva Bennemann",
+      "player_b": "Marina Bassols Ribera",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e88e35eaf48c71a21de34e9872155e72",
+      "date": "2026-09-13",
+      "player_a": "Francesca Curmi",
+      "player_b": "Veronika Erjavec",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
-  "milestone_alert_sent": false
+  "milestone_alert_sent": true
 }
