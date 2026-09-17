@@ -3229,6 +3229,56 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "3c7c5a88efddf9f3809598a39b979772",
+      "date": "2026-09-16",
+      "player_a": "Anouk Koevermans",
+      "player_b": "Gabriela Knutson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "b406d4d0ec23124205e422ec7e3bd695",
+      "date": "2026-09-16",
+      "player_a": "Anna Blinkova",
+      "player_b": "Vendula Valdmannova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "ec6f0674159792845adc310205c08dde",
+      "date": "2026-09-16",
+      "player_a": "Dominika Salkova",
+      "player_b": "Mary Stoiana",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f72807cb8c0c2f06ce0d531f053676f3",
+      "date": "2026-09-16",
+      "player_a": "Jazmin Ortenzi",
+      "player_b": "Paula Badosa",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "81c2315e0917b2c28c5db71f967ab9a2",
+      "date": "2026-09-16",
+      "player_a": "Cristina Bucsa",
+      "player_b": "Sara Bejlek",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
