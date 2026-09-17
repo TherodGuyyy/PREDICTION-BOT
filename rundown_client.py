@@ -20,6 +20,13 @@ slightly off, the diagnostic output is designed to make that obvious
 fast, the same way the old OddsPapi code flagged its own unverified
 sub-market guesses.
 
+ONE ASSUMPTION ALREADY CORRECTED FROM A LIVE RUN (2026-09-17): prices
+come back from TheRundown as AMERICAN odds (e.g. +300, -150), not
+decimal odds as originally assumed here. See _american_to_decimal()
+below for the fix and why it mattered — every price is converted to
+decimal at the point it's first read, so this is the only place that
+needed to change.
+
 Key documented facts this is built against:
   - Base URL: https://therundown.io/api/v2
   - Auth: header "X-TheRundown-Key: <key>" (or ?key=<key> as a fallback)
@@ -268,11 +275,46 @@ def team_names(event):
     return teams[0].get("name"), teams[1].get("name")
 
 
+def _american_to_decimal(american_odds):
+    """
+    CORRECTED 2026-09-17: this module's original docstring called
+    TheRundown's price field a "decimal price" and flagged that as
+    unverified against a live response. A live run confirmed that
+    assumption was wrong — TheRundown actually returns American
+    moneyline odds (e.g. +300, -150), not decimal. Left unconverted,
+    this broke two things downstream: displayed odds showed raw
+    American numbers instead of decimal, and analysis.py's
+    implied_probability() (which does 1/odds, correct only for decimal)
+    produced wildly wrong implied probabilities — e.g. +300 was read as
+    a 0.33% implied chance instead of the correct ~25%, which could let
+    a genuinely bad tip look like a huge "edge" and pass the filter.
+
+    Converting once, right here where prices first enter the pipeline,
+    means every caller (odds_fetcher.py, tennis_odds_fetcher.py,
+    analysis.py, telegram_sender.py) sees real decimal odds without
+    needing its own conversion logic.
+
+    Standard American-to-decimal formulas:
+      positive (underdog, e.g. +300): decimal = 1 + (american / 100)
+      negative (favorite, e.g. -150): decimal = 1 + (100 / abs(american))
+    """
+    if american_odds is None:
+        return None
+    if american_odds > 0:
+        return round(1 + (american_odds / 100), 4)
+    if american_odds < 0:
+        return round(1 + (100 / abs(american_odds)), 4)
+    return None  # 0 isn't a valid American price — treat like missing
+
+
 def iter_market_prices(event, market_id, period_id=None):
     """
     Yields (participant_name, line_value, price) for every price row in
     `event` matching market_id (and period_id, if given). Skips off-
-    board prices (the 0.0001 sentinel) automatically.
+    board prices (the 0.0001 sentinel) automatically. `price` is always
+    DECIMAL odds — raw prices come back from TheRundown as American
+    odds and are converted here, once, before anything downstream ever
+    sees them (see _american_to_decimal's docstring for why).
     """
     for market in event.get("markets", []):
         if market.get("market_id") != market_id:
@@ -288,7 +330,10 @@ def iter_market_prices(event, market_id, period_id=None):
                     price = price_obj.get("price") if isinstance(price_obj, dict) else price_obj
                     if price is None or price == OFF_BOARD_SENTINEL:
                         continue
-                    yield name, value, price
+                    decimal_price = _american_to_decimal(price)
+                    if decimal_price is None:
+                        continue
+                    yield name, value, decimal_price
 
 
 def best_price_per_participant(event, market_id, period_id=None):
