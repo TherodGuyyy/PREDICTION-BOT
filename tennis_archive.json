@@ -3279,6 +3279,146 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "93d3f617904edbac2a8386468dffbe56",
+      "date": "2026-09-17",
+      "player_a": "Magdalena Frech",
+      "player_b": "Iva Jovic",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": 16
+    },
+    {
+      "fixture_id": "2deb594b5a59681d50325a48c9032ec0",
+      "date": "2026-09-17",
+      "player_a": "Eva Lys",
+      "player_b": "Nadia Podoroska",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a0928096138fb3b4d5490c1a11d1e45e",
+      "date": "2026-09-17",
+      "player_a": "Marta Kostyuk",
+      "player_b": "Liudmila Samsonova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 10,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "6e3cf8913fc3b089615230bd302a7ae6",
+      "date": "2026-09-17",
+      "player_a": "Peyton Stearns",
+      "player_b": "Sloane Stephens",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "16a1b18961599e299e02acdff46bf692",
+      "date": "2026-09-17",
+      "player_a": "Noemi Basiletti",
+      "player_b": "Ekaterine Gorgodze",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "7e09da5ca45e63ff8a7808b96c5abb0b",
+      "date": "2026-09-17",
+      "player_a": "Mona Barthel",
+      "player_b": "Mia Ristic",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "962b068fd018a2297527ade930226c54",
+      "date": "2026-09-17",
+      "player_a": "Anastasiia Sobolieva",
+      "player_b": "Laura Samson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1ecbfc37bd672291065518349c651ead",
+      "date": "2026-09-17",
+      "player_a": "Samira De Stefano",
+      "player_b": "Alice Tubello",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "960e02440e1808be72443ea209f1d450",
+      "date": "2026-09-17",
+      "player_a": "Clara Burel",
+      "player_b": "Guiomar Maristany Zuleta De Reales",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "fceeb7fb01232b9bb0cf24a27066a317",
+      "date": "2026-09-17",
+      "player_a": "Mia Pohankova",
+      "player_b": "Kylie Collins",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "3a4ee9fe72446c18ecd39eca007d3d1e",
+      "date": "2026-09-17",
+      "player_a": "Malaika Rapolu",
+      "player_b": "Gabriela Knutson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "aa2926861ca59c6df02f925bfc6e16ff",
+      "date": "2026-09-17",
+      "player_a": "Jeline Vandromme",
+      "player_b": "Francisca Jorge",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "3ad467a583ce1b9d1737792a8b2e709e",
+      "date": "2026-09-17",
+      "player_a": "Yasmine Kabbaj",
+      "player_b": "Despina Papamichail",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "aa95773e809f56b268c60628534050dd",
+      "date": "2026-09-17",
+      "player_a": "Irene Burillo",
+      "player_b": "Alicia Herrero Linana",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true

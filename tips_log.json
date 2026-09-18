@@ -353,5 +353,20 @@
     "logged_at": "2026-09-17",
     "status": "pending",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "New York Liberty",
+    "opponent": "Minnesota Lynx",
+    "side": "away",
+    "odds": 3.0,
+    "our_estimated_prob": 0.49,
+    "market_implied_prob": 0.333,
+    "edge": 0.156,
+    "tip_id": "2026-09-18_moneyline_0",
+    "game_date": "2026-09-18",
+    "logged_at": "2026-09-18",
+    "status": "pending",
+    "actual_result": null
   }
 ]
