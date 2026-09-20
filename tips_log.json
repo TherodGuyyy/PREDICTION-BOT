@@ -368,5 +368,20 @@
     "logged_at": "2026-09-18",
     "status": "won",
     "actual_result": "93-81"
+  },
+  {
+    "type": "moneyline",
+    "team": "Indiana Fever",
+    "opponent": "Washington Mystics",
+    "side": "home",
+    "odds": 1.4167,
+    "our_estimated_prob": 0.809,
+    "market_implied_prob": 0.706,
+    "edge": 0.103,
+    "tip_id": "2026-09-20_moneyline_0",
+    "game_date": "2026-09-20",
+    "logged_at": "2026-09-20",
+    "status": "pending",
+    "actual_result": null
   }
 ]
