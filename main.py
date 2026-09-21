@@ -11,8 +11,9 @@ combined pool — so a big tennis day can't crowd out WNBA tips or vice versa.
 
 import datetime
 from config import (
-    WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, SPORT_LABEL, TENNIS_MAX_MATCHES_PER_RUN,
-    ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS, TENNIS_MIN_MATCHES_FOR_ANALYSIS,
+    WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, NCAAB_MAX_TIPS_PER_DAY, SPORT_LABEL,
+    TENNIS_MAX_MATCHES_PER_RUN, ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS,
+    TENNIS_MIN_MATCHES_FOR_ANALYSIS,
 )
 from stats_fetcher import get_todays_games, team_form_summary, get_head_to_head_record
 from analysis import (
@@ -22,6 +23,19 @@ from analysis import (
 from odds_fetcher import (
     get_match_odds, get_totals_odds, debug_fixture_status,
     get_team_totals_odds, get_first_half_totals_odds, get_quarter_totals_odds,
+)
+# NCAAB — aliased since it mirrors the WNBA imports above (same function
+# names, different sport). See ncaab_stats_fetcher.py / ncaab_odds_fetcher.py
+# for why this is ESPN + TheRundown rather than balldontlie + TheRundown.
+from ncaab_stats_fetcher import (
+    get_todays_games as get_ncaab_todays_games,
+    team_form_summary as ncaab_team_form_summary,
+    get_head_to_head_record as get_ncaab_head_to_head_record,
+)
+from ncaab_odds_fetcher import (
+    get_match_odds as get_ncaab_match_odds,
+    get_totals_odds as get_ncaab_totals_odds,
+    debug_fixture_status as ncaab_debug_fixture_status,
 )
 from tennis_stats_fetcher import (
     player_form_summary, get_tournament_surface, get_head_to_head,
@@ -179,6 +193,96 @@ def run_wnba(today, all_tips):
             continue
 
 
+def run_ncaab(today, all_tips):
+    """
+    Moneyline + full-game totals only for this first pass — deliberately
+    NOT wired up to team/half/quarter totals yet, even though
+    ncaab_odds_fetcher.py already has those functions for interface
+    parity with WNBA. Reasoning: NCAAB's stats/odds pipeline (ESPN +
+    TheRundown NCAAB sport lookup) hasn't been verified against a single
+    live game yet, since the season doesn't start until Nov 1, 2026.
+    Get the two main markets proven correct first; add the sub-markets
+    once there's a real night of games to check them against, same
+    "verify the core, then expand" approach used for WNBA originally.
+    Until the season starts, get_ncaab_todays_games() returning empty
+    is the expected, correct behavior — not a bug.
+    """
+    print(f"\n[NCAAB] Checking games for {today}...")
+
+    games = get_ncaab_todays_games()
+    if not games:
+        print("No NCAAB games today.")
+        return
+
+    try:
+        game_date = datetime.date.fromisoformat(today)
+    except ValueError:
+        game_date = datetime.date.today()
+
+    for game in games:
+        home = game["home_team"]
+        away = game["visitor_team"]
+        print(f"Analyzing: {away['full_name']} @ {home['full_name']}")
+
+        try:
+            home_form = ncaab_team_form_summary(home["id"], as_of_date=game_date)
+            away_form = ncaab_team_form_summary(away["id"], as_of_date=game_date)
+
+            if not home_form or not away_form:
+                print("  Skipping — not enough recent-game data yet.")
+                continue
+
+            print(f"  Form — {home['full_name']}: {home_form['win_pct']:.2f} win%, "
+                  f"{away['full_name']}: {away_form['win_pct']:.2f} win% "
+                  f"| pace: unavailable (not built for NCAAB yet — see ncaab_stats_fetcher.py)")
+
+            h2h = None
+            try:
+                h2h = get_ncaab_head_to_head_record(home["id"], away["id"])
+                if h2h:
+                    print(f"  Head-to-head: {home['full_name']} won "
+                          f"{h2h['team_a_win_pct']*100:.0f}% of last {h2h['matchups_found']} meetings.")
+            except Exception as e:
+                print(f"  Couldn't fetch head-to-head record (continuing without it): {e}")
+
+            odds = get_ncaab_match_odds(home["full_name"], away["full_name"], today)
+            if odds:
+                tip = find_value_tip(
+                    game, home_form, away_form,
+                    odds.get("home_odds"), odds.get("away_odds"),
+                    h2h=h2h,
+                )
+                if tip:
+                    print(f"  MONEYLINE TIP: {tip['team']} @ {tip['odds']} (edge {tip['edge']})")
+                    all_tips.append(tip)
+                else:
+                    print("  Moneyline: no value found on either side.")
+            else:
+                reason = ncaab_debug_fixture_status(home["full_name"], away["full_name"], today)
+                print(f"  Moneyline: couldn't find/match odds — {reason}")
+
+            totals_odds = get_ncaab_totals_odds(home["full_name"], away["full_name"], today)
+            if totals_odds:
+                predicted = predicted_total(home_form, away_form)
+                totals_tip = find_totals_value_tip(game, predicted, totals_odds)
+                if totals_tip:
+                    print(
+                        f"  TOTALS TIP: {totals_tip['side']} {totals_tip['line']} "
+                        f"@ {totals_tip['odds']} (edge {totals_tip['edge']}, "
+                        f"our predicted total: {round(predicted, 1)})"
+                    )
+                    all_tips.append(totals_tip)
+                else:
+                    print(f"  Totals: no value found (our predicted total: {round(predicted, 1)}).")
+            else:
+                reason = ncaab_debug_fixture_status(home["full_name"], away["full_name"], today)
+                print(f"  Totals: no totals odds available — {reason}")
+
+        except Exception as e:
+            print(f"  ERROR analyzing this game, skipping it: {e}")
+            continue
+
+
 def run_tennis(today, all_tips):
     print(f"\n[TENNIS] Checking matches for {today}...")
 
@@ -327,8 +431,10 @@ def run():
 
     wnba_tips = []
     tennis_tips = []
+    ncaab_tips = []
 
     run_wnba(today, wnba_tips)
+    run_ncaab(today, ncaab_tips)  # no-ops (prints "No NCAAB games today") until Nov 1, 2026 — expected
     run_tennis(today, tennis_tips)
 
     # rank each sport's tips by edge and cap SEPARATELY — a busy tennis
@@ -336,13 +442,15 @@ def run():
     # independent pools now, not one shared cap
     wnba_tips.sort(key=lambda t: t["edge"], reverse=True)
     tennis_tips.sort(key=lambda t: t["edge"], reverse=True)
+    ncaab_tips.sort(key=lambda t: t["edge"], reverse=True)
 
     final_wnba_tips = wnba_tips[:WNBA_MAX_TIPS_PER_DAY]
     final_tennis_tips = tennis_tips[:TENNIS_MAX_TIPS_PER_DAY]
-    final_tips = final_wnba_tips + final_tennis_tips
+    final_ncaab_tips = ncaab_tips[:NCAAB_MAX_TIPS_PER_DAY]
+    final_tips = final_wnba_tips + final_tennis_tips + final_ncaab_tips
 
     print(f"\nSending {len(final_tips)} tip(s) to Telegram "
-          f"({len(final_wnba_tips)} WNBA, {len(final_tennis_tips)} tennis)...")
+          f"({len(final_wnba_tips)} WNBA, {len(final_tennis_tips)} tennis, {len(final_ncaab_tips)} NCAAB)...")
     send_tips(final_tips, today)
 
     # log only the WNBA tips that actually went out, so future runs can

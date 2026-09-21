@@ -180,7 +180,7 @@ def _get_all_sports():
     return _sports_cache
 
 
-def find_sport_id(name_contains):
+def find_sport_id(name_contains, must_also_contain=None):
     """
     Looks up a sport's numeric ID by matching `name_contains` (case-
     insensitive) against whatever name field the /sports response uses.
@@ -189,6 +189,15 @@ def find_sport_id(name_contains):
     names for both the list container and each entry's id/name fields,
     and raises a loud, specific error (including the raw first entry)
     if nothing matches, rather than silently returning a wrong ID.
+
+    must_also_contain: optional list of additional substrings that ALSO
+    have to appear in the name for a match to count. Added because a
+    single substring isn't always enough to pick the right sport —
+    e.g. "NCAA" alone matches BOTH "NCAA Football" and "NCAA Men's
+    Basketball" in TheRundown's list, and since this loop returns on
+    the FIRST match, "NCAA Football" (a lower sport_id, so it comes
+    first) would silently win if basketball is what was actually
+    wanted. Pass must_also_contain=["basketball"] to require both.
     """
     data = _get_all_sports()
 
@@ -202,15 +211,17 @@ def find_sport_id(name_contains):
         )
 
     target = name_contains.lower()
+    extra = [s.lower() for s in (must_also_contain or [])]
     for entry in entries:
         name = (entry.get("name") or entry.get("sport_name") or "").lower()
-        if target in name:
+        if target in name and all(s in name for s in extra):
             sport_id = entry.get("id") or entry.get("sport_id")
             if sport_id is not None:
                 return sport_id
 
     raise RuntimeError(
-        f"Couldn't find a sport matching '{name_contains}' in TheRundown's /sports list. "
+        f"Couldn't find a sport matching '{name_contains}'"
+        f"{f' (also requiring {extra})' if extra else ''} in TheRundown's /sports list. "
         f"First entry for reference (check field names against this): "
         f"{entries[0] if entries else 'EMPTY LIST'}"
     )
