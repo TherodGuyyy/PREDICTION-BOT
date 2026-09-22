@@ -20,13 +20,13 @@ jobs:
  
       - name: Run WNBA odds diagnostics
         env:
-          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
         run: python odds_fetcher.py
         continue-on-error: true
  
       - name: Run tennis odds diagnostics
         env:
-          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
         run: python tennis_odds_fetcher.py
         continue-on-error: true
  
@@ -43,3 +43,4 @@ jobs:
           THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
         run: python ncaab_odds_fetcher.py
         continue-on-error: true
+ 
