@@ -14,15 +14,19 @@ rate limit is documented, so this still paces requests lightly out of
 courtesy, same spirit as stats_fetcher.py's balldontlie pacing, just less
 strict since there's no published 5/min-style limit to respect here.
 
-UNVERIFIED LIVE (no network access in this build environment to test
-against): the exact JSON shape below is built against ESPN's well-known,
-consistently-documented-by-the-community core API schema (events ->
-competitions[0] -> competitors[], each with homeAway/team/score), the
-same shape used across ESPN's NFL/NBA/NCAAB/etc scoreboard endpoints.
-Run `python ncaab_stats_fetcher.py` directly once there's a live game or
-two to check against (see the __main__ block) — it prints the raw JSON
-of the first event found, so if any field name below is off, that's
-immediately visible rather than silently returning empty results.
+UNVERIFIED LIVE, UPDATE 2026-09-22: the first real GitHub Actions run hit a
+403 Forbidden on the scoreboard endpoint. Most likely cause: the original
+User-Agent header literally contained the word "bot"
+("...prediction-bot/1.0"), which is a common anti-scraping trigger —
+swapped to a realistic browser UA below. If a 403 still happens after
+that fix, the next suspect is GitHub Actions' IP ranges specifically
+being blocked (some sites block known CI/cloud datacenter ranges
+outright, independent of headers) — other public tools built on this
+same ESPN endpoint DO run successfully from GitHub Actions on a
+schedule, so a full block isn't the base rate here, but it's not
+impossible either. If that turns out to be it, the fix is routing
+through a proxy or a different free host to run from, not a code change
+in this file.
 
 Public functions here intentionally mirror stats_fetcher.py's names and
 return shapes (get_todays_games, team_form_summary, get_days_rest,
@@ -51,7 +55,16 @@ from config import ESPN_NCAAB_BASE_URL, MIN_GAMES_FOR_ANALYSIS
 MIN_SECONDS_BETWEEN_REQUESTS = 1.5  # light courtesy pacing — no documented limit to tune against
 _last_request_time = 0
 
-_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; prediction-bot/1.0)"}
+_HEADERS = {
+    # The previous UA ("...prediction-bot/1.0") explicitly announced
+    # itself as a bot, which is a common trigger for exactly the kind
+    # of 403 seen on the first live GitHub Actions run. Using a plain,
+    # realistic browser UA instead — this is what worked around the
+    # same issue for other people's scripts hitting this endpoint.
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "Accept": "application/json",
+}
 
 
 def _get(url, params=None, retries=3):

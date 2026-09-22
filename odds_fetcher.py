@@ -245,7 +245,21 @@ if __name__ == "__main__":
         away, home = rc.team_names(events[0])
         if home and away:
             print(f"\nPulling odds for: {away} @ {home}")
-            print("Moneyline:", get_match_odds(home, away, today))
+            ml = get_match_odds(home, away, today)
+            print("Moneyline:", ml)
+            if ml:
+                # Sanity check for the American->decimal fix: decimal
+                # odds should be in the ~1.01-15ish range, and implied
+                # probabilities should be reasonable percentages that
+                # sum to a BIT over 100% (the sportsbook's vig) — NOT
+                # near-zero like the bug produced (e.g. 0.3%).
+                from analysis import implied_probability
+                if ml.get("home_odds"):
+                    print(f"    -> {home} implied probability: {implied_probability(ml['home_odds']) * 100:.1f}%")
+                if ml.get("away_odds"):
+                    print(f"    -> {away} implied probability: {implied_probability(ml['away_odds']) * 100:.1f}%")
+                print("    (sanity check: these two %s should be reasonable numbers that sum to "
+                      "a bit OVER 100%% — not near 0%%, and not each near 100%%)")
             print("Totals:", get_totals_odds(home, away, today))
             print("First-half totals:", get_first_half_totals_odds(home, away, today))
             print("1st-quarter totals:", get_quarter_totals_odds(home, away, today, quarter_num=1))
