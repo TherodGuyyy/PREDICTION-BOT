@@ -242,7 +242,11 @@ if __name__ == "__main__":
             print(f"    NOTE: no 'markets' key/data on this event — raw keys: {list(ev.keys())}")
 
     if events:
-        away, home = rc.team_names(events[0])
+        # prefer an upcoming game for the odds test — a finished game
+        # correctly has no active market anymore, which isn't a useful
+        # thing to test odds-lookup against
+        target = next((ev for ev in events if not rc.event_is_finished(ev)), events[0])
+        away, home = rc.team_names(target)
         if home and away:
             print(f"\nPulling odds for: {away} @ {home}")
             ml = get_match_odds(home, away, today)
