@@ -276,7 +276,7 @@
     "tip_id": "2026-09-17_moneyline_0",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -291,7 +291,7 @@
     "tip_id": "2026-09-17_moneyline_1",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -306,7 +306,7 @@
     "tip_id": "2026-09-17_moneyline_2",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -321,7 +321,7 @@
     "tip_id": "2026-09-17_moneyline_3",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -336,7 +336,7 @@
     "tip_id": "2026-09-17_moneyline_0",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -351,7 +351,7 @@
     "tip_id": "2026-09-17_moneyline_1",
     "game_date": "2026-09-17",
     "logged_at": "2026-09-17",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -381,6 +381,21 @@
     "tip_id": "2026-09-20_moneyline_0",
     "game_date": "2026-09-20",
     "logged_at": "2026-09-20",
+    "status": "lost",
+    "actual_result": "77-93"
+  },
+  {
+    "type": "moneyline",
+    "team": "Indiana Fever",
+    "opponent": "Minnesota Lynx",
+    "side": "away",
+    "odds": 1.6061,
+    "our_estimated_prob": 0.666,
+    "market_implied_prob": 0.623,
+    "edge": 0.043,
+    "tip_id": "2026-09-24_moneyline_0",
+    "game_date": "2026-09-24",
+    "logged_at": "2026-09-24",
     "status": "pending",
     "actual_result": null
   }
