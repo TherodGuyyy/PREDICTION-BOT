@@ -35,6 +35,8 @@ jobs:
         continue-on-error: true
  
       - name: Run NCAAB stats diagnostics
+        env:
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
         run: python ncaab_stats_fetcher.py
         continue-on-error: true
  
