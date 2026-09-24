@@ -38,7 +38,7 @@ from ncaab_odds_fetcher import (
     debug_fixture_status as ncaab_debug_fixture_status,
 )
 from tennis_stats_fetcher import (
-    player_form_summary, get_tournament_surface, get_head_to_head,
+    player_form_summary, get_tournament_surface,
 )
 from tennis_rankings import get_current_rank
 from tennis_analysis import find_tennis_value_tip
@@ -385,7 +385,7 @@ def run_tennis(today, all_tips):
                 print(f"  Couldn't find/match odds — {reason}")
                 continue
 
-            h2h = get_head_to_head(player_a, player_b, tour)
+            h2h = tennis_archiver.get_merged_head_to_head(player_a, player_b, tour)
             if h2h:
                 print(f"  Head-to-head: {player_a} leads/trails at "
                       f"{h2h['player_a_win_pct']:.0%} across {h2h['matchups_found']} past meeting(s).")

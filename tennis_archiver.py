@@ -32,9 +32,10 @@ import datetime
 
 import rundown_client as rc
 from tennis_odds_fetcher import _get_tennis_fixtures_for_date
-from tennis_stats_fetcher import get_tournament_surface, get_player_recent_matches
+from tennis_stats_fetcher import get_tournament_surface, get_player_recent_matches, get_head_to_head
 from tennis_rankings import get_current_rank
 from telegram_sender import send_alert
+from config import TENNIS_H2H_MIN_MATCHUPS
 
 ARCHIVE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tennis_archive.json")
 
@@ -190,6 +191,52 @@ def get_merged_recent_matches(player_name, tour, num_matches=15):
 
     merged.sort(key=lambda m: m["date"], reverse=True)
     return merged[:num_matches]
+
+
+def get_merged_head_to_head(player_a, player_b, tour, num_matchups=5):
+    """
+    FIXES A REAL BUG found 2026-09-24: main.py's tennis section was
+    calling tennis_stats_fetcher.get_head_to_head() directly, which
+    ONLY reads Sackmann's CSVs — the same ones confirmed 404ing for
+    every year, including past ones (see tennis_stats_fetcher.py's own
+    diagnostics). That call was silently returning None for every
+    single tennis matchup, always. Not a blocker for tips (h2h is only
+    printed as supplementary info, never gates a tip either way), but
+    it meant head-to-head context has effectively never worked for
+    tennis. This is the fix — same merge concept as
+    get_merged_recent_matches, just for h2h specifically.
+
+    NOT a straight merge/sum with Sackmann's count: Sackmann's
+    get_head_to_head() returns an aggregate (meetings_total,
+    meetings_a_won) with no per-match IDs to de-duplicate against this
+    archive's own records. Summing the two could double-count a match
+    that exists in both once Sackmann's fetch is eventually fixed. So
+    this PREFERS the self-built archive when it already has enough
+    matchups on its own, and only falls back to Sackmann's result
+    otherwise — same "pick one source, don't blend" approach
+    get_head_to_head_record() uses for NCAAB.
+    """
+    archive = _load_archive()
+    matchups = [
+        m for m in archive["matches"]
+        if (_names_match(m["player_a"], player_a) and _names_match(m["player_b"], player_b))
+        or (_names_match(m["player_a"], player_b) and _names_match(m["player_b"], player_a))
+    ]
+
+    if len(matchups) >= TENNIS_H2H_MIN_MATCHUPS:
+        matchups.sort(key=lambda m: m["date"], reverse=True)
+        matchups = matchups[:num_matchups]
+        a_wins = sum(
+            1 for m in matchups
+            if (m["winner"] == "player_a") == _names_match(m["player_a"], player_a)
+        )
+        return {"matchups_found": len(matchups), "player_a_win_pct": a_wins / len(matchups)}
+
+    # not enough in the self-built archive yet — fall back to Sackmann,
+    # which will keep returning None until its own 404 issue is fixed,
+    # but this way the merged function is correct the moment either
+    # source has enough data, with no code changes needed later
+    return get_head_to_head(player_a, player_b, tour)
 
 
 def record_completed_matches():
