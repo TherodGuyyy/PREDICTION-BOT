@@ -398,5 +398,20 @@
     "logged_at": "2026-09-24",
     "status": "pending",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Indiana Fever",
+    "opponent": "Minnesota Lynx",
+    "side": "away",
+    "odds": 1.6061,
+    "our_estimated_prob": 0.666,
+    "market_implied_prob": 0.623,
+    "edge": 0.043,
+    "tip_id": "2026-09-24_moneyline_0",
+    "game_date": "2026-09-24",
+    "logged_at": "2026-09-24",
+    "status": "pending",
+    "actual_result": null
   }
 ]
