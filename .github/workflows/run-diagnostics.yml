@@ -30,6 +30,16 @@ jobs:
         run: python tennis_odds_fetcher.py
         continue-on-error: true
  
+      # read-only here — this workflow doesn't commit, so any matches
+      # found during this run won't be saved; this just shows current
+      # archive health (total matches, distinct players, and any
+      # "couldn't determine a winner" diagnostic dumps)
+      - name: Run tennis archiver diagnostics
+        env:
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
+        run: python tennis_archiver.py
+        continue-on-error: true
+ 
       - name: Run tennis stats diagnostics
         run: python tennis_stats_fetcher.py
         continue-on-error: true
