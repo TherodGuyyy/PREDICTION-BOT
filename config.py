@@ -151,15 +151,12 @@ TENNIS_DATA_LOOKBACK_YEARS = 5  # how many years back to walk when looking
 # --- Sport (for when we add more leagues later, this keeps things labeled) ---
 SPORT_LABEL = "WNBA"
 
-# --- NCAA Men's Basketball (free build — no balldontlie subscription) ---
-# balldontlie's FREE tier does NOT cover NCAAB games at all (confirmed against
-# their published tier table: Games requires at least ALL-STAR, $9.99/mo;
-# Team Stats and balldontlie's own native odds require GOAT, $39.99/mo).
-# Since this bot is being kept fully free, NCAAB stats/schedule come from
-# ESPN's public scoreboard API instead — no key, no signup, no cost. It's
-# UNOFFICIAL/undocumented (ESPN doesn't publish it), but it's the same
-# endpoint most free college-hoops tools and scripts run on, and has been
-# stable for years. Odds still come from TheRundown (same free tier, same
-# rundown_client.py, already covers "NCAA Men's Basketball" as sport_id 5).
-ESPN_NCAAB_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball"
+# --- NCAA Men's Basketball ---
+# balldontlie's FREE tier does NOT cover NCAAB games at all (confirmed
+# against their published tier table: Games requires at least ALL-STAR,
+# $9.99/mo; Team Stats requires GOAT, $39.99/mo). Since this bot is kept
+# fully free, NCAAB stats AND odds both come from TheRundown (same free
+# tier, same rundown_client.py as WNBA/tennis odds — see
+# ncaab_stats_fetcher.py's module docstring for why ESPN was tried first
+# and dropped: it 403'd from GitHub Actions specifically).
 NCAAB_MAX_TIPS_PER_DAY = 5  # own pool, same reasoning as WNBA/tennis caps above

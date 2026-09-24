@@ -257,6 +257,42 @@ def get_events_for_dates(sport_id, date_strs, market_ids="1,3,94", extra_params=
     return merged
 
 
+def team_ids(event):
+    """
+    Returns (away_id, home_id) using the same teams[0]=away/teams[1]=home
+    ordering as team_names(). Tries the most likely id field names
+    ("team_id", then "id") since this hasn't been verified live.
+    Returns (None, None) if unavailable.
+    """
+    teams = event.get("teams") or []
+    if len(teams) < 2:
+        return None, None
+    away, home = teams[0], teams[1]
+    return (
+        away.get("team_id", away.get("id")),
+        home.get("team_id", home.get("id")),
+    )
+
+
+def event_scores(event):
+    """
+    Returns (away_score, home_score) as ints, or (None, None) if the
+    event has no score yet (not started) or the shape doesn't match
+    what's expected. UNVERIFIED LIVE — tries the most likely field
+    names under event["score"] (score_away/score_home), falling back to
+    a couple of other plausible spellings before giving up.
+    """
+    score = event.get("score") or {}
+    for away_key, home_key in (("score_away", "score_home"), ("away_score", "home_score")):
+        away_raw, home_raw = score.get(away_key), score.get(home_key)
+        if away_raw is not None and home_raw is not None:
+            try:
+                return int(away_raw), int(home_raw)
+            except (TypeError, ValueError):
+                continue
+    return None, None
+
+
 def event_is_finished(event):
     """
     Best-effort finished-check. Field location for event status isn't
