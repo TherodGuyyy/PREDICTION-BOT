@@ -413,5 +413,35 @@
     "logged_at": "2026-09-24",
     "status": "pending",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "New York Liberty",
+    "opponent": "Minnesota Lynx",
+    "side": "away",
+    "odds": 3.2,
+    "our_estimated_prob": 0.549,
+    "market_implied_prob": 0.312,
+    "edge": 0.237,
+    "tip_id": "2026-09-26_moneyline_0",
+    "game_date": "2026-09-26",
+    "logged_at": "2026-09-26",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Las Vegas Aces",
+    "opponent": "Indiana Fever",
+    "side": "home",
+    "odds": 1.6494,
+    "our_estimated_prob": 0.824,
+    "market_implied_prob": 0.606,
+    "edge": 0.218,
+    "tip_id": "2026-09-26_moneyline_1",
+    "game_date": "2026-09-26",
+    "logged_at": "2026-09-26",
+    "status": "pending",
+    "actual_result": null
   }
 ]
