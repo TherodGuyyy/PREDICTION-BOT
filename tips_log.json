@@ -443,5 +443,35 @@
     "logged_at": "2026-09-26",
     "status": "pending",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Las Vegas Aces",
+    "opponent": "Indiana Fever",
+    "side": "home",
+    "odds": 1.5814,
+    "our_estimated_prob": 0.824,
+    "market_implied_prob": 0.632,
+    "edge": 0.192,
+    "tip_id": "2026-09-27_moneyline_0",
+    "game_date": "2026-09-27",
+    "logged_at": "2026-09-27",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Dallas Wings",
+    "opponent": "Golden State Valkyries",
+    "side": "away",
+    "odds": 3.4,
+    "our_estimated_prob": 0.339,
+    "market_implied_prob": 0.294,
+    "edge": 0.045,
+    "tip_id": "2026-09-27_moneyline_1",
+    "game_date": "2026-09-27",
+    "logged_at": "2026-09-27",
+    "status": "pending",
+    "actual_result": null
   }
 ]
