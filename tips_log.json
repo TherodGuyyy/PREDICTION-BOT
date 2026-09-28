@@ -456,8 +456,8 @@
     "tip_id": "2026-09-27_moneyline_0",
     "game_date": "2026-09-27",
     "logged_at": "2026-09-27",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "102-85"
   },
   {
     "type": "moneyline",
@@ -471,6 +471,21 @@
     "tip_id": "2026-09-27_moneyline_1",
     "game_date": "2026-09-27",
     "logged_at": "2026-09-27",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Las Vegas Aces",
+    "opponent": "Indiana Fever",
+    "side": "away",
+    "odds": 1.9524,
+    "our_estimated_prob": 0.887,
+    "market_implied_prob": 0.512,
+    "edge": 0.375,
+    "tip_id": "2026-09-28_moneyline_0",
+    "game_date": "2026-09-28",
+    "logged_at": "2026-09-28",
     "status": "pending",
     "actual_result": null
   }
