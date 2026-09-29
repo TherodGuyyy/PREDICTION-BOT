@@ -55,9 +55,25 @@ def _get_wnba_events_for_date(date_str):
     return events
 
 
+# balldontlie lists the 2026 expansion team's full_name as just its nickname
+# ("Tempo"), while TheRundown lists it as just the city ("Toronto") — no shared
+# substring, so plain fuzzy matching can never pair them. CONFIRMED FROM A LIVE
+# RUN 2026-09-24 (every Toronto game failed to match any odds). Add further
+# pairs here if another provider-naming mismatch ever shows up.
+_TEAM_NAME_ALIASES = {
+    "tempo": "toronto",
+}
+
+
 def _names_match(a, b):
     a, b = (a or "").lower(), (b or "").lower()
-    return a in b or b in a
+    if a in b or b in a:
+        return True
+    for x, y in ((a, b), (b, a)):
+        alias = _TEAM_NAME_ALIASES.get(x)
+        if alias and (alias in y or y in alias):
+            return True
+    return False
 
 
 def _find_event(home_team_name, away_team_name, date_str):

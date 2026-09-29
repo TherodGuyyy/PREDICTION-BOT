@@ -36,6 +36,12 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "PASTE_YOUR_CHAT_ID_HERE")
 MIN_ODDS = 1.40          # never post a tip below this
 WNBA_MAX_TIPS_PER_DAY = 5   # separate cap for WNBA (moneyline + totals combined)
 TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 8 total between the two
+# ACCURACY BEFORE EDGE (added 2026-09-28): edge alone rewards long shots — a
+# 4.0-odds pick the model rates at 30% vs the market's 25% has a "great" edge
+# but loses 70% of the time. These two gates make sure a tip is one the model
+# genuinely expects to WIN, and tips are ranked by win probability, not edge.
+MIN_WIN_PROB = 0.60      # our estimated win/hit probability must be at least this
+MAX_ODDS = 2.00          # never post a tip above this, however good the edge looks
 MIN_EDGE = 0.03          # only tip if our estimated fair probability beats the
                           # market-implied probability by at least this much (3%)
                           # — this is what keeps the bot from just tipping favorites
@@ -160,3 +166,16 @@ SPORT_LABEL = "WNBA"
 # ncaab_stats_fetcher.py's module docstring for why ESPN was tried first
 # and dropped: it 403'd from GitHub Actions specifically).
 NCAAB_MAX_TIPS_PER_DAY = 5  # own pool, same reasoning as WNBA/tennis caps above
+
+# --- Spanish ACB (Liga Endesa) ---
+# 18 teams, low volume (4-9 games/week) — this is a QUALITY leg source,
+# not a volume one (see rollover-grand-audit-bot-spec-v2.md). Built the
+# same way NCAAB ended up working: stats AND odds both from TheRundown
+# (rundown_client.py), since balldontlie doesn't cover European leagues
+# at all and this keeps everything on the same free, already-proven
+# provider. Exact sport-name spelling in TheRundown's /sports list is
+# unconfirmed — acb_odds_fetcher.py tries several candidates via
+# rundown_client.find_sport_id_trying() and fails loudly with the full
+# sports list if none match, same honesty pattern as everything else
+# touching TheRundown in this project.
+ACB_MAX_TIPS_PER_DAY = 3  # own pool — small league, expect fewer qualifying games/day than WNBA/NCAAB

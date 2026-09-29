@@ -180,6 +180,34 @@ def _get_all_sports():
     return _sports_cache
 
 
+def find_sport_id_trying(*candidates, must_also_contain=None):
+    """
+    Tries each candidate substring in order, returning the first match.
+    Useful when a sport's exact name in TheRundown's /sports list isn't
+    known ahead of time (e.g. ACB — could be listed as "ACB", "Liga
+    Endesa", "Liga ACB", or "Spanish Basketball", and there's no way to
+    know which without a live response). Raises a single combined error
+    listing every candidate tried, plus the full raw sports list, if
+    NONE of them match — the diagnostic __main__ blocks that call this
+    print that error directly, so a real "TheRundown doesn't carry this
+    league at all" finding is immediately visible rather than an
+    unhelpful generic failure.
+    """
+    errors = []
+    for candidate in candidates:
+        try:
+            return find_sport_id(candidate, must_also_contain=must_also_contain)
+        except RuntimeError as e:
+            errors.append(str(e))
+
+    data = _get_all_sports()
+    entries = data if isinstance(data, list) else data.get("sports", data.get("data", []))
+    raise RuntimeError(
+        f"None of {list(candidates)} matched any sport in TheRundown's /sports list "
+        f"(tried each individually — see below). Full raw sports list for reference: {entries}"
+    )
+
+
 def find_sport_id(name_contains, must_also_contain=None):
     """
     Looks up a sport's numeric ID by matching `name_contains` (case-
@@ -361,7 +389,12 @@ def iter_market_prices(event, market_id, period_id=None):
     board prices (the 0.0001 sentinel) automatically. `price` is always
     DECIMAL odds — raw prices come back from TheRundown as American
     odds and are converted here, once, before anything downstream ever
-    sees them (see _american_to_decimal's docstring for why).
+    sees them (see _american_to_decimal's docstring for why). `value`
+    (the total/spread line, e.g. 44.5) is always a float for the same
+    reason — CONFIRMED FROM A LIVE RUN 2026-09-24: TheRundown sends
+    this as a string on some events and a number on others, which
+    crashed sorted() downstream ('<=' not supported between instances
+    of 'int' and 'str') the moment a run's events mixed both types.
     """
     for market in event.get("markets", []):
         if market.get("market_id") != market_id:
@@ -372,7 +405,11 @@ def iter_market_prices(event, market_id, period_id=None):
         for participant in market.get("participants", []):
             name = participant.get("name")
             for line in participant.get("lines", []):
-                value = line.get("value")
+                raw_value = line.get("value")
+                try:
+                    value = float(raw_value) if raw_value is not None else None
+                except (TypeError, ValueError):
+                    value = None
                 for price_obj in (line.get("prices") or {}).values():
                     price = price_obj.get("price") if isinstance(price_obj, dict) else price_obj
                     if price is None or price == OFF_BOARD_SENTINEL:

@@ -13,6 +13,7 @@ not tuned on your actual results yet.
 
 import math
 from config import MIN_ODDS, MIN_EDGE, MAX_PLAUSIBLE_PROB
+from analysis import passes_accuracy_bar
 
 # how much each factor moves the estimate — surface weighted slightly
 # higher since that was specifically asked for, rank is the anchor
@@ -83,7 +84,7 @@ def find_tennis_value_tip(player_a_name, player_b_name, player_a_form, player_b_
 
     if player_a_odds and player_a_odds >= MIN_ODDS:
         edge = prob_a - implied_probability(player_a_odds)
-        if edge >= MIN_EDGE and prob_a <= MAX_PLAUSIBLE_PROB:
+        if edge >= MIN_EDGE and prob_a <= MAX_PLAUSIBLE_PROB and passes_accuracy_bar(prob_a, player_a_odds):
             candidates.append({
                 "type": "tennis",
                 "player": player_a_name,
@@ -96,7 +97,7 @@ def find_tennis_value_tip(player_a_name, player_b_name, player_a_form, player_b_
 
     if player_b_odds and player_b_odds >= MIN_ODDS:
         edge = prob_b - implied_probability(player_b_odds)
-        if edge >= MIN_EDGE and prob_b <= MAX_PLAUSIBLE_PROB:
+        if edge >= MIN_EDGE and prob_b <= MAX_PLAUSIBLE_PROB and passes_accuracy_bar(prob_b, player_b_odds):
             candidates.append({
                 "type": "tennis",
                 "player": player_b_name,
@@ -110,4 +111,4 @@ def find_tennis_value_tip(player_a_name, player_b_name, player_a_form, player_b_
     if not candidates:
         return None
 
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
