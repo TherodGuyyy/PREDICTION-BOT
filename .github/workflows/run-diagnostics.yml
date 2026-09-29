@@ -40,6 +40,18 @@ jobs:
         run: python tennis_archiver.py
         continue-on-error: true
  
+      - name: Run ACB stats diagnostics
+        env:
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
+        run: python acb_stats_fetcher.py
+        continue-on-error: true
+ 
+      - name: Run ACB odds diagnostics
+        env:
+          THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
+        run: python acb_odds_fetcher.py
+        continue-on-error: true
+ 
       - name: Run tennis stats diagnostics
         run: python tennis_stats_fetcher.py
         continue-on-error: true
