@@ -41,7 +41,7 @@ TENNIS_MAX_TIPS_PER_DAY = 3  # separate cap for tennis — 8 total between the t
 # but loses 70% of the time. These two gates make sure a tip is one the model
 # genuinely expects to WIN, and tips are ranked by win probability, not edge.
 MIN_WIN_PROB = 0.60      # our estimated win/hit probability must be at least this
-MAX_ODDS = 2.00          # never post a tip above this, however good the edge looks
+MAX_ODDS = 3.00          # never post a tip above this, however good the edge looks
 MIN_EDGE = 0.03          # only tip if our estimated fair probability beats the
                           # market-implied probability by at least this much (3%)
                           # — this is what keeps the bot from just tipping favorites
@@ -168,14 +168,19 @@ SPORT_LABEL = "WNBA"
 NCAAB_MAX_TIPS_PER_DAY = 5  # own pool, same reasoning as WNBA/tennis caps above
 
 # --- Spanish ACB (Liga Endesa) ---
-# 18 teams, low volume (4-9 games/week) — this is a QUALITY leg source,
-# not a volume one (see rollover-grand-audit-bot-spec-v2.md). Built the
-# same way NCAAB ended up working: stats AND odds both from TheRundown
-# (rundown_client.py), since balldontlie doesn't cover European leagues
-# at all and this keeps everything on the same free, already-proven
-# provider. Exact sport-name spelling in TheRundown's /sports list is
-# unconfirmed — acb_odds_fetcher.py tries several candidates via
-# rundown_client.find_sport_id_trying() and fails loudly with the full
-# sports list if none match, same honesty pattern as everything else
-# touching TheRundown in this project.
-ACB_MAX_TIPS_PER_DAY = 3  # own pool — small league, expect fewer qualifying games/day than WNBA/NCAAB
+# 18 teams, low volume (4-9 games/week). CONFIRMED LIVE 2026-09-24:
+# TheRundown carries zero Spanish basketball coverage at all — checked
+# its real /sports list directly, nothing under any name. Turned out to
+# be structural, not a naming issue: Liga ACB has an EXCLUSIVE data-
+# rights deal with Genius Sports, which is almost certainly why no free
+# odds aggregator carries it. Since there's no real odds source for
+# this league at all, ACB has NO edge-based tip logic and NO
+# ACB_MAX_TIPS_PER_DAY cap — it uses a separate prediction-only module
+# (acb_prediction.py) instead, gated by MIN_WIN_PROB above like
+# everything else, with every prediction for every game sent rather
+# than ranked/capped (see main.py's run() for why a cap doesn't apply
+# the same way here). Stats come from a THIRD provider, Highlightly's
+# Basketball API (acb_stats_fetcher.py) — free Basic plan, but unlike
+# balldontlie/TheRundown it needs ITS OWN account: sign up at
+# https://highlightly.net/login and set the key as a GitHub repo secret
+# named HIGHLIGHTLY_API_KEY.

@@ -27,6 +27,35 @@ def _escape_md(text):
 
 
 def format_tip_message(tip, game_date):
+    if tip["type"] == "moneyline_prediction":
+        return (
+            f"🇪🇸 {_escape_md(tip['matchup'])} (ACB)\n"
+            f"📅 {game_date}\n"
+            f"🔮 *{_escape_md(tip['predicted_winner'])}* predicted to beat {_escape_md(tip['opponent'])}\n"
+            f"📊 Model confidence: {tip['confidence']*100:.1f}%\n"
+            f"ℹ️ Prediction only — no odds source for ACB, check a sportsbook yourself before betting"
+        )
+
+    if tip["type"] == "total_prediction":
+        low, high = tip["likely_range"]
+        return (
+            f"🇪🇸 {_escape_md(tip['matchup'])} (ACB)\n"
+            f"📅 {game_date}\n"
+            f"🔮 Predicted total: *{tip['predicted_total']}* (likely range {low}-{high})\n"
+            f"ℹ️ Prediction only — compare against a real sportsbook line yourself"
+        )
+
+    if tip["type"] == "half_prediction":
+        return (
+            f"🇪🇸 {_escape_md(tip['matchup'])} (ACB)\n"
+            f"📅 {game_date}\n"
+            f"🔮 Predicted 1st half: *{tip['predicted_first_half_total']}* "
+            f"({tip['predicted_first_half_range'][0]}-{tip['predicted_first_half_range'][1]})\n"
+            f"🔮 Predicted 2nd half: *{tip['predicted_second_half_total']}* "
+            f"({tip['predicted_second_half_range'][0]}-{tip['predicted_second_half_range'][1]})\n"
+            f"ℹ️ Prediction only — compare against a real sportsbook line yourself"
+        )
+
     if tip["type"] == "totals":
         return (
             f"🏀 {_escape_md(tip['matchup'])}\n"
@@ -68,6 +97,29 @@ def _format_plain(tip, game_date):
     anticipate; worst case, it arrives without bold styling instead of
     not arriving at all.
     """
+    if tip["type"] == "moneyline_prediction":
+        return (
+            f"{tip['matchup']} (ACB)\n{game_date}\n"
+            f"{tip['predicted_winner']} predicted to beat {tip['opponent']}\n"
+            f"Model confidence: {tip['confidence']*100:.1f}%\n"
+            f"Prediction only — no odds source for ACB, check a sportsbook yourself before betting"
+        )
+    if tip["type"] == "total_prediction":
+        low, high = tip["likely_range"]
+        return (
+            f"{tip['matchup']} (ACB)\n{game_date}\n"
+            f"Predicted total: {tip['predicted_total']} (likely range {low}-{high})\n"
+            f"Prediction only — compare against a real sportsbook line yourself"
+        )
+    if tip["type"] == "half_prediction":
+        return (
+            f"{tip['matchup']} (ACB)\n{game_date}\n"
+            f"Predicted 1st half: {tip['predicted_first_half_total']} "
+            f"({tip['predicted_first_half_range'][0]}-{tip['predicted_first_half_range'][1]})\n"
+            f"Predicted 2nd half: {tip['predicted_second_half_total']} "
+            f"({tip['predicted_second_half_range'][0]}-{tip['predicted_second_half_range'][1]})\n"
+            f"Prediction only — compare against a real sportsbook line yourself"
+        )
     if tip["type"] == "totals":
         return (
             f"{tip['matchup']}\n{game_date}\n"
@@ -97,6 +149,10 @@ def _format_plain(tip, game_date):
 
 def _tip_label(tip):
     """Short identifier for a tip, used in error logging only."""
+    if tip["type"] == "moneyline_prediction":
+        return f"{tip['predicted_winner']} ({tip['matchup']})"
+    if tip["type"] in ("total_prediction", "half_prediction"):
+        return tip["matchup"]
     if tip["type"] == "totals":
         return f"{tip['side']} {tip['line']} ({tip['matchup']})"
     if tip["type"] == "tennis":

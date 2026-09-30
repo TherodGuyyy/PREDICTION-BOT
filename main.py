@@ -11,7 +11,7 @@ combined pool — so a big tennis day can't crowd out WNBA tips or vice versa.
 
 import datetime
 from config import (
-    WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, NCAAB_MAX_TIPS_PER_DAY, ACB_MAX_TIPS_PER_DAY, SPORT_LABEL,
+    WNBA_MAX_TIPS_PER_DAY, TENNIS_MAX_TIPS_PER_DAY, NCAAB_MAX_TIPS_PER_DAY, SPORT_LABEL,
     TENNIS_MAX_MATCHES_PER_RUN, ENABLE_TEAM_TOTALS, ENABLE_HALF_TOTALS, ENABLE_QUARTER_TOTALS,
     TENNIS_MIN_MATCHES_FOR_ANALYSIS,
 )
@@ -37,18 +37,16 @@ from ncaab_odds_fetcher import (
     get_totals_odds as get_ncaab_totals_odds,
     debug_fixture_status as ncaab_debug_fixture_status,
 )
-# ACB — same aliasing pattern as NCAAB above, since it mirrors the same
-# function names. See acb_stats_fetcher.py / acb_odds_fetcher.py.
+# ACB — genuinely different from the other sports: no odds source
+# exists at all (see acb_stats_fetcher.py's docstring), so this uses a
+# separate prediction-only module instead of analysis.py's edge-based
+# tip logic. See acb_prediction.py.
 from acb_stats_fetcher import (
     get_todays_games as get_acb_todays_games,
     team_form_summary as acb_team_form_summary,
     get_head_to_head_record as get_acb_head_to_head_record,
 )
-from acb_odds_fetcher import (
-    get_match_odds as get_acb_match_odds,
-    get_totals_odds as get_acb_totals_odds,
-    debug_fixture_status as acb_debug_fixture_status,
-)
+from acb_prediction import predict_moneyline as acb_predict_moneyline, predict_total as acb_predict_total, predict_half as acb_predict_half
 from tennis_stats_fetcher import (
     player_form_summary, get_tournament_surface,
 )
@@ -297,25 +295,30 @@ def run_ncaab(today, all_tips):
 
 def run_acb(today, all_tips):
     """
-    Moneyline + full-game totals only — same "verify the core first"
-    reasoning as run_ncaab(), plus ACB's odds_fetcher never built the
-    sub-market functions at all (see acb_odds_fetcher.py's docstring).
-    Unlike NCAAB, ACB is ALREADY IN SEASON (started Sept 26-27, 2026),
-    so this should actually produce real analysis from day one — an
-    empty "No ACB games today" here is a real finding worth checking,
-    not automatically expected the way it is for NCAAB right now.
+    Prediction-only — no odds, no edge, completely different mechanism
+    from every other sport here. See acb_prediction.py's docstring for
+    why. ACB is already in season (started Sept 26-27, 2026), so an
+    empty "No ACB games today" is a real finding (18 teams, 4-9
+    games/week — plenty of days genuinely have none), not automatically
+    expected the way it currently is for NCAAB.
+
+    Every prediction gets appended to all_tips with its own "type"
+    (moneyline_prediction / total_prediction / half_prediction) —
+    telegram_sender.py formats each of these distinctly from a real
+    value tip, with an explicit "prediction only, no odds source"
+    disclaimer baked into the message so it's never confused with one.
     """
     print(f"\n[ACB] Checking games for {today}...")
 
-    games = get_acb_todays_games()
+    try:
+        games = get_acb_todays_games()
+    except RuntimeError as e:
+        print(f"  Couldn't check ACB games: {e}")
+        return
+
     if not games:
         print("No ACB games today.")
         return
-
-    try:
-        game_date = datetime.date.fromisoformat(today)
-    except ValueError:
-        game_date = datetime.date.today()
 
     for game in games:
         home = game["home_team"]
@@ -323,16 +326,15 @@ def run_acb(today, all_tips):
         print(f"Analyzing: {away['full_name']} @ {home['full_name']}")
 
         try:
-            home_form = acb_team_form_summary(home["id"], as_of_date=game_date)
-            away_form = acb_team_form_summary(away["id"], as_of_date=game_date)
+            home_form = acb_team_form_summary(home["id"])
+            away_form = acb_team_form_summary(away["id"])
 
             if not home_form or not away_form:
                 print("  Skipping — not enough recent-game data yet.")
                 continue
 
             print(f"  Form — {home['full_name']}: {home_form['win_pct']:.2f} win%, "
-                  f"{away['full_name']}: {away_form['win_pct']:.2f} win% "
-                  f"| pace: unavailable (not built for ACB — see acb_stats_fetcher.py)")
+                  f"{away['full_name']}: {away_form['win_pct']:.2f} win%")
 
             h2h = None
             try:
@@ -343,38 +345,26 @@ def run_acb(today, all_tips):
             except Exception as e:
                 print(f"  Couldn't fetch head-to-head record (continuing without it): {e}")
 
-            odds = get_acb_match_odds(home["full_name"], away["full_name"], today)
-            if odds:
-                tip = find_value_tip(
-                    game, home_form, away_form,
-                    odds.get("home_odds"), odds.get("away_odds"),
-                    h2h=h2h,
-                )
-                if tip:
-                    print(f"  MONEYLINE TIP: {tip['team']} @ {tip['odds']} (edge {tip['edge']})")
-                    all_tips.append(tip)
-                else:
-                    print("  Moneyline: no value found on either side.")
+            ml_prediction = acb_predict_moneyline(game, home_form, away_form, h2h=h2h)
+            if ml_prediction:
+                print(f"  PREDICTION: {ml_prediction['predicted_winner']} "
+                      f"(confidence {ml_prediction['confidence']*100:.1f}%)")
+                all_tips.append(ml_prediction)
             else:
-                reason = acb_debug_fixture_status(home["full_name"], away["full_name"], today)
-                print(f"  Moneyline: couldn't find/match odds — {reason}")
+                print("  Moneyline: not confident enough on either side to call it.")
 
-            totals_odds = get_acb_totals_odds(home["full_name"], away["full_name"], today)
-            if totals_odds:
-                predicted = predicted_total(home_form, away_form)
-                totals_tip = find_totals_value_tip(game, predicted, totals_odds)
-                if totals_tip:
-                    print(
-                        f"  TOTALS TIP: {totals_tip['side']} {totals_tip['line']} "
-                        f"@ {totals_tip['odds']} (edge {totals_tip['edge']}, "
-                        f"our predicted total: {round(predicted, 1)})"
-                    )
-                    all_tips.append(totals_tip)
-                else:
-                    print(f"  Totals: no value found (our predicted total: {round(predicted, 1)}).")
+            total_prediction = acb_predict_total(game, home_form, away_form)
+            low, high = total_prediction["likely_range"]
+            print(f"  PREDICTED TOTAL: {total_prediction['predicted_total']} (range {low}-{high})")
+            all_tips.append(total_prediction)
+
+            half_prediction = acb_predict_half(game, home_form, away_form)
+            if half_prediction:
+                print(f"  PREDICTED HALVES: 1st {half_prediction['predicted_first_half_total']}, "
+                      f"2nd {half_prediction['predicted_second_half_total']}")
+                all_tips.append(half_prediction)
             else:
-                reason = acb_debug_fixture_status(home["full_name"], away["full_name"], today)
-                print(f"  Totals: no totals odds available — {reason}")
+                print("  Halves: real quarter-score data wasn't complete enough for either team — skipping.")
 
         except Exception as e:
             print(f"  ERROR analyzing this game, skipping it: {e}")
@@ -543,12 +533,18 @@ def run():
     wnba_tips.sort(key=lambda t: (t["our_estimated_prob"], t["edge"]), reverse=True)
     tennis_tips.sort(key=lambda t: (t["our_estimated_prob"], t["edge"]), reverse=True)
     ncaab_tips.sort(key=lambda t: (t["our_estimated_prob"], t["edge"]), reverse=True)
-    acb_tips.sort(key=lambda t: (t["our_estimated_prob"], t["edge"]), reverse=True)
+    # ACB predictions aren't ranked at all — there's no edge/confidence
+    # field shared across all three prediction types (moneyline/total/
+    # half), and unlike the other sports these aren't competing for a
+    # scarce "best value" slot in the first place: every prediction for
+    # every game today is equally worth sending. ACB's naturally low
+    # game volume (18 teams, 4-9 games/week) keeps the daily message
+    # count small without needing to prune.
 
     final_wnba_tips = wnba_tips[:WNBA_MAX_TIPS_PER_DAY]
     final_tennis_tips = tennis_tips[:TENNIS_MAX_TIPS_PER_DAY]
     final_ncaab_tips = ncaab_tips[:NCAAB_MAX_TIPS_PER_DAY]
-    final_acb_tips = acb_tips[:ACB_MAX_TIPS_PER_DAY]
+    final_acb_tips = acb_tips  # no cap — see the comment above; ACB's own daily volume is the natural limit
     final_tips = final_wnba_tips + final_tennis_tips + final_ncaab_tips + final_acb_tips
 
     print(f"\nSending {len(final_tips)} tip(s) to Telegram "
