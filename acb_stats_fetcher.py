@@ -332,6 +332,33 @@ if __name__ == "__main__":
     for g in games:
         print(f"  {g['visitor_team']['full_name']} @ {g['home_team']['full_name']} (status: {g['status']})")
 
+    # "0 games today" is genuinely ambiguous on its own — ACB doesn't play
+    # every day (mostly weekend rounds), so an empty day could be entirely
+    # normal OR could mean league_id/season is subtly wrong and this always
+    # returns nothing. Checking a KNOWN date (the season-opening weekend)
+    # resolves that ambiguity unconditionally, regardless of what day this
+    # happens to be run on.
+    print("\n--- Sanity check against the known season-opening weekend (2026-09-26/27) ---")
+    opening_weekend = _get("/matches", params={"leagueId": league_id, "season": season, "date": "2026-09-26"})
+    opening_matches = opening_weekend.get("data", [])
+    print(f"Matches found on 2026-09-26: {len(opening_matches)}")
+    if not opening_matches:
+        opening_weekend_2 = _get("/matches", params={"leagueId": league_id, "season": season, "date": "2026-09-27"})
+        opening_matches = opening_weekend_2.get("data", [])
+        print(f"Matches found on 2026-09-27: {len(opening_matches)}")
+    if opening_matches:
+        print("CONFIRMED: league_id/season combo is correct — real jornada-1 games found. "
+              "An empty 'today' is therefore a genuine off-day, not a config problem.")
+        for m in opening_matches[:3]:
+            g = _normalize_match(m)
+            print(f"  {g['visitor_team']['full_name']} @ {g['home_team']['full_name']} "
+                  f"-> {g['home_score']}-{g['away_score']} (status: {g['status']})")
+    else:
+        print("WARNING: zero matches found even on the known season-opening weekend. "
+              "This points to season or league_id being wrong, NOT just an off-day — "
+              "worth checking the /leagues raw response (the acb dict found above) for "
+              "its exact 'seasons' list and confirming 2026 is really in it.")
+
     if games:
         home = games[0]["home_team"]
         print(f"\nPulling form for {home['full_name']} (id={home['id']})...")
