@@ -2,7 +2,7 @@
 Pulls ACB (Spanish Liga Endesa) games and team form from Highlightly's
 Basketball API — a THIRD provider, distinct from balldontlie (WNBA) and
 TheRundown (NCAAB, tennis odds).
-
+ 
 WHY A THIRD PROVIDER: TheRundown's /sports list was checked live and
 confirmed to carry ZERO Spanish basketball coverage — not under any
 name (see the full raw list from that run, kept in this project's chat
@@ -15,21 +15,21 @@ API bothers carrying it; a real data license costs money for a market
 this niche. Highlightly's Basketball API explicitly lists ACB among its
 340+ covered leagues (alongside Euroleague, BBL, LNB, etc.) on its free
 Basic plan (100 requests/day, no card required).
-
+ 
 NO ODDS FROM THIS PROVIDER, BY DESIGN: this module intentionally has no
 odds/edge counterpart. ACB predictions are pure model output — a
 predicted winner + confidence, a predicted total, a predicted half
 split — gated only by how confident the model is, with no market
 comparison at all. Check acb_prediction.py for that logic and its own
 docstring for the reasoning.
-
+ 
 SETUP REQUIRED: unlike balldontlie/TheRundown (already-configured keys
 in this project), Highlightly needs its OWN account and key. Sign up
 free at https://highlightly.net/login (or via RapidAPI), Basic/Free
 plan, then add the key as a GitHub repo secret named exactly
 HIGHLIGHTLY_API_KEY. _get() raises a clear, specific error with these
 instructions if the key is missing.
-
+ 
 VERIFIED AGAINST HIGHLIGHTLY'S PUBLISHED DOCS (basketball-api/documentation
 on highlightly.net) — NOT yet run against a real live response, since
 that needs the API key only the account holder has. Confidence here is
@@ -39,7 +39,7 @@ for every endpoint used below (not just a schema), so this is built
 against confirmed shapes, not inferred ones. Still worth running
 `python acb_stats_fetcher.py` directly once the key is set (see the
 __main__ block) to confirm live before trusting it for real predictions.
-
+ 
 RATE LIMIT IS DAILY, NOT PER-MINUTE: the free plan caps at 100
 requests/DAY total, not a per-minute rate. That changes the design
 goal from "pace requests" (balldontlie's problem) to "minimize total
@@ -52,22 +52,22 @@ analyzed (2x last-five-games + 1x head-to-head), a busy day with many
 ACB fixtures plus multiple runs/day could approach the 100/day ceiling
 — worth watching in practice, not just assuming it's fine.
 """
-
+ 
 import os
 import time
 import datetime
 import requests
-
+ 
 HIGHLIGHTLY_BASE_URL = "https://basketball.highlightly.net"
 MIN_GAMES_FOR_ANALYSIS = 5  # matches config.py's WNBA/NCAAB threshold — Highlightly's
                              # last-five-games endpoint caps at 5 anyway, so this is
                              # really just an "all 5 must be present" check here
-
+ 
 _league_cache = None       # (league_id, season), found once per run
 _last_five_cache = {}      # team_id -> list of normalized games, found once per run
 _h2h_cache = {}            # frozenset({team_a_id, team_b_id}) -> h2h result
-
-
+ 
+ 
 def _get_api_key():
     key = os.environ.get("HIGHLIGHTLY_API_KEY", "")
     if not key or key.upper() in ("YOUR_API_KEY", "PLACEHOLDER", "CHANGE_ME", ""):
@@ -78,8 +78,8 @@ def _get_api_key():
             "EXACTLY 'HIGHLIGHTLY_API_KEY' (Settings -> Secrets and variables -> Actions)."
         )
     return key
-
-
+ 
+ 
 def _get(path, params=None, retries=2):
     for attempt in range(retries + 1):
         resp = requests.get(
@@ -96,8 +96,8 @@ def _get(path, params=None, retries=2):
             continue
         resp.raise_for_status()
         return resp.json()
-
-
+ 
+ 
 def _get_acb_league():
     """
     Finds ACB's (league_id, season) by listing Spain's leagues and
@@ -111,10 +111,10 @@ def _get_acb_league():
     global _league_cache
     if _league_cache is not None:
         return _league_cache
-
+ 
     data = _get("/leagues", params={"countryCode": "ES", "limit": 100})
     leagues = data.get("data", [])
-
+ 
     acb = next(
         (l for l in leagues if "acb" in l.get("name", "").lower() or "endesa" in l.get("name", "").lower()),
         None,
@@ -125,16 +125,16 @@ def _get_acb_league():
             f"No league matching 'acb' or 'endesa' found among Spain's leagues on Highlightly. "
             f"Full list of Spanish league names returned: {names}"
         )
-
+ 
     seasons = [s.get("season") for s in acb.get("seasons", []) if s.get("season") is not None]
     if not seasons:
         raise RuntimeError(f"Found ACB (league_id={acb['id']}) but it has no seasons listed at all.")
-
+ 
     season = max(seasons)
     _league_cache = (acb["id"], season)
     return _league_cache
-
-
+ 
+ 
 def _parse_score(score_str):
     """'105 - 104' -> (105, 104). Returns (None, None) if not parseable
     (e.g. a game that hasn't started yet has no score string)."""
@@ -145,8 +145,8 @@ def _parse_score(score_str):
         return int(home_str.strip()), int(away_str.strip())
     except (ValueError, AttributeError):
         return None, None
-
-
+ 
+ 
 def _normalize_match(m):
     """
     Converts one Highlightly match into the SAME shape stats_fetcher.py's
@@ -162,15 +162,15 @@ def _normalize_match(m):
     state = m.get("state", {})
     description = state.get("description", "")
     is_finished = description in ("Finished", "Finished after over time")
-
+ 
     score = state.get("score", {})
     home_score, away_score = _parse_score(score.get("current"))
-
+ 
     quarters = {}
     for q in ("q1", "q2", "q3", "q4"):
         h, a = _parse_score(score.get(q))
         quarters[q] = (h, a)
-
+ 
     return {
         "id": m.get("id"),
         "date": m.get("date"),
@@ -181,20 +181,20 @@ def _normalize_match(m):
         "away_score": away_score,
         "quarters": quarters,
     }
-
-
+ 
+ 
 def get_todays_games():
     """Returns today's scheduled (not-yet-finished) ACB games."""
     league_id, season = _get_acb_league()
     today = datetime.date.today().isoformat()
-
+ 
     data = _get("/matches", params={"leagueId": league_id, "season": season, "date": today})
     matches = data.get("data", [])
-
+ 
     games = [_normalize_match(m) for m in matches]
     return [g for g in games if g["status"] != "post"]
-
-
+ 
+ 
 def get_team_recent_games(team_id, num_games=5):
     """
     Returns the team's last 5 finished games (Highlightly's endpoint IS
@@ -204,16 +204,16 @@ def get_team_recent_games(team_id, num_games=5):
     """
     if team_id in _last_five_cache:
         return _last_five_cache[team_id][:num_games]
-
+ 
     raw = _get("/last-five-games", params={"teamId": team_id})
     games = [_normalize_match(m) for m in raw]
     games = [g for g in games if g["status"] == "post"]
     games.sort(key=lambda g: g["date"] or "", reverse=True)
-
+ 
     _last_five_cache[team_id] = games
     return games[:num_games]
-
-
+ 
+ 
 def get_head_to_head_record(team_a_id, team_b_id, num_matchups=5):
     """
     Same contract as the other sports' versions. Highlightly's
@@ -225,18 +225,18 @@ def get_head_to_head_record(team_a_id, team_b_id, num_matchups=5):
     key = frozenset({team_a_id, team_b_id})
     if key in _h2h_cache:
         return _h2h_cache[key]
-
+ 
     raw = _get("/head-2-head", params={"teamIdOne": team_a_id, "teamIdTwo": team_b_id})
     matchups = [_normalize_match(m) for m in raw]
     matchups = [m for m in matchups if m["status"] == "post"]
-
+ 
     if len(matchups) < 2:
         _h2h_cache[key] = None
         return None
-
+ 
     matchups.sort(key=lambda g: g["date"] or "", reverse=True)
     matchups = matchups[:num_matchups]
-
+ 
     a_wins = 0
     for g in matchups:
         a_is_home = g["home_team"]["id"] == team_a_id
@@ -244,12 +244,12 @@ def get_head_to_head_record(team_a_id, team_b_id, num_matchups=5):
         b_score = g["away_score"] if a_is_home else g["home_score"]
         if a_score is not None and b_score is not None and a_score > b_score:
             a_wins += 1
-
+ 
     result = {"matchups_found": len(matchups), "team_a_win_pct": a_wins / len(matchups)}
     _h2h_cache[key] = result
     return result
-
-
+ 
+ 
 def team_form_summary(team_id, as_of_date=None, include_pace=True):
     """
     Same contract/return shape as stats_fetcher.team_form_summary(),
@@ -265,12 +265,12 @@ def team_form_summary(team_id, as_of_date=None, include_pace=True):
     games = get_team_recent_games(team_id)
     if len(games) < MIN_GAMES_FOR_ANALYSIS:
         return None
-
+ 
     wins = 0
     point_diffs, points_scored, points_allowed = [], [], []
     first_half_scored, first_half_allowed = [], []
     second_half_scored, second_half_allowed = [], []
-
+ 
     for g in games:
         is_home = g["home_team"]["id"] == team_id
         team_score = g["home_score"] if is_home else g["away_score"]
@@ -282,7 +282,7 @@ def team_form_summary(team_id, as_of_date=None, include_pace=True):
         points_allowed.append(opp_score)
         if team_score > opp_score:
             wins += 1
-
+ 
         q = g["quarters"]
         q1h, q1a = q.get("q1", (None, None))
         q2h, q2a = q.get("q2", (None, None))
@@ -298,13 +298,13 @@ def team_form_summary(team_id, as_of_date=None, include_pace=True):
             opp_2h = (q3a + q4a) if is_home else (q3h + q4h)
             second_half_scored.append(team_2h)
             second_half_allowed.append(opp_2h)
-
+ 
     if len(point_diffs) < MIN_GAMES_FOR_ANALYSIS:
         return None
-
+ 
     def _avg(values):
         return sum(values) / len(values) if values else None
-
+ 
     return {
         "games_sampled": len(point_diffs),
         "win_pct": wins / len(point_diffs),
@@ -319,19 +319,19 @@ def team_form_summary(team_id, as_of_date=None, include_pace=True):
         "avg_second_half_points_scored": _avg(second_half_scored),
         "avg_second_half_points_allowed": _avg(second_half_allowed),
     }
-
-
+ 
+ 
 if __name__ == "__main__":
     # Quick manual test — run: python acb_stats_fetcher.py
     # Requires HIGHLIGHTLY_API_KEY to be set (see module docstring).
     league_id, season = _get_acb_league()
     print(f"ACB league_id={league_id}, season={season}")
-
+ 
     games = get_todays_games()
     print(f"\nget_todays_games(): {len(games)} game(s) found today.")
     for g in games:
         print(f"  {g['visitor_team']['full_name']} @ {g['home_team']['full_name']} (status: {g['status']})")
-
+ 
     # "0 games today" is genuinely ambiguous on its own — ACB doesn't play
     # every day (mostly weekend rounds), so an empty day could be entirely
     # normal OR could mean league_id/season is subtly wrong and this always
@@ -349,16 +349,44 @@ if __name__ == "__main__":
     if opening_matches:
         print("CONFIRMED: league_id/season combo is correct — real jornada-1 games found. "
               "An empty 'today' is therefore a genuine off-day, not a config problem.")
+        opening_games = []
         for m in opening_matches[:3]:
             g = _normalize_match(m)
+            opening_games.append(g)
             print(f"  {g['visitor_team']['full_name']} @ {g['home_team']['full_name']} "
+                  f"(ids {g['visitor_team']['id']}/{g['home_team']['id']}) "
                   f"-> {g['home_score']}-{g['away_score']} (status: {g['status']})")
+ 
+        # /last-five-games and /head-2-head have NEVER been hit live yet —
+        # "today" being empty meant that section of this script never ran.
+        # Test them directly against real team IDs now, rather than assume
+        # they'll work whenever the next real game day comes around.
+        print("\n--- Testing /last-five-games and /head-2-head against real team IDs ---")
+        test_team = opening_games[0]["home_team"]
+        print(f"get_team_recent_games({test_team['id']}) [{test_team['full_name']}]:")
+        recent = get_team_recent_games(test_team["id"])
+        print(f"  {len(recent)} finished game(s) found (expect FEWER than 5 right now — "
+              f"jornada 1 was the season opener, so no team can have 5 games played yet; "
+              f"this is just confirming the endpoint itself responds sanely, not testing "
+              f"the full 5-game model yet).")
+        for g in recent:
+            print(f"    {g['visitor_team']['full_name']} @ {g['home_team']['full_name']} "
+                  f"-> {g['home_score']}-{g['away_score']} | quarters: {g['quarters']}")
+ 
+        team_a, team_b = opening_games[0]["home_team"], opening_games[0]["visitor_team"]
+        print(f"\nget_head_to_head_record({team_a['id']}, {team_b['id']}) "
+              f"[{team_a['full_name']} vs {team_b['full_name']}]:")
+        h2h = get_head_to_head_record(team_a["id"], team_b["id"])
+        print(f"  {h2h}")
+        print("  (None here is EXPECTED right now — needs 2+ past meetings, and these two "
+              "have likely only just played their first meeting of the new season, if that "
+              "was even their first ever meeting on record with this provider.)")
     else:
         print("WARNING: zero matches found even on the known season-opening weekend. "
               "This points to season or league_id being wrong, NOT just an off-day — "
               "worth checking the /leagues raw response (the acb dict found above) for "
               "its exact 'seasons' list and confirming 2026 is really in it.")
-
+ 
     if games:
         home = games[0]["home_team"]
         print(f"\nPulling form for {home['full_name']} (id={home['id']})...")
@@ -369,3 +397,4 @@ if __name__ == "__main__":
     else:
         print("\nNo games today — check the league_id/season above look right, and that ACB "
               "actually has fixtures today (18 teams, 4-9 games/week — not every day has games).")
+ 
