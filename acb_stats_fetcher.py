@@ -150,14 +150,24 @@ def _parse_score(score_str):
 def _normalize_match(m):
     """
     Converts one Highlightly match into the SAME shape stats_fetcher.py's
-    balldontlie-backed functions return, PLUS an extra "quarters" field
-    (not present in the WNBA/NCAAB versions) carrying each quarter's
-    home/away split — this is what lets acb_prediction.py build a real
-    half-split model instead of the flat-proportion fallback the other
-    sports are stuck with:
+    balldontlie-backed functions return, PLUS two extra fields not
+    present in the WNBA/NCAAB versions:
+      - "quarters": each quarter's home/away split — lets
+        acb_prediction.py build a real half-split model instead of the
+        flat-proportion fallback the other sports are stuck with.
+      - "league_id": CONFIRMED NECESSARY FROM A LIVE RUN 2026-10-01 —
+        Highlightly's /last-five-games has NO league filter at all (its
+        own docs confirm this: it returns a team's last 5 finished
+        games across EVERY competition that team plays in). A real run
+        showed Barcelona's "last 5" mixing genuine ACB opponents with
+        EuroLeague ones (Dubai, Anadolu Efes Istanbul) — several ACB
+        clubs play both competitions. league_id lets
+        get_team_recent_games()/get_head_to_head_record() filter back
+        down to ACB-only games client-side, since the API can't do it
+        server-side.
       {"id", "date", "status", "home_team": {"id","full_name"},
        "visitor_team": {"id","full_name"}, "home_score", "away_score",
-       "quarters": {"q1": (h,a), "q2": (h,a), "q3": (h,a), "q4": (h,a)}}
+       "league_id", "quarters": {"q1": (h,a), ...}}
     """
     state = m.get("state", {})
     description = state.get("description", "")
@@ -179,6 +189,7 @@ def _normalize_match(m):
         "visitor_team": {"id": m.get("awayTeam", {}).get("id"), "full_name": m.get("awayTeam", {}).get("name")},
         "home_score": home_score,
         "away_score": away_score,
+        "league_id": m.get("league", {}).get("id"),
         "quarters": quarters,
     }
  
@@ -197,17 +208,33 @@ def get_todays_games():
  
 def get_team_recent_games(team_id, num_games=5):
     """
-    Returns the team's last 5 finished games (Highlightly's endpoint IS
-    "last five games", so num_games above 5 can't be satisfied — this
-    parameter exists for interface parity with the other sports'
-    fetchers, not because more are actually available). Cached per run.
+    Returns the team's last 5 finished ACB games — note "ACB", not just
+    "finished games". Highlightly's /last-five-games has no league
+    filter at all (confirmed from its own docs AND a live run that
+    showed Barcelona's raw "last 5" mixing real ACB opponents with
+    EuroLeague ones, since several ACB clubs play both competitions).
+    This filters the raw response down to league_id == ACB's own,
+    using each match's own embedded league info (the one piece of
+    per-game league scoping the API does provide, even though the
+    endpoint itself doesn't accept a league filter as a parameter).
+ 
+    REAL CONSEQUENCE OF THIS, not a bug to "fix" further: for a club
+    that also plays EuroLeague, filtering can leave FEWER than 5 ACB
+    games in their most recent 5 games overall (e.g. 3 ACB + 2
+    EuroLeague in their last 5 total), which may make
+    team_form_summary() correctly return None for that club more often
+    during multi-competition stretches than it would for an ACB-only
+    club. That's the honest, correct behavior given what the free tier
+    actually offers — better to skip a prediction than build one on a
+    too-small or contaminated sample. Cached per run, pre-filter.
     """
     if team_id in _last_five_cache:
         return _last_five_cache[team_id][:num_games]
  
+    acb_league_id, _ = _get_acb_league()
     raw = _get("/last-five-games", params={"teamId": team_id})
     games = [_normalize_match(m) for m in raw]
-    games = [g for g in games if g["status"] == "post"]
+    games = [g for g in games if g["status"] == "post" and g["league_id"] == acb_league_id]
     games.sort(key=lambda g: g["date"] or "", reverse=True)
  
     _last_five_cache[team_id] = games
@@ -219,16 +246,22 @@ def get_head_to_head_record(team_a_id, team_b_id, num_matchups=5):
     Same contract as the other sports' versions. Highlightly's
     head-2-head endpoint already returns the last 10 meetings directly
     (no lookback loop needed, unlike NCAAB's TheRundown-based version).
-    Returns None if fewer than 2 matchups on record — same small-sample
-    protection used everywhere else in this project.
+    Same ACB-only filter as get_team_recent_games(), for the same
+    reason: two clubs that both play EuroLeague could have met there
+    too, and a EuroLeague meeting isn't necessarily representative of
+    how they play each other in ACB specifically (different rotations,
+    different stakes). Returns None if fewer than 2 ACB matchups on
+    record — same small-sample protection used everywhere else in this
+    project.
     """
     key = frozenset({team_a_id, team_b_id})
     if key in _h2h_cache:
         return _h2h_cache[key]
  
+    acb_league_id, _ = _get_acb_league()
     raw = _get("/head-2-head", params={"teamIdOne": team_a_id, "teamIdTwo": team_b_id})
     matchups = [_normalize_match(m) for m in raw]
-    matchups = [m for m in matchups if m["status"] == "post"]
+    matchups = [m for m in matchups if m["status"] == "post" and m["league_id"] == acb_league_id]
  
     if len(matchups) < 2:
         _h2h_cache[key] = None
