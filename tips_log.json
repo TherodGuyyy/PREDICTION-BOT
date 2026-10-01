@@ -396,7 +396,7 @@
     "tip_id": "2026-09-24_moneyline_0",
     "game_date": "2026-09-24",
     "logged_at": "2026-09-24",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -411,7 +411,7 @@
     "tip_id": "2026-09-24_moneyline_0",
     "game_date": "2026-09-24",
     "logged_at": "2026-09-24",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -426,7 +426,7 @@
     "tip_id": "2026-09-26_moneyline_0",
     "game_date": "2026-09-26",
     "logged_at": "2026-09-26",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -441,7 +441,7 @@
     "tip_id": "2026-09-26_moneyline_1",
     "game_date": "2026-09-26",
     "logged_at": "2026-09-26",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -486,6 +486,21 @@
     "tip_id": "2026-09-28_moneyline_0",
     "game_date": "2026-09-28",
     "logged_at": "2026-09-28",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Las Vegas Aces",
+    "opponent": "Indiana Fever",
+    "side": "home",
+    "odds": 1.5319,
+    "our_estimated_prob": 0.891,
+    "market_implied_prob": 0.653,
+    "edge": 0.238,
+    "tip_id": "2026-10-01_moneyline_0",
+    "game_date": "2026-10-01",
+    "logged_at": "2026-10-01",
     "status": "pending",
     "actual_result": null
   }
