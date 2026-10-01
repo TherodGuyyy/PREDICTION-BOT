@@ -18,6 +18,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
  
+      # Catches an import-chain break BEFORE it can slip through to a live
+      # scheduled run — e.g. the real 2026-09-30 incident where
+      # tennis_analysis.py was updated to import passes_accuracy_bar from
+      # analysis.py, but an older analysis.py without that function got left
+      # behind in the repo. Every individual diagnostic step below tests one
+      # file's own __main__ block in isolation, which does NOT exercise
+      # main.py's full import chain — only an actual `import main` does.
+      # No API keys needed here: importing a module never calls run(), so
+      # this is a pure syntax/dependency check, nothing more.
+      - name: Smoke test — main.py imports cleanly
+        run: python -c "import main; print('main.py and its full import chain are OK')"
+ 
       - name: Run WNBA odds diagnostics
         env:
           THERUNDOWN_API_KEY: ${{ secrets.THERUNDOWN_API_KEY }}
