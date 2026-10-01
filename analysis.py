@@ -12,7 +12,7 @@ live and you can watch how it performs.
 
 import math
 from config import (
-    MIN_ODDS, MIN_EDGE, MIN_EDGE_SUBMARKET, TOTAL_POINTS_STD_DEV,
+    MIN_ODDS, MAX_ODDS, MIN_WIN_PROB, MIN_EDGE, MIN_EDGE_SUBMARKET, TOTAL_POINTS_STD_DEV,
     MIN_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_TOTAL, MAX_PLAUSIBLE_PROB,
     HALF_TOTAL_PROPORTION, QUARTER_TOTAL_PROPORTION,
 )
@@ -39,6 +39,15 @@ H2H_WEIGHT = 0.4
 # not dramatic. Applied per team, so two exhausted teams facing each
 # other get a bigger combined knock than one fresh team vs one tired one.
 FATIGUE_TOTAL_PENALTY = 2.0  # points shaved off the total per team on 0 days rest
+
+
+def passes_accuracy_bar(prob, odds):
+    """
+    Accuracy-before-edge gate, applied to every tip type on top of the
+    edge check: the model must genuinely expect this to WIN (prob >=
+    MIN_WIN_PROB) and the price can't be a long shot (odds <= MAX_ODDS).
+    """
+    return prob >= MIN_WIN_PROB and odds <= MAX_ODDS
 
 
 def _prob_is_plausible(prob):
@@ -159,7 +168,7 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds, h2h=None):
 
     if home_odds and home_odds >= MIN_ODDS:
         edge = prob_home - implied_probability(home_odds)
-        if edge >= MIN_EDGE and _prob_is_plausible(prob_home):
+        if edge >= MIN_EDGE and _prob_is_plausible(prob_home) and passes_accuracy_bar(prob_home, home_odds):
             candidates.append({
                 "type": "moneyline",
                 "team": game["home_team"]["full_name"],
@@ -173,7 +182,7 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds, h2h=None):
 
     if away_odds and away_odds >= MIN_ODDS:
         edge = prob_away - implied_probability(away_odds)
-        if edge >= MIN_EDGE and _prob_is_plausible(prob_away):
+        if edge >= MIN_EDGE and _prob_is_plausible(prob_away) and passes_accuracy_bar(prob_away, away_odds):
             candidates.append({
                 "type": "moneyline",
                 "team": game["visitor_team"]["full_name"],
@@ -189,7 +198,7 @@ def find_value_tip(game, home_form, away_form, home_odds, away_odds, h2h=None):
         return None
 
     # if both sides somehow clear the bar, take the bigger edge
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
 
 
 # ---------------------------------------------------------------------------
@@ -379,7 +388,7 @@ def _find_totals_candidates(matchup_label, tip_type, predicted, totals_odds_list
         over_odds = entry.get("over_odds")
         if over_odds and over_odds >= MIN_ODDS:
             edge = prob_over - implied_probability(over_odds)
-            if edge >= min_edge and _prob_is_plausible(prob_over):
+            if edge >= min_edge and _prob_is_plausible(prob_over) and passes_accuracy_bar(prob_over, over_odds):
                 candidates.append({
                     "type": tip_type,
                     "matchup": matchup_label,
@@ -396,7 +405,7 @@ def _find_totals_candidates(matchup_label, tip_type, predicted, totals_odds_list
         under_odds = entry.get("under_odds")
         if under_odds and under_odds >= MIN_ODDS:
             edge = prob_under - implied_probability(under_odds)
-            if edge >= min_edge and _prob_is_plausible(prob_under):
+            if edge >= min_edge and _prob_is_plausible(prob_under) and passes_accuracy_bar(prob_under, under_odds):
                 candidates.append({
                     "type": tip_type,
                     "matchup": matchup_label,
@@ -430,7 +439,7 @@ def find_totals_value_tip(game, predicted, totals_odds_list):
     )
     if not candidates:
         return None
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
 
 
 # ---------------------------------------------------------------------------
@@ -469,7 +478,7 @@ def find_team_totals_value_tip(game, home_form, away_form, team_totals_odds):
 
     if not candidates:
         return None
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
 
 
 def find_half_totals_value_tip(game, home_form, away_form, half_totals_odds):
@@ -488,7 +497,7 @@ def find_half_totals_value_tip(game, home_form, away_form, half_totals_odds):
     )
     if not candidates:
         return None
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
 
 
 def find_quarter_totals_value_tip(game, home_form, away_form, quarter_totals_odds, quarter_label="1st Quarter"):
@@ -506,4 +515,4 @@ def find_quarter_totals_value_tip(game, home_form, away_form, quarter_totals_odd
     )
     if not candidates:
         return None
-    return max(candidates, key=lambda c: c["edge"])
+    return max(candidates, key=lambda c: (c["our_estimated_prob"], c["edge"]))
