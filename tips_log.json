@@ -471,7 +471,7 @@
     "tip_id": "2026-09-27_moneyline_1",
     "game_date": "2026-09-27",
     "logged_at": "2026-09-27",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -501,6 +501,22 @@
     "tip_id": "2026-10-01_moneyline_0",
     "game_date": "2026-10-01",
     "logged_at": "2026-10-01",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Dallas Wings @ Golden State Valkyries",
+    "side": "over",
+    "line": 158.5,
+    "odds": 1.8696,
+    "market_id": 3,
+    "our_estimated_prob": 0.773,
+    "market_implied_prob": 0.535,
+    "edge": 0.238,
+    "tip_id": "2026-10-02_totals_0",
+    "game_date": "2026-10-02",
+    "logged_at": "2026-10-02",
     "status": "pending",
     "actual_result": null
   }
