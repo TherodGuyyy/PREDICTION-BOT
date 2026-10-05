@@ -595,8 +595,8 @@
     "tip_id": "2026-10-04_totals_0",
     "game_date": "2026-10-04",
     "logged_at": "2026-10-04",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "174"
   },
   {
     "type": "moneyline",
@@ -610,8 +610,8 @@
     "tip_id": "2026-10-04_moneyline_1",
     "game_date": "2026-10-04",
     "logged_at": "2026-10-04",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "92-82"
   },
   {
     "type": "moneyline",
@@ -625,8 +625,8 @@
     "tip_id": "2026-10-04_moneyline_2",
     "game_date": "2026-10-04",
     "logged_at": "2026-10-04",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "60-71"
   },
   {
     "type": "totals",
@@ -641,7 +641,7 @@
     "tip_id": "2026-10-04_totals_3",
     "game_date": "2026-10-04",
     "logged_at": "2026-10-04",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "131"
   }
 ]
