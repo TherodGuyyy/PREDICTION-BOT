@@ -501,7 +501,7 @@
     "tip_id": "2026-10-01_moneyline_0",
     "game_date": "2026-10-01",
     "logged_at": "2026-10-01",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -643,5 +643,36 @@
     "logged_at": "2026-10-04",
     "status": "lost",
     "actual_result": "131"
+  },
+  {
+    "type": "totals",
+    "matchup": "New York Liberty @ Atlanta Dream",
+    "side": "under",
+    "line": 170.5,
+    "odds": 1.9091,
+    "market_id": 3,
+    "our_estimated_prob": 0.94,
+    "market_implied_prob": 0.524,
+    "edge": 0.417,
+    "tip_id": "2026-10-06_totals_0",
+    "game_date": "2026-10-06",
+    "logged_at": "2026-10-06",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Atlanta Dream",
+    "opponent": "New York Liberty",
+    "side": "home",
+    "odds": 1.8,
+    "our_estimated_prob": 0.918,
+    "market_implied_prob": 0.556,
+    "edge": 0.363,
+    "tip_id": "2026-10-06_moneyline_1",
+    "game_date": "2026-10-06",
+    "logged_at": "2026-10-06",
+    "status": "pending",
+    "actual_result": null
   }
 ]
