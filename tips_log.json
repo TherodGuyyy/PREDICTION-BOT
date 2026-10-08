@@ -533,7 +533,7 @@
     "tip_id": "2026-10-03_totals_0",
     "game_date": "2026-10-03",
     "logged_at": "2026-10-03",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -548,7 +548,7 @@
     "tip_id": "2026-10-03_moneyline_1",
     "game_date": "2026-10-03",
     "logged_at": "2026-10-03",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -563,7 +563,7 @@
     "tip_id": "2026-10-03_moneyline_2",
     "game_date": "2026-10-03",
     "logged_at": "2026-10-03",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -579,7 +579,7 @@
     "tip_id": "2026-10-03_totals_3",
     "game_date": "2026-10-03",
     "logged_at": "2026-10-03",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -688,8 +688,8 @@
     "tip_id": "2026-10-07_totals_0",
     "game_date": "2026-10-07",
     "logged_at": "2026-10-07",
-    "status": "pending",
-    "actual_result": null
+    "status": "lost",
+    "actual_result": "199"
   },
   {
     "type": "moneyline",
@@ -703,8 +703,8 @@
     "tip_id": "2026-10-07_moneyline_1",
     "game_date": "2026-10-07",
     "logged_at": "2026-10-07",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "101-98"
   },
   {
     "type": "totals",
@@ -734,6 +734,37 @@
     "tip_id": "2026-10-07_moneyline_3",
     "game_date": "2026-10-07",
     "logged_at": "2026-10-07",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Atlanta Dream @ New York Liberty",
+    "side": "under",
+    "line": 172.5,
+    "odds": 1.9524,
+    "market_id": 3,
+    "our_estimated_prob": 0.923,
+    "market_implied_prob": 0.512,
+    "edge": 0.41,
+    "tip_id": "2026-10-08_totals_0",
+    "game_date": "2026-10-08",
+    "logged_at": "2026-10-08",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Atlanta Dream",
+    "opponent": "New York Liberty",
+    "side": "away",
+    "odds": 2.42,
+    "our_estimated_prob": 0.922,
+    "market_implied_prob": 0.413,
+    "edge": 0.509,
+    "tip_id": "2026-10-08_moneyline_1",
+    "game_date": "2026-10-08",
+    "logged_at": "2026-10-08",
     "status": "pending",
     "actual_result": null
   }
