@@ -767,5 +767,52 @@
     "logged_at": "2026-10-08",
     "status": "pending",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Atlanta Dream",
+    "opponent": "New York Liberty",
+    "side": "away",
+    "odds": 2.3,
+    "our_estimated_prob": 0.922,
+    "market_implied_prob": 0.435,
+    "edge": 0.487,
+    "tip_id": "2026-10-09_moneyline_0",
+    "game_date": "2026-10-09",
+    "logged_at": "2026-10-09",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Atlanta Dream @ New York Liberty",
+    "side": "under",
+    "line": 171.5,
+    "odds": 1.8696,
+    "market_id": 3,
+    "our_estimated_prob": 0.911,
+    "market_implied_prob": 0.535,
+    "edge": 0.376,
+    "tip_id": "2026-10-09_totals_1",
+    "game_date": "2026-10-09",
+    "logged_at": "2026-10-09",
+    "status": "pending",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Golden State Valkyries @ Las Vegas Aces",
+    "side": "over",
+    "line": 156.5,
+    "odds": 1.8929,
+    "market_id": 3,
+    "our_estimated_prob": 0.766,
+    "market_implied_prob": 0.528,
+    "edge": 0.238,
+    "tip_id": "2026-10-09_totals_2",
+    "game_date": "2026-10-09",
+    "logged_at": "2026-10-09",
+    "status": "pending",
+    "actual_result": null
   }
 ]
