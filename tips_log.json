@@ -780,8 +780,8 @@
     "tip_id": "2026-10-09_moneyline_0",
     "game_date": "2026-10-09",
     "logged_at": "2026-10-09",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "85-83"
   },
   {
     "type": "totals",
@@ -796,8 +796,8 @@
     "tip_id": "2026-10-09_totals_1",
     "game_date": "2026-10-09",
     "logged_at": "2026-10-09",
-    "status": "pending",
-    "actual_result": null
+    "status": "won",
+    "actual_result": "168"
   },
   {
     "type": "totals",
