@@ -719,7 +719,7 @@
     "tip_id": "2026-10-07_totals_2",
     "game_date": "2026-10-07",
     "logged_at": "2026-10-07",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
@@ -734,7 +734,7 @@
     "tip_id": "2026-10-07_moneyline_3",
     "game_date": "2026-10-07",
     "logged_at": "2026-10-07",
-    "status": "pending",
+    "status": "unresolved",
     "actual_result": null
   },
   {
