@@ -814,5 +814,20 @@
     "logged_at": "2026-10-09",
     "status": "unresolved",
     "actual_result": null
+  },
+  {
+    "type": "moneyline",
+    "team": "Golden State Valkyries",
+    "opponent": "Atlanta Dream",
+    "side": "home",
+    "odds": 1.7692,
+    "our_estimated_prob": 0.684,
+    "market_implied_prob": 0.565,
+    "edge": 0.119,
+    "tip_id": "2026-10-19_moneyline_0",
+    "game_date": "2026-10-19",
+    "logged_at": "2026-10-19",
+    "status": "pending",
+    "actual_result": null
   }
 ]
