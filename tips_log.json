@@ -872,6 +872,22 @@
     "tip_id": "2026-10-26_moneyline_0",
     "game_date": "2026-10-26",
     "logged_at": "2026-10-26",
+    "status": "unresolved",
+    "actual_result": null
+  },
+  {
+    "type": "totals",
+    "matchup": "Atlanta Dream @ Golden State Valkyries",
+    "side": "under",
+    "line": 142.5,
+    "odds": 1.9524,
+    "market_id": 3,
+    "our_estimated_prob": 0.966,
+    "market_implied_prob": 0.512,
+    "edge": 0.453,
+    "tip_id": "2026-10-31_totals_0",
+    "game_date": "2026-10-31",
+    "logged_at": "2026-10-31",
     "status": "pending",
     "actual_result": null
   }
