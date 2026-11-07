@@ -18809,6 +18809,206 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "c71d789de41df27a99a6fbb5c8feb332",
+      "date": "2026-11-06",
+      "player_a": "Taylor Fritz",
+      "player_b": "Carlos Alcaraz",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 12,
+      "player_b_rank": 3
+    },
+    {
+      "fixture_id": "d10a4a08722359de3d8bfd9b0de54c01",
+      "date": "2026-11-06",
+      "player_a": "Casper Ruud",
+      "player_b": "Nuno Borges",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "09c79274f7a5d9a75ff825ce9e85d0b9",
+      "date": "2026-11-06",
+      "player_a": "Mika Brunold",
+      "player_b": "Borna Gojo",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "233074e087a54908fb28fddefbe8ffba",
+      "date": "2026-11-06",
+      "player_a": "Nikoloz Basilashvili",
+      "player_b": "Francesco Passaro",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0cbdcf58011a77014768a913c58131ab",
+      "date": "2026-11-06",
+      "player_a": "Olle Wallin",
+      "player_b": "Lorenzo Sonego",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "366f1d579d9cdc379f2b418d5cfc7080",
+      "date": "2026-11-06",
+      "player_a": "Damir Dzumhur",
+      "player_b": "Inaki Montes-De La Torre",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9afcda633862b1aa9556c80bf83fbcdb",
+      "date": "2026-11-06",
+      "player_a": "Karl Friberg",
+      "player_b": "Toby Samuel",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "efa630b939721b4a276e71b6e420fd54",
+      "date": "2026-11-06",
+      "player_a": "Viktor Durasovic",
+      "player_b": "Aleksandr Shevchenko",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "2459b85e8db65555d385a270e5a4fb0b",
+      "date": "2026-11-06",
+      "player_a": "Luca Van Assche",
+      "player_b": "Ben Shelton",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": 4
+    },
+    {
+      "fixture_id": "23c115cfaa5c0d5dbfd6def21b6cb622",
+      "date": "2026-11-06",
+      "player_a": "Jacob Fearnley",
+      "player_b": "Arthur Nagel",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "fe0a992dd3677d556e6e20367bba78c3",
+      "date": "2026-11-06",
+      "player_a": "Adrian Mannarino",
+      "player_b": "Jan Simonsson",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "6075af3fa94fe50033cea8aef66d803b",
+      "date": "2026-11-06",
+      "player_a": "Casper Ruud",
+      "player_b": "Carlos Alcaraz",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": 3
+    },
+    {
+      "fixture_id": "b1e32a2e190f7aa487e9aa94a43cebf9",
+      "date": "2026-11-06",
+      "player_a": "Alexandra Shubladze",
+      "player_b": "Claire Liu",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "b2d522f6293e7adeda1ff0e5e98360bf",
+      "date": "2026-11-06",
+      "player_a": "Maria Sakkari",
+      "player_b": "Alexandra Eala",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": 17
+    },
+    {
+      "fixture_id": "3f903d758a16a36e2f1237c0973d0347",
+      "date": "2026-11-06",
+      "player_a": "Anna Blinkova",
+      "player_b": "Yasmine Kabbaj",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "460eadbfb1748b52efae624ad47aff8f",
+      "date": "2026-11-06",
+      "player_a": "Sofya Lansere",
+      "player_b": "Noma Noha Akugue",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "54ec221ce0f77fc445c2cbd5b5788d28",
+      "date": "2026-11-06",
+      "player_a": "Janice Tjen",
+      "player_b": "Robin Montgomery",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1cc0e35f71549c69ad2a0b901e5aae09",
+      "date": "2026-11-06",
+      "player_a": "Magda Linette",
+      "player_b": "Anastasia Zakharova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "5443fcfb08076e42110f836f3484c9a4",
+      "date": "2026-11-06",
+      "player_a": "Anna Blinkova",
+      "player_b": "Gina Feistel",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "ef4c90a5daaac92eda1fedf5d0e583e9",
+      "date": "2026-11-06",
+      "player_a": "Alice Tubello",
+      "player_b": "Bianca Andreescu",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
