@@ -19409,6 +19409,56 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "a12fefd6d6c3d683bb8e7f59b28c828f",
+      "date": "2026-11-09",
+      "player_a": "Holger Rune",
+      "player_b": "Zizou Bergs",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "5876c3d5875a925a72e1c4cdaeef0c39",
+      "date": "2026-11-09",
+      "player_a": "Lorenzo Musetti",
+      "player_b": "Toby Samuel",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "52e26acc693d7e228f116317fb1db3a0",
+      "date": "2026-11-09",
+      "player_a": "Katrina Scott",
+      "player_b": "Andrea Lazaro Garcia",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9d19baa42dd8ab90aeb0caa017650a94",
+      "date": "2026-11-09",
+      "player_a": "Bianca Andreescu",
+      "player_b": "Rebeka Masarova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "b9a419ee8dbdd53cbb37af9d80e375ad",
+      "date": "2026-11-09",
+      "player_a": "Jazmin Ortenzi",
+      "player_b": "Maria Camila Torres Murcia",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
