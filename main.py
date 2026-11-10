@@ -57,9 +57,12 @@ from tennis_odds_fetcher import (
     debug_fixture_status as tennis_debug_fixture_status,
     _get_tennis_fixtures_for_date,
 )
-from telegram_sender import send_tips
+from telegram_sender import send_tips, send_alert
 from tip_tracker import log_tips, grade_pending_tips
+from structured_logging import get_logger
 import tennis_archiver
+
+log = get_logger("main")
 
 
 def run_wnba(today, all_tips):
@@ -551,6 +554,12 @@ def run():
           f"({len(final_wnba_tips)} WNBA, {len(final_tennis_tips)} tennis, "
           f"{len(final_ncaab_tips)} NCAAB, {len(final_acb_tips)} ACB)...")
     send_tips(final_tips, today)
+
+    # Heartbeat: silence must never be ambiguous. If nothing cleared the
+    # filters, say so, otherwise "no message" looks identical to "bot broke".
+    if not final_tips:
+        log.info("no_tips_today", extra={"ctx": {"date": today}})
+        send_alert(f"Daily run completed for {today}. No tips cleared the filters today.")
 
     # log only the WNBA tips that actually went out, so future runs can
     # grade them against real results (tip_tracker.log_tips ignores
