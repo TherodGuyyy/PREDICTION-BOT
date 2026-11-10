@@ -19329,6 +19329,86 @@
       "surface": "Unknown",
       "player_a_rank": 2,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "1d419e6e302d06b714202b2d1ddf6e6e",
+      "date": "2026-11-09",
+      "player_a": "Adrian Mannarino",
+      "player_b": "Aleksandr Shevchenko",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "60ccad7c58e857cf49b8dac5fc14d859",
+      "date": "2026-11-09",
+      "player_a": "Alex Michelsen",
+      "player_b": "Juan Manuel Cerundolo",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "5356525b4d1672ac08a123802d9726fd",
+      "date": "2026-11-09",
+      "player_a": "Lorenzo Sonego",
+      "player_b": "Quentin Halys",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "13712693015ea1d853a3eca63a0bf89d",
+      "date": "2026-11-09",
+      "player_a": "Arthur Rinderknech",
+      "player_b": "Miomir Kecmanovic",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1a1ea0e766ea7403d517d44d1dd71b67",
+      "date": "2026-11-09",
+      "player_a": "Mirra Andreeva",
+      "player_b": "Elina Svitolina",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 6
+    },
+    {
+      "fixture_id": "1d31a77366d9a58b9b15056a47a0bbab",
+      "date": "2026-11-09",
+      "player_a": "Lucia Bronzetti",
+      "player_b": "Julieta Pareja",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "93812456540224651a4c2d5375fe827e",
+      "date": "2026-11-09",
+      "player_a": "Alice Tubello",
+      "player_b": "Julia Riera",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "ded814b7ca178354d5254694cafe06e4",
+      "date": "2026-11-09",
+      "player_a": "Carole Monnet",
+      "player_b": "Leyre Romero Gormaz",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
