@@ -60,6 +60,7 @@ from tennis_odds_fetcher import (
 from telegram_sender import send_tips, send_alert
 from tip_tracker import log_tips, grade_pending_tips
 from structured_logging import get_logger
+from nba_runner import run_nba, select_tips as select_nba_tips, send_digest as send_nba_digest
 import tennis_archiver
 
 log = get_logger("main")
@@ -529,6 +530,9 @@ def run():
     run_ncaab(today, ncaab_tips)  # no-ops (prints "No NCAAB games today") until Nov 1, 2026 — expected
     run_acb(today, acb_tips)      # ACB is already in season — should produce real analysis
     run_tennis(today, tennis_tips)
+    # NBA handles its own errors (logs them and returns empty lists), so a
+    # problem with NBA data can never stop the other sports above.
+    nba_tips, nba_predictions = run_nba(today)
 
     # rank each sport's tips by WIN PROBABILITY (edge only breaks ties) and cap SEPARATELY — a busy tennis
     # day can't crowd out WNBA tips or vice versa, since they're independent
@@ -548,12 +552,14 @@ def run():
     final_tennis_tips = tennis_tips[:TENNIS_MAX_TIPS_PER_DAY]
     final_ncaab_tips = ncaab_tips[:NCAAB_MAX_TIPS_PER_DAY]
     final_acb_tips = acb_tips  # no cap — see the comment above; ACB's own daily volume is the natural limit
-    final_tips = final_wnba_tips + final_tennis_tips + final_ncaab_tips + final_acb_tips
+    final_nba_tips = select_nba_tips(nba_tips)
+    final_tips = final_wnba_tips + final_tennis_tips + final_ncaab_tips + final_acb_tips + final_nba_tips
 
     print(f"\nSending {len(final_tips)} tip(s) to Telegram "
           f"({len(final_wnba_tips)} WNBA, {len(final_tennis_tips)} tennis, "
-          f"{len(final_ncaab_tips)} NCAAB, {len(final_acb_tips)} ACB)...")
+          f"{len(final_ncaab_tips)} NCAAB, {len(final_acb_tips)} ACB, {len(final_nba_tips)} NBA)...")
     send_tips(final_tips, today)
+    send_nba_digest(nba_predictions, today)  # the model's view of every NBA game, even with no value tip
 
     # Heartbeat: silence must never be ambiguous. If nothing cleared the
     # filters, say so, otherwise "no message" looks identical to "bot broke".

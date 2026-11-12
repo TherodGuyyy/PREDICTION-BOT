@@ -26,6 +26,12 @@ def _escape_md(text):
     return text
 
 
+def _league_tag(tip):
+    """' [NBA]' for tips that carry a league label, '' for older tips (WNBA etc.)."""
+    league = tip.get("league")
+    return f" [{league}]" if league else ""
+
+
 def format_tip_message(tip, game_date):
     if tip["type"] == "moneyline_prediction":
         return (
@@ -58,7 +64,7 @@ def format_tip_message(tip, game_date):
 
     if tip["type"] == "totals":
         return (
-            f"🏀 {_escape_md(tip['matchup'])}\n"
+            f"🏀{_league_tag(tip)} {_escape_md(tip['matchup'])}\n"
             f"📅 {game_date}\n"
             f"🎯 *{tip['side'].upper()} {tip['line']}*\n"
             f"💰 Odds: {tip['odds']}\n"
@@ -78,9 +84,9 @@ def format_tip_message(tip, game_date):
             f"📈 Edge: {tip['edge']*100:.1f}%"
         )
 
-    # moneyline (WNBA)
+    # moneyline (WNBA / NBA - NBA tips carry a "league" field)
     return (
-        f"🏀 *{_escape_md(tip['team'])}* to beat {_escape_md(tip['opponent'])}\n"
+        f"🏀{_league_tag(tip)} *{_escape_md(tip['team'])}* to beat {_escape_md(tip['opponent'])}\n"
         f"📅 {game_date}\n"
         f"💰 Odds: {tip['odds']}\n"
         f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% win chance "
@@ -122,7 +128,7 @@ def _format_plain(tip, game_date):
         )
     if tip["type"] == "totals":
         return (
-            f"{tip['matchup']}\n{game_date}\n"
+            f"{tip['matchup']}{_league_tag(tip)}\n{game_date}\n"
             f"{tip['side'].upper()} {tip['line']}\n"
             f"Odds: {tip['odds']}\n"
             f"Our estimate: {tip['our_estimated_prob']*100:.1f}% "
@@ -139,7 +145,7 @@ def _format_plain(tip, game_date):
             f"Edge: {tip['edge']*100:.1f}%"
         )
     return (
-        f"{tip['team']} to beat {tip['opponent']}\n{game_date}\n"
+        f"{tip['team']} to beat {tip['opponent']}{_league_tag(tip)}\n{game_date}\n"
         f"Odds: {tip['odds']}\n"
         f"Our estimate: {tip['our_estimated_prob']*100:.1f}% "
         f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
