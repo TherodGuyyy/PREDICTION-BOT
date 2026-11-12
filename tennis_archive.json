@@ -19649,6 +19649,56 @@
       "surface": "Unknown",
       "player_a_rank": 2,
       "player_b_rank": 3
+    },
+    {
+      "fixture_id": "31679791ec8432df3f30172550162867",
+      "date": "2026-11-11",
+      "player_a": "Alex Michelsen",
+      "player_b": "Alejandro Tabilo",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "148f4943f8cbc6b8f431ce97801fbb8a",
+      "date": "2026-11-11",
+      "player_a": "Thiago Agustin Tirante",
+      "player_b": "Aleksandr Shevchenko",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "7c44ce263a941c04f8adc1d203cf0c67",
+      "date": "2026-11-11",
+      "player_a": "Laura Samson",
+      "player_b": "Irene Burillo",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "d1fff3a348c54e2f1a1f273b80b23512",
+      "date": "2026-11-11",
+      "player_a": "Elizabeth Mandlik",
+      "player_b": "Andrea Lazaro Garcia",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "6f7d509c09f4e19922eb0bfa5a99db25",
+      "date": "2026-11-11",
+      "player_a": "Alice Tubello",
+      "player_b": "Polona Hercog",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
