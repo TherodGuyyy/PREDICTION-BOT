@@ -19619,6 +19619,36 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "0759cd1a3aebc7b8ec3b973019760e03",
+      "date": "2026-11-11",
+      "player_a": "Miomir Kecmanovic",
+      "player_b": "Holger Rune",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f5d59228ceea182b8e486f3823deef43",
+      "date": "2026-11-11",
+      "player_a": "Elina Svitolina",
+      "player_b": "Karolina Muchova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 6,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "656ab636cc05e8837e0b2778fcfd4032",
+      "date": "2026-11-11",
+      "player_a": "Aryna Sabalenka",
+      "player_b": "Mirra Andreeva",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 2,
+      "player_b_rank": 3
     }
   ],
   "milestone_alert_sent": true
