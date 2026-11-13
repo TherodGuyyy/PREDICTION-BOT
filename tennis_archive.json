@@ -19699,6 +19699,76 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "f079c32044c3debbdfc34331f112069b",
+      "date": "2026-11-12",
+      "player_a": "Lorenzo Musetti",
+      "player_b": "Ugo Humbert",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "4f7143d6205006fe2ddaae672427ddae",
+      "date": "2026-11-12",
+      "player_a": "Alejandro Tabilo",
+      "player_b": "Thiago Agustin Tirante",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "7e9f37979d99f6c0a310beeba4070221",
+      "date": "2026-11-12",
+      "player_a": "Taylor Fritz",
+      "player_b": "Lorenzo Musetti",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 10,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1f58da32d991f4423cc06eed9fb2fa33",
+      "date": "2026-11-12",
+      "player_a": "Marta Kostyuk",
+      "player_b": "Coco Gauff",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 10,
+      "player_b_rank": 4
+    },
+    {
+      "fixture_id": "f0058434e333abe595e576b04d074213",
+      "date": "2026-11-12",
+      "player_a": "Jessica Pegula",
+      "player_b": "Linda Noskova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 5,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0cd1c1faa4c77540f4920ee2fe22481c",
+      "date": "2026-11-12",
+      "player_a": "Laura Samson",
+      "player_b": "Elizabeth Mandlik",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "46cc7868715d45c3717855963478761a",
+      "date": "2026-11-12",
+      "player_a": "Polona Hercog",
+      "player_b": "Bianca Andreescu",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
