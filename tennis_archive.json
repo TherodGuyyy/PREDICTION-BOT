@@ -19769,6 +19769,46 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "8086a79e62b5f1c34a0f8b27cfd63925",
+      "date": "2026-11-13",
+      "player_a": "Taylor Fritz",
+      "player_b": "Thiago Agustin Tirante",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 10,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1a742d652a51b1efd7cfc77fc0a6d95e",
+      "date": "2026-11-13",
+      "player_a": "Mirra Andreeva",
+      "player_b": "Diana Shnaider",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 11
+    },
+    {
+      "fixture_id": "8bc0dd221de2b7125962b54949642f7a",
+      "date": "2026-11-13",
+      "player_a": "Aryna Sabalenka",
+      "player_b": "Elina Svitolina",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 2,
+      "player_b_rank": 6
+    },
+    {
+      "fixture_id": "27b897b8af753270f15fae939b8eb83d",
+      "date": "2026-11-13",
+      "player_a": "Bianca Andreescu",
+      "player_b": "Elizabeth Mandlik",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
