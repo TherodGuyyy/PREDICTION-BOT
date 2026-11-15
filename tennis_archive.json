@@ -19809,6 +19809,66 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "cfda5b04b5159c9de89f2eb8478d51d9",
+      "date": "2026-11-14",
+      "player_a": "Alexander Zverev",
+      "player_b": "Rafael Jodar",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 1,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e84163ae75bd429d6098709c73acf8e6",
+      "date": "2026-11-14",
+      "player_a": "Jessica Pegula",
+      "player_b": "Mirra Andreeva",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 5,
+      "player_b_rank": 3
+    },
+    {
+      "fixture_id": "5a1e5a347ca62f3521f9eefc27a85971",
+      "date": "2026-11-14",
+      "player_a": "Linda Noskova",
+      "player_b": "Elina Svitolina",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": 6
+    },
+    {
+      "fixture_id": "6e7594aab560de2e91f953ea6a7fa008",
+      "date": "2026-11-14",
+      "player_a": "Diletta Cherubini",
+      "player_b": "Alexandra Osborne",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9d3428cc2401d7699901bf2cd8c9033e",
+      "date": "2026-11-14",
+      "player_a": "Martina Trevisan",
+      "player_b": "Samantha Alvarez",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "23b2d7307b8d53514c7db1e1494e999d",
+      "date": "2026-11-14",
+      "player_a": "Ariana Geerlings",
+      "player_b": "Camila Rodero Contreras",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
