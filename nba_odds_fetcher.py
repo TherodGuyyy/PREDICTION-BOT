@@ -301,6 +301,9 @@ def get_game_markets(home_name, away_name, date_str):
     if not event:
         return {}
     markets = read_all_periods(event, home_name, away_name)
+    log.info("nba_feed_market_ids", extra={"ctx": {
+        "matchup": f"{away_name} @ {home_name}",
+        "market_id_period_id": sorted({(m.get("market_id"), m.get("period_id")) for m in event.get("markets", [])}, key=str)}})
     unknown = sorted({(m.get("market_id"), m.get("period_id")) for m in event.get("markets", [])
                       if m.get("market_id") not in discover_period_markets()}, key=str)
     if unknown:

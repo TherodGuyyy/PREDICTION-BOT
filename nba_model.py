@@ -372,6 +372,25 @@ def find_totals_tip(game, home_form, away_form, totals_odds):
 
 # ---------------------------------------------------------------- predictions + digest
 
+def period_forecasts(home_form, away_form):
+    """
+    Our own half and quarter forecasts, no bookmaker needed: for each period
+    we have quarter data for, the home team's win chance and the predicted score.
+    """
+    out = {}
+    for key in ("h1", "h2", "q1", "q2", "q3", "q4"):
+        view = period_view(home_form, away_form, key)
+        if view is None:
+            continue
+        total, margin = view["own_total"], view["final_margin"]
+        out[key] = {
+            "label": view["label"], "home_win_prob": round(view["final_p_home"], 3),
+            "home_score": round((total + margin) / 2), "away_score": round((total - margin) / 2),
+            "total": round(total, 1),
+        }
+    return out
+
+
 def build_prediction(game, home_form, away_form, market=None, periods_available=None):
     """One plain dict per game: the model's full-game view, used for the digest and the logs."""
     market = market or {}
@@ -403,6 +422,7 @@ def build_prediction(game, home_form, away_form, market=None, periods_available=
         "anchored_total": round(total, 1),
         "used_market": view["market_p_home"] is not None,
         "periods_available": sorted(periods_available or []),
+        "period_forecasts": period_forecasts(home_form, away_form),
     }
 
 
@@ -424,6 +444,23 @@ def _winner_line(p):
     return line + "\n"
 
 
+def _period_lines(p):
+    """Our own half/quarter forecasts (no bookmaker lines involved, so these are predictions, not value tips)."""
+    f = p.get("period_forecasts") or {}
+    if not f:
+        return ""
+    out = ""
+    halves = [f[k] for k in ("h1", "h2") if k in f]
+    if halves:
+        out += "  Halves (home-away, home win chance): " + "; ".join(
+            f"{h['label']} {h['home_score']}-{h['away_score']} ({_pct(h['home_win_prob'])})" for h in halves) + "\n"
+    quarters = [f[k] for k in ("q1", "q2", "q3", "q4") if k in f]
+    if quarters:
+        out += "  Quarters (home-away): " + ", ".join(
+            f"Q{i} {q['home_score']}-{q['away_score']}" for i, q in enumerate(quarters, 1)) + "\n"
+    return out
+
+
 def format_digest(predictions, date_str):
     """Returns a list of message strings (usually one) with plain text only."""
     header = (f"NBA model view for {date_str}\n"
@@ -437,13 +474,14 @@ def format_digest(predictions, date_str):
             block += f"  Total points: we predict {p['anchored_total']:.0f}, bookmaker line {p['market_main_line']}\n"
         else:
             block += f"  Total points: we predict {p['anchored_total']:.0f} (no bookmaker line found)\n"
+        block += _period_lines(p)
         blocks.append(block)
 
     footer = ""
     seen = set().union(*(set(p.get("periods_available") or []) for p in predictions)) if predictions else set()
     if "full" in seen and seen == {"full"}:
         footer = ("\nNote: no half or quarter lines were available from the free odds feed today, "
-                  "so only full-game tips were possible.\n")
+                  "so only full-game tips were possible. The half and quarter lines above are our own forecasts.\n")
 
     messages, current = [], header
     for block in blocks:

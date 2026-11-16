@@ -684,3 +684,22 @@ def test_half_lines_are_read_from_their_own_market_ids(monkeypatch):
     assert set(markets) == {"full", "h1", "h2"}
     assert markets["h1"]["totals"][0]["line"] == 113.5 and markets["h1"]["spread"]
     assert markets["h2"]["totals"][0]["line"] == 112.5
+
+
+# ---------------------------------------------------------------- own half/quarter forecasts
+
+def test_forecasts_exist_without_any_odds_when_quarter_data_exists():
+    f = nm.period_forecasts(form(diff=10, q_scored=[30] * 4, q_allowed=[27] * 4), qform())
+    assert set(f) == {"h1", "h2", "q1", "q2", "q3", "q4"}
+    assert f["h1"]["home_score"] > f["h1"]["away_score"] and 0.5 < f["h1"]["home_win_prob"] < 1
+
+
+def test_no_forecasts_without_quarter_data():
+    assert nm.period_forecasts(form(), form()) == {}
+
+
+def test_digest_shows_halves_and_quarters_when_available():
+    p = nm.build_prediction(GAME, qform(), qform(), FULL_MARKET, ["full"])
+    text = nm.format_digest([p], "d")[0]
+    assert "Halves" in text and "1st half" in text and "Quarters" in text and "Q4" in text
+    assert "margin" not in text.lower()
