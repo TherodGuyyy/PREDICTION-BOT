@@ -19909,6 +19909,76 @@
       "surface": "Unknown",
       "player_a_rank": 3,
       "player_b_rank": 8
+    },
+    {
+      "fixture_id": "f1a29c4b2effb2a6bb562a74ece7fa93",
+      "date": "2026-11-15",
+      "player_a": "Daniil Medvedev",
+      "player_b": "Flavio Cobolli",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 5,
+      "player_b_rank": 6
+    },
+    {
+      "fixture_id": "57f21af0d781e385f9e9b078a051f4c9",
+      "date": "2026-11-15",
+      "player_a": "Rebeka Masarova",
+      "player_b": "Diletta Cherubini",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a0c5299a225439bf7bc5a72837f5342b",
+      "date": "2026-11-15",
+      "player_a": "Katrina Scott",
+      "player_b": "Anastasia Zolotareva",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e4cd8a5c832d04dff7cf85a8977fbbc3",
+      "date": "2026-11-15",
+      "player_a": "Sofia Costoulas",
+      "player_b": "Nuria Brancaccio",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a6c3f64327f1bd67b37482139b521335",
+      "date": "2026-11-15",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Martina Trevisan",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "82e3cf232e7cecfe235564195b1ab3e2",
+      "date": "2026-11-15",
+      "player_a": "Leyre Romero Gormaz",
+      "player_b": "Ipek Oz",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "af25a60e6c9258a33fb6ecc8b9626ee4",
+      "date": "2026-11-15",
+      "player_a": "Victoria Jimenez Kasintseva",
+      "player_b": "Carole Monnet",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
