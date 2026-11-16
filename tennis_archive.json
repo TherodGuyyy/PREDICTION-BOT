@@ -19869,6 +19869,36 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "19f27804154d8636eb74201a4b92da65",
+      "date": "2026-11-15",
+      "player_a": "Ben Shelton",
+      "player_b": "Arthur Fils",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 4,
+      "player_b_rank": 7
+    },
+    {
+      "fixture_id": "02d59fe6a25f199ffc322f940ba7d4f4",
+      "date": "2026-11-15",
+      "player_a": "Zhibek Kulambayeva",
+      "player_b": "Valeriya Strakhova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "c9a04c72715424b962ed930dcad22bc8",
+      "date": "2026-11-15",
+      "player_a": "Elina Svitolina",
+      "player_b": "Mirra Andreeva",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 6,
+      "player_b_rank": 3
     }
   ],
   "milestone_alert_sent": true
