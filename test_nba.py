@@ -645,3 +645,42 @@ def test_end_to_end_real_stats_class_with_fake_balldontlie_and_odds_event():
     assert preds[0]["favorite"] == "Atlanta Hawks" and preds[0]["predicted_home_score"] > preds[0]["predicted_away_score"]
     assert preds[0]["periods_available"] == ["full", "h1"]
     assert any(t["type"] in ("moneyline", "handicap") for t in tips)
+
+
+# ---------------------------------------------------------------- dedicated half/quarter market ids
+
+def test_discovery_adds_unknown_quarter_ids_and_ignores_live_and_team_markets(monkeypatch):
+    monkeypatch.setattr(nof, "_market_table", None)
+    monkeypatch.setattr(rc, "_get", lambda path, params=None, retries=3: [
+        {"id": 1012, "name": "moneyline_first_quarter", "period_id": 3},
+        {"id": 1013, "name": "totals_first_quarter", "period_id": 3},
+        {"id": 2000, "name": "live_totals_first_quarter", "period_id": 3},
+        {"id": 2001, "name": "team_totals_first_half", "period_id": 1},
+    ])
+    table = nof.discover_period_markets()
+    assert table[1012] == ("q1", "winner") and table[1013] == ("q1", "total")
+    assert 2000 not in table and 2001 not in table and table[6] == ("h1", "total")
+
+
+def test_discovery_failure_falls_back_to_known_ids(monkeypatch):
+    monkeypatch.setattr(nof, "_market_table", None)
+
+    def boom(path, params=None, retries=3):
+        raise requests.ConnectionError("down")
+
+    monkeypatch.setattr(rc, "_get", boom)
+    assert nof.discover_period_markets() == nof.KNOWN_MARKETS
+
+
+def test_half_lines_are_read_from_their_own_market_ids(monkeypatch):
+    monkeypatch.setattr(nof, "_market_table", dict(nof.KNOWN_MARKETS))
+    event = {"markets": [
+        market_block(3, 0, [("Over", [price_line(226.5, -110)]), ("Under", [price_line(226.5, -110)])]),
+        market_block(6, 1, [("Over", [price_line(113.5, -110)]), ("Under", [price_line(113.5, -110)])]),
+        market_block(5, 1, [("Atlanta Hawks", [price_line(-3.5, -110)]), ("Chicago Bulls", [price_line(3.5, -110)])]),
+        market_block(1008, 2, [("Over", [price_line(112.5, -110)]), ("Under", [price_line(112.5, -110)])]),
+    ]}
+    markets = nof.read_all_periods(event, "Atlanta Hawks", "Chicago Bulls")
+    assert set(markets) == {"full", "h1", "h2"}
+    assert markets["h1"]["totals"][0]["line"] == 113.5 and markets["h1"]["spread"]
+    assert markets["h2"]["totals"][0]["line"] == 112.5
