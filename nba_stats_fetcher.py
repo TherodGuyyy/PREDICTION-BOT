@@ -152,6 +152,18 @@ class BalldontlieClient:
         return rows
 
 
+def _quarters(raw, prefix):
+    """
+    [Q1, Q2, Q3, Q4] points for one side, or None if any quarter is missing.
+    balldontlie provides home_q1..home_q4 / visitor_q1..visitor_q4 on the
+    free tier (seasons 2023 onward). Overtime is NOT in these four numbers.
+    """
+    values = [raw.get(f"{prefix}_q{i}") for i in (1, 2, 3, 4)]
+    if any(v is None for v in values):
+        return None
+    return values
+
+
 def normalize_game(raw):
     """
     Converts one balldontlie NBA game into the shape the rest of the bot
@@ -166,6 +178,8 @@ def normalize_game(raw):
     finished = state == "final" or (not state and raw.get("status") == "Final")
 
     return {
+        "home_q": _quarters(raw, "home"),
+        "away_q": _quarters(raw, "visitor"),
         "id": raw.get("id"),
         "date": (raw.get("date") or "")[:10],
         "datetime": raw.get("datetime"),
@@ -210,6 +224,30 @@ def is_upcoming(game, now, window_hours=UPCOMING_WINDOW_HOURS):
     return now <= start <= now + datetime.timedelta(hours=window_hours)
 
 
+def _quarter_averages(games, team_id, min_games):
+    """
+    Average points scored and allowed in each quarter, over the games that
+    have quarter data. Returns (None, None) if fewer than `min_games` do,
+    so half/quarter markets are skipped instead of guessed from thin data.
+    """
+    scored = [[], [], [], []]
+    allowed = [[], [], [], []]
+    usable = 0
+    for g in games:
+        is_home = g["home_team"]["id"] == team_id
+        own_q = g["home_q"] if is_home else g["away_q"]
+        opp_q = g["away_q"] if is_home else g["home_q"]
+        if own_q is None or opp_q is None:
+            continue
+        usable += 1
+        for i in range(4):
+            scored[i].append(own_q[i])
+            allowed[i].append(opp_q[i])
+    if usable < min_games:
+        return None, None
+    return [sum(s) / usable for s in scored], [sum(a) / usable for a in allowed]
+
+
 def compute_team_form(finished_games, team_id, as_of_date,
                       num_games=FORM_GAMES, min_games=MIN_GAMES_FOR_ANALYSIS):
     """
@@ -242,7 +280,10 @@ def compute_team_form(finished_games, team_id, as_of_date,
         days_since = None
 
     n = len(mine)
+    q_scored, q_allowed = _quarter_averages(mine, team_id, min_games)
     return {
+        "q_scored": q_scored,      # [Q1, Q2, Q3, Q4] average points scored, or None
+        "q_allowed": q_allowed,    # same, points allowed (None if too little quarter data)
         "games_sampled": n,
         "win_pct": wins / n,
         "avg_points_scored": sum(scored) / n,

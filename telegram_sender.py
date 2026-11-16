@@ -32,7 +32,28 @@ def _league_tag(tip):
     return f" [{league}]" if league else ""
 
 
+def _period_suffix(tip):
+    """' (1st half)' for half/quarter tips; '' for full-game tips and every older tip type."""
+    label = tip.get("period_label")
+    return f" ({label})" if label and label != "full game" else ""
+
+
+def _signed(line):
+    return f"+{line}" if line > 0 else str(line)
+
+
 def format_tip_message(tip, game_date):
+    if tip["type"] == "handicap":
+        return (
+            f"🏀{_league_tag(tip)} *{_escape_md(tip['team'])} {_signed(tip['line'])}* handicap{_period_suffix(tip)}\n"
+            f"🆚 {_escape_md(tip['matchup'])}\n"
+            f"📅 {game_date}\n"
+            f"💰 Odds: {tip['odds']}\n"
+            f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% chance to cover "
+            f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
+            f"📈 Edge: {tip['edge']*100:.1f}%"
+        )
+
     if tip["type"] == "moneyline_prediction":
         return (
             f"🇪🇸 {_escape_md(tip['matchup'])} (ACB)\n"
@@ -66,7 +87,7 @@ def format_tip_message(tip, game_date):
         return (
             f"🏀{_league_tag(tip)} {_escape_md(tip['matchup'])}\n"
             f"📅 {game_date}\n"
-            f"🎯 *{tip['side'].upper()} {tip['line']}*\n"
+            f"🎯 *{tip['side'].upper()} {tip['line']}*{_period_suffix(tip)}\n"
             f"💰 Odds: {tip['odds']}\n"
             f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% chance "
             f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
@@ -86,7 +107,7 @@ def format_tip_message(tip, game_date):
 
     # moneyline (WNBA / NBA - NBA tips carry a "league" field)
     return (
-        f"🏀{_league_tag(tip)} *{_escape_md(tip['team'])}* to beat {_escape_md(tip['opponent'])}\n"
+        f"🏀{_league_tag(tip)} *{_escape_md(tip['team'])}* to beat {_escape_md(tip['opponent'])}{_period_suffix(tip)}\n"
         f"📅 {game_date}\n"
         f"💰 Odds: {tip['odds']}\n"
         f"📊 Our estimate: {tip['our_estimated_prob']*100:.1f}% win chance "
@@ -126,10 +147,19 @@ def _format_plain(tip, game_date):
             f"({tip['predicted_second_half_range'][0]}-{tip['predicted_second_half_range'][1]})\n"
             f"Prediction only — compare against a real sportsbook line yourself"
         )
+    if tip["type"] == "handicap":
+        return (
+            f"{tip['team']} {_signed(tip['line'])} handicap{_period_suffix(tip)}{_league_tag(tip)}\n"
+            f"{tip['matchup']}\n{game_date}\n"
+            f"Odds: {tip['odds']}\n"
+            f"Our estimate: {tip['our_estimated_prob']*100:.1f}% chance to cover "
+            f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
+            f"Edge: {tip['edge']*100:.1f}%"
+        )
     if tip["type"] == "totals":
         return (
             f"{tip['matchup']}{_league_tag(tip)}\n{game_date}\n"
-            f"{tip['side'].upper()} {tip['line']}\n"
+            f"{tip['side'].upper()} {tip['line']}{_period_suffix(tip)}\n"
             f"Odds: {tip['odds']}\n"
             f"Our estimate: {tip['our_estimated_prob']*100:.1f}% "
             f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"
@@ -145,7 +175,7 @@ def _format_plain(tip, game_date):
             f"Edge: {tip['edge']*100:.1f}%"
         )
     return (
-        f"{tip['team']} to beat {tip['opponent']}{_league_tag(tip)}\n{game_date}\n"
+        f"{tip['team']} to beat {tip['opponent']}{_period_suffix(tip)}{_league_tag(tip)}\n{game_date}\n"
         f"Odds: {tip['odds']}\n"
         f"Our estimate: {tip['our_estimated_prob']*100:.1f}% "
         f"(market implies {tip['market_implied_prob']*100:.1f}%)\n"

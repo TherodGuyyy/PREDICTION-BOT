@@ -23,9 +23,7 @@ import time
 import requests
 
 import rundown_client as rc
-from nba_model import (
-    NBA_MAX_TIPS_PER_DAY, build_prediction, find_moneyline_tip, find_totals_tip, format_digest,
-)
+from nba_model import NBA_MAX_TIPS_PER_DAY, build_prediction, find_all_tips, format_digest
 from nba_stats_fetcher import NbaDataError
 from structured_logging import get_logger
 
@@ -43,8 +41,7 @@ def _default_deps():
     return {
         "get_games": stats.get_todays_games,
         "get_form": stats.team_form_summary,
-        "get_match_odds": odds.get_match_odds,
-        "get_totals_odds": odds.get_totals_odds,
+        "get_markets": odds.get_game_markets,
         "debug_status": odds.debug_fixture_status,
     }
 
@@ -84,27 +81,21 @@ def run_nba(today, deps=None):
                 log.info("nba_skip_not_enough_games", extra={"ctx": {"matchup": matchup}})
                 continue
 
-            odds = _safe_odds(d["get_match_odds"], home["full_name"], away["full_name"], today, "moneyline")
-            totals = _safe_odds(d["get_totals_odds"], home["full_name"], away["full_name"], today, "totals") or []
-            if not odds and not totals:
+            markets = _safe_markets(d["get_markets"], home["full_name"], away["full_name"], today)
+            if not markets:
                 log.warning("nba_no_odds_found", extra={"ctx": {
                     "matchup": matchup, "detail": _safe_status(d["debug_status"], home, away, today)}})
+            elif set(markets) != {"full"} and not home_form.get("q_scored"):
+                log.info("nba_no_quarter_data_for_period_markets", extra={"ctx": {"matchup": matchup}})
 
-            prediction = build_prediction(game, home_form, away_form, odds, totals)
+            prediction = build_prediction(game, home_form, away_form, markets.get("full"),
+                                          periods_available=list(markets))
             predictions.append(prediction)
             log.info("nba_prediction", extra={"ctx": prediction})
 
-            if odds:
-                tip = find_moneyline_tip(game, home_form, away_form,
-                                         odds.get("home_odds"), odds.get("away_odds"))
-                if tip:
-                    log.info("nba_tip_found", extra={"ctx": tip})
-                    tips.append(tip)
-            if totals:
-                tip = find_totals_tip(game, home_form, away_form, totals)
-                if tip:
-                    log.info("nba_tip_found", extra={"ctx": tip})
-                    tips.append(tip)
+            for tip in find_all_tips(game, home_form, away_form, markets):
+                log.info("nba_tip_found", extra={"ctx": tip})
+                tips.append(tip)
 
         except NbaDataError as exc:
             log.error("nba_game_data_error", extra={"ctx": {"matchup": matchup, "error": str(exc)}})
@@ -117,13 +108,14 @@ def run_nba(today, deps=None):
     return tips, predictions
 
 
-def _safe_odds(fetch, home_name, away_name, today, label):
+def _safe_markets(fetch, home_name, away_name, today):
+    """Odds are a bonus: if the feed fails we still publish the model's own view."""
     try:
-        return fetch(home_name, away_name, today)
+        return fetch(home_name, away_name, today) or {}
     except _ODDS_FAILURES as exc:
         log.warning("nba_odds_unavailable", extra={"ctx": {
-            "market": label, "home": home_name, "away": away_name, "error": str(exc)}})
-        return None
+            "home": home_name, "away": away_name, "error": str(exc)}})
+        return {}
 
 
 def _safe_status(debug_status, home, away, today):
