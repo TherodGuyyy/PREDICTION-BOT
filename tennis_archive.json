@@ -19899,6 +19899,16 @@
       "surface": "Unknown",
       "player_a_rank": 6,
       "player_b_rank": 3
+    },
+    {
+      "fixture_id": "22c05fc687ee4034456565daa55a12e7",
+      "date": "2026-11-15",
+      "player_a": "Carlos Alcaraz",
+      "player_b": "Frances Tiafoe",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 8
     }
   ],
   "milestone_alert_sent": true
