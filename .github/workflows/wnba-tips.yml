@@ -49,6 +49,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add tips_log.json 2>/dev/null || true
           git add tennis_archive.json 2>/dev/null || true
+          git add nba_ledger.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Update tips log / tennis archive [skip ci]"
           git push || true
  
