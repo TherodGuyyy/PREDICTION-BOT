@@ -2,7 +2,7 @@ name: WNBA Tips Bot
  
 on:
   schedule:
-    # Runs at 14:00 UTC daily (adjust if you want a different time —
+    # Runs at 08:00 UTC daily (adjust if you want a different time —
     # this is roughly midday US time, after most WNBA schedules for
     # the day are confirmed). Lagos (WAT) is UTC+1 year-round, so
     # 14:00 UTC = 15:00 in Lagos.
