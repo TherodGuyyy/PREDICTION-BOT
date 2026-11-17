@@ -1,0 +1,704 @@
+{
+ "games": {
+  "21718126": {
+   "away": "New York Knicks",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.587,
+     "period": "full",
+     "pick": "away",
+     "prob": 0.606
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 215.5,
+     "period": "full",
+     "pred_away": 110,
+     "pred_home": 107,
+     "pred_total": 217.5
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "away",
+     "prob": 0.578
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 55,
+     "pred_total": 110.9
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "away",
+     "prob": 0.501
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 54,
+     "pred_home": 54,
+     "pred_total": 108.3
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.508
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 55.3
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "away",
+     "prob": 0.546
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 28,
+     "pred_home": 27,
+     "pred_total": 55.6
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.5
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 56.0
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.53
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 26,
+     "pred_home": 26,
+     "pred_total": 52.2
+    }
+   ],
+   "game_date": "2026-11-17",
+   "game_id": 21718126,
+   "home": "Toronto Raptors",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 9.6,
+     "avg_points_allowed": 102.8,
+     "avg_points_scored": 112.4,
+     "days_since_last_game": 2,
+     "win_pct": 0.7
+    },
+    "home": {
+     "avg_point_diff": -1.7,
+     "avg_points_allowed": 115.5,
+     "avg_points_scored": 113.8,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    }
+   },
+   "matchup": "New York Knicks @ Toronto Raptors",
+   "result": null,
+   "run_date": "2026-11-17",
+   "status": "pending"
+  },
+  "21718127": {
+   "away": "Portland Trail Blazers",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.558,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.696
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 227.5,
+     "period": "full",
+     "pred_away": 110,
+     "pred_home": 116,
+     "pred_total": 225.9
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.555
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 57,
+     "pred_total": 112.2
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.672
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 53,
+     "pred_home": 57,
+     "pred_total": 110.0
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.548
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 26,
+     "pred_home": 27,
+     "pred_total": 53.2
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.532
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 29,
+     "pred_home": 30,
+     "pred_total": 59.0
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.615
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 56.0
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.571
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 26,
+     "pred_home": 27,
+     "pred_total": 53.9
+    },
+    {
+     "edge": 0.139,
+     "id": "tip:full:moneyline:home:None",
+     "kind": "tip",
+     "line": null,
+     "odds": 1.7937,
+     "period": "full",
+     "prob": 0.696,
+     "sent": true,
+     "side": "home",
+     "tip_type": "moneyline"
+    },
+    {
+     "edge": 0.116,
+     "id": "tip:full:handicap:home:-1.5",
+     "kind": "tip",
+     "line": -1.5,
+     "odds": 1.8696,
+     "period": "full",
+     "prob": 0.651,
+     "sent": true,
+     "side": "home",
+     "tip_type": "handicap"
+    }
+   ],
+   "game_date": "2026-11-17",
+   "game_id": 21718127,
+   "home": "Minnesota Timberwolves",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 2.9,
+     "avg_points_allowed": 111.6,
+     "avg_points_scored": 114.5,
+     "days_since_last_game": 1,
+     "win_pct": 0.6
+    },
+    "home": {
+     "avg_point_diff": 9.0,
+     "avg_points_allowed": 106.6,
+     "avg_points_scored": 115.6,
+     "days_since_last_game": 1,
+     "win_pct": 0.7
+    }
+   },
+   "matchup": "Portland Trail Blazers @ Minnesota Timberwolves",
+   "result": null,
+   "run_date": "2026-11-17",
+   "status": "pending"
+  },
+  "21718128": {
+   "away": "Detroit Pistons",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.808,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.78
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 222.5,
+     "period": "full",
+     "pred_away": 107,
+     "pred_home": 116,
+     "pred_total": 222.9
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.716
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 54,
+     "pred_home": 59,
+     "pred_total": 112.3
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.597
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 53,
+     "pred_home": 55,
+     "pred_total": 108.7
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.623
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 56.8
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.607
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 55.5
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.615
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 56.8
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.502
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 26,
+     "pred_home": 26,
+     "pred_total": 51.9
+    }
+   ],
+   "game_date": "2026-11-17",
+   "game_id": 21718128,
+   "home": "San Antonio Spurs",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 4.0,
+     "avg_points_allowed": 109.9,
+     "avg_points_scored": 113.9,
+     "days_since_last_game": 3,
+     "win_pct": 0.6
+    },
+    "home": {
+     "avg_point_diff": 15.3,
+     "avg_points_allowed": 104.4,
+     "avg_points_scored": 119.7,
+     "days_since_last_game": 2,
+     "win_pct": 1.0
+    }
+   },
+   "matchup": "Detroit Pistons @ San Antonio Spurs",
+   "result": null,
+   "run_date": "2026-11-17",
+   "status": "pending"
+  },
+  "21718129": {
+   "away": "Charlotte Hornets",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.75,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.797
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 220.5,
+     "period": "full",
+     "pred_away": 105,
+     "pred_home": 115,
+     "pred_total": 220.4
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.726
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 53,
+     "pred_home": 58,
+     "pred_total": 111.4
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.713
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 52,
+     "pred_home": 57,
+     "pred_total": 108.7
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.69
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 25,
+     "pred_home": 28,
+     "pred_total": 52.6
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.545
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 29,
+     "pred_home": 30,
+     "pred_total": 58.8
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.669
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 26,
+     "pred_home": 28,
+     "pred_total": 54.3
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.555
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 28,
+     "pred_total": 54.4
+    }
+   ],
+   "game_date": "2026-11-17",
+   "game_id": 21718129,
+   "home": "Los Angeles Lakers",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -10.5,
+     "avg_points_allowed": 108.7,
+     "avg_points_scored": 98.2,
+     "days_since_last_game": 2,
+     "win_pct": 0.2
+    },
+    "home": {
+     "avg_point_diff": 7.9,
+     "avg_points_allowed": 112.7,
+     "avg_points_scored": 120.6,
+     "days_since_last_game": 2,
+     "win_pct": 0.9
+    }
+   },
+   "matchup": "Charlotte Hornets @ Los Angeles Lakers",
+   "result": null,
+   "run_date": "2026-11-17",
+   "status": "pending"
+  },
+  "21718130": {
+   "away": "Utah Jazz",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.702,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.679
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 225.5,
+     "period": "full",
+     "pred_away": 110,
+     "pred_home": 115,
+     "pred_total": 225.4
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.663
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 53,
+     "pred_home": 57,
+     "pred_total": 109.6
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.527
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 56,
+     "pred_home": 57,
+     "pred_total": 112.4
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.538
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 26,
+     "pred_home": 27,
+     "pred_total": 53.2
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.638
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 56.4
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.515
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 29,
+     "pred_home": 29,
+     "pred_total": 57.5
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.54
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 28,
+     "pred_total": 55.0
+    }
+   ],
+   "game_date": "2026-11-17",
+   "game_id": 21718130,
+   "home": "LA Clippers",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -12.0,
+     "avg_points_allowed": 116.8,
+     "avg_points_scored": 104.8,
+     "days_since_last_game": 2,
+     "win_pct": 0.0
+    },
+    "home": {
+     "avg_point_diff": -6.7,
+     "avg_points_allowed": 117.7,
+     "avg_points_scored": 111.0,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    }
+   },
+   "matchup": "Utah Jazz @ LA Clippers",
+   "result": null,
+   "run_date": "2026-11-17",
+   "status": "pending"
+  }
+ },
+ "version": 1
+}
