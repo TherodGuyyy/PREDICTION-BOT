@@ -391,6 +391,12 @@ def period_forecasts(home_form, away_form):
     return out
 
 
+def _inputs(form):
+    """The few numbers behind a forecast that we keep so a miss can be explained later."""
+    return {k: form.get(k) for k in ("win_pct", "avg_point_diff", "avg_points_scored",
+                                     "avg_points_allowed", "days_since_last_game")}
+
+
 def build_prediction(game, home_form, away_form, market=None, periods_available=None):
     """One plain dict per game: the model's full-game view, used for the digest and the logs."""
     market = market or {}
@@ -406,7 +412,9 @@ def build_prediction(game, home_form, away_form, market=None, periods_available=
     total = view["anchored_total"]
     margin = view["final_margin"]
     return {
+        "game_id": game.get("id"), "game_date": game.get("date"),
         "matchup": _label(game), "home": home_name, "away": away_name,
+        "inputs": {"home": _inputs(home_form), "away": _inputs(away_form)},
         "favorite": home_name if favorite_is_home else away_name,
         "favorite_prob": round(fav_prob, 3),
         "favorite_odds": fav_odds,

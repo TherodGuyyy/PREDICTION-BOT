@@ -94,6 +94,7 @@ def run_nba(today, deps=None):
             log.info("nba_prediction", extra={"ctx": prediction})
 
             for tip in find_all_tips(game, home_form, away_form, markets):
+                tip["game_id"] = game["id"]  # lets the ledger tie the tip to its game
                 log.info("nba_tip_found", extra={"ctx": tip})
                 tips.append(tip)
 

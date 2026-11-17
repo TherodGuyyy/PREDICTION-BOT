@@ -329,6 +329,10 @@ class NbaStats:
                 "from": start.isoformat(), "finished_games": len(self._history)}})
         return self._history
 
+    def finished_games(self):
+        """Every finished game since opening night (already downloaded for team form, so no extra request)."""
+        return self._load_history()
+
     def team_form(self, team_id, as_of_date=None):
         return compute_team_form(self._load_history(), team_id, as_of_date or self._today)
 
@@ -345,6 +349,10 @@ def _stats():
 
 def get_todays_games():
     return _stats().todays_games()
+
+
+def get_finished_games():
+    return _stats().finished_games()
 
 
 def team_form_summary(team_id, as_of_date=None):

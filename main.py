@@ -61,6 +61,7 @@ from telegram_sender import send_tips, send_alert
 from tip_tracker import log_tips, grade_pending_tips
 from structured_logging import get_logger
 from nba_runner import run_nba, select_tips as select_nba_tips, send_digest as send_nba_digest
+import nba_ledger
 import tennis_archiver
 
 log = get_logger("main")
@@ -560,6 +561,12 @@ def run():
           f"{len(final_ncaab_tips)} NCAAB, {len(final_acb_tips)} ACB, {len(final_nba_tips)} NBA)...")
     send_tips(final_tips, today)
     send_nba_digest(nba_predictions, today)  # the model's view of every NBA game, even with no value tip
+
+    # save today's NBA forecasts, grade yesterday's, and send the track record.
+    # runs even on days with no NBA games (there may still be games to grade).
+    # handles its own errors, so it can never stop the rest of the run.
+    nba_ledger.send_report(nba_ledger.record_and_grade(
+        nba_predictions, nba_tips, final_nba_tips, today))
 
     # Heartbeat: silence must never be ambiguous. If nothing cleared the
     # filters, say so, otherwise "no message" looks identical to "bot broke".
