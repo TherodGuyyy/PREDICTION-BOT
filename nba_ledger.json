@@ -6,19 +6,19 @@
     {
      "id": "full:winner",
      "kind": "winner",
-     "market_prob": 0.587,
+     "market_prob": 0.638,
      "period": "full",
      "pick": "away",
-     "prob": 0.606
+     "prob": 0.627
     },
     {
      "id": "full:points",
      "kind": "points",
-     "market_line": 215.5,
+     "market_line": 214.5,
      "period": "full",
      "pred_away": 110,
-     "pred_home": 107,
-     "pred_total": 217.5
+     "pred_home": 106,
+     "pred_total": 216.8
     },
     {
      "id": "h1:winner",
@@ -141,7 +141,7 @@
     {
      "id": "full:winner",
      "kind": "winner",
-     "market_prob": 0.558,
+     "market_prob": 0.592,
      "period": "full",
      "pick": "home",
      "prob": 0.696
@@ -149,11 +149,11 @@
     {
      "id": "full:points",
      "kind": "points",
-     "market_line": 227.5,
+     "market_line": 225.5,
      "period": "full",
-     "pred_away": 110,
-     "pred_home": 116,
-     "pred_total": 225.9
+     "pred_away": 109,
+     "pred_home": 115,
+     "pred_total": 224.5
     },
     {
      "id": "h1:winner",
@@ -246,11 +246,11 @@
      "pred_total": 53.9
     },
     {
-     "edge": 0.139,
+     "edge": 0.104,
      "id": "tip:full:moneyline:home:None",
      "kind": "tip",
      "line": null,
-     "odds": 1.7937,
+     "odds": 1.6897,
      "period": "full",
      "prob": 0.696,
      "sent": true,
@@ -258,13 +258,13 @@
      "tip_type": "moneyline"
     },
     {
-     "edge": 0.116,
-     "id": "tip:full:handicap:home:-1.5",
+     "edge": 0.089,
+     "id": "tip:full:handicap:home:-2.5",
      "kind": "tip",
-     "line": -1.5,
-     "odds": 1.8696,
+     "line": -2.5,
+     "odds": 1.885,
      "period": "full",
-     "prob": 0.651,
+     "prob": 0.62,
      "sent": true,
      "side": "home",
      "tip_type": "handicap"
@@ -300,19 +300,19 @@
     {
      "id": "full:winner",
      "kind": "winner",
-     "market_prob": 0.808,
+     "market_prob": 0.811,
      "period": "full",
      "pick": "home",
-     "prob": 0.78
+     "prob": 0.783
     },
     {
      "id": "full:points",
      "kind": "points",
-     "market_line": 222.5,
+     "market_line": 221.5,
      "period": "full",
-     "pred_away": 107,
+     "pred_away": 106,
      "pred_home": 116,
-     "pred_total": 222.9
+     "pred_total": 222.2
     },
     {
      "id": "h1:winner",
@@ -435,10 +435,10 @@
     {
      "id": "full:winner",
      "kind": "winner",
-     "market_prob": 0.75,
+     "market_prob": 0.743,
      "period": "full",
      "pick": "home",
-     "prob": 0.797
+     "prob": 0.792
     },
     {
      "id": "full:points",
