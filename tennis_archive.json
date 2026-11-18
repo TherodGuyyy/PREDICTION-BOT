@@ -20069,6 +20069,86 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "a69d1853ec4237c98f5e8e8e37848d8f",
+      "date": "2026-11-17",
+      "player_a": "Carlos Alcaraz",
+      "player_b": "Daniil Medvedev",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 5
+    },
+    {
+      "fixture_id": "7bff8e81ea3c27e15bdc19c82fe4dd06",
+      "date": "2026-11-17",
+      "player_a": "Flavio Cobolli",
+      "player_b": "Frances Tiafoe",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 6,
+      "player_b_rank": 8
+    },
+    {
+      "fixture_id": "a017e66871325531f25685f4328a82ae",
+      "date": "2026-11-17",
+      "player_a": "Despina Papamichail",
+      "player_b": "Laura Samson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "f4abb294f475840f9daaafd82641118e",
+      "date": "2026-11-17",
+      "player_a": "Barbara Gatica",
+      "player_b": "Andrea Lazaro Garcia",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "6c45837a9f07edfda1a0e46594d609d2",
+      "date": "2026-11-17",
+      "player_a": "Fernanda Labrana",
+      "player_b": "Antonia Vergara Rivera",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e5a79147ec76adfe39717257df14af95",
+      "date": "2026-11-17",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Sofia Costoulas",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "1038c8e89c9880e3a9583a0e35ad3f4f",
+      "date": "2026-11-17",
+      "player_a": "Rebeka Masarova",
+      "player_b": "Polona Hercog",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "81efc0899474a838f4386009e29f0580",
+      "date": "2026-11-17",
+      "player_a": "Leyre Romero Gormaz",
+      "player_b": "Nadia Podoroska",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
