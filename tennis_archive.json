@@ -20149,6 +20149,66 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "5ebedfa4f712887c1e340d0428575fdb",
+      "date": "2026-11-18",
+      "player_a": "Ben Shelton",
+      "player_b": "Rafael Jodar",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 4,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "d1583e6ce3186c67fc6f28845510857a",
+      "date": "2026-11-18",
+      "player_a": "Alexander Zverev",
+      "player_b": "Arthur Fils",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 1,
+      "player_b_rank": 7
+    },
+    {
+      "fixture_id": "9fa00ba3ec2a4d22f476b32e359b69ea",
+      "date": "2026-11-18",
+      "player_a": "Ariana Geerlings",
+      "player_b": "Laura Samson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0699e4b086cd8b3ca508ebd10959a67d",
+      "date": "2026-11-18",
+      "player_a": "Lucia Bronzetti",
+      "player_b": "Carole Monnet",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "30da1dcb0a03fb6384aae09754ad0742",
+      "date": "2026-11-18",
+      "player_a": "Valeriya Strakhova",
+      "player_b": "Veronika Erjavec",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "d1412c0bb77a1f4a27d30a369c23741a",
+      "date": "2026-11-18",
+      "player_a": "Anastasia Zolotareva",
+      "player_b": "Irene Burillo",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
