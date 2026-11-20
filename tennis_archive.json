@@ -20209,6 +20209,56 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "4417af5df5ecc1f21627e5c2ac65cd7d",
+      "date": "2026-11-19",
+      "player_a": "Carlos Alcaraz",
+      "player_b": "Flavio Cobolli",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 6
+    },
+    {
+      "fixture_id": "1e8d9a8479c7dafcd8882e92591f98a0",
+      "date": "2026-11-19",
+      "player_a": "Daniil Medvedev",
+      "player_b": "Frances Tiafoe",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 5,
+      "player_b_rank": 8
+    },
+    {
+      "fixture_id": "890e50b0c81d75e19c7b4c4f99c99511",
+      "date": "2026-11-19",
+      "player_a": "Fernanda Labrana",
+      "player_b": "Andrea Lazaro Garcia",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "2e15e265bba5241a69deea54bd19cb5d",
+      "date": "2026-11-19",
+      "player_a": "Leyre Romero Gormaz",
+      "player_b": "Irene Burillo",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "c1c80381c390d412654b211d09069d62",
+      "date": "2026-11-19",
+      "player_a": "Lucia Bronzetti",
+      "player_b": "Valeriya Strakhova",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true

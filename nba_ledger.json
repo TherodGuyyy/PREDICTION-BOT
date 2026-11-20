@@ -4275,7 +4275,12 @@
      "market_prob": 0.685,
      "period": "full",
      "pick": "home",
-     "prob": 0.672
+     "prob": 0.672,
+     "result": {
+      "actual_away": 98,
+      "actual_home": 126,
+      "outcome": "hit"
+     }
     },
     {
      "id": "full:points",
@@ -4284,14 +4289,27 @@
      "period": "full",
      "pred_away": 111,
      "pred_home": 116,
-     "pred_total": 226.4
+     "pred_total": 226.4,
+     "result": {
+      "actual_away": 98,
+      "actual_home": 126,
+      "actual_total": 224,
+      "margin_error": 23,
+      "outcome": "scored",
+      "total_error": -2.4000000000000057
+     }
     },
     {
      "id": "h1:winner",
      "kind": "winner",
      "period": "h1",
      "pick": "home",
-     "prob": 0.612
+     "prob": 0.612,
+     "result": {
+      "actual_away": 47,
+      "actual_home": 55,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h1:points",
@@ -4299,14 +4317,27 @@
      "period": "h1",
      "pred_away": 55,
      "pred_home": 58,
-     "pred_total": 113.2
+     "pred_total": 113.2,
+     "result": {
+      "actual_away": 47,
+      "actual_home": 55,
+      "actual_total": 102,
+      "margin_error": 5,
+      "outcome": "scored",
+      "total_error": -11.200000000000003
+     }
     },
     {
      "id": "h2:winner",
      "kind": "winner",
      "period": "h2",
      "pick": "home",
-     "prob": 0.617
+     "prob": 0.617,
+     "result": {
+      "actual_away": 51,
+      "actual_home": 71,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h2:points",
@@ -4314,14 +4345,27 @@
      "period": "h2",
      "pred_away": 55,
      "pred_home": 58,
-     "pred_total": 113.0
+     "pred_total": 113.0,
+     "result": {
+      "actual_away": 51,
+      "actual_home": 71,
+      "actual_total": 122,
+      "margin_error": 17,
+      "outcome": "scored",
+      "total_error": 9.0
+     }
     },
     {
      "id": "q1:winner",
      "kind": "winner",
      "period": "q1",
      "pick": "home",
-     "prob": 0.671
+     "prob": 0.671,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 31,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q1:points",
@@ -4329,14 +4373,33 @@
      "period": "q1",
      "pred_away": 27,
      "pred_home": 30,
-     "pred_total": 56.7
+     "pred_total": 56.7,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 31,
+      "actual_total": 55,
+      "margin_error": 4,
+      "outcome": "scored",
+      "total_error": -1.7000000000000028
+     }
     },
     {
      "id": "q2:winner",
      "kind": "winner",
      "period": "q2",
      "pick": "away",
-     "prob": 0.545
+     "prob": 0.545,
+     "result": {
+      "actual_away": 23,
+      "actual_home": 24,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Lost by a few points: close to a coin flip, mostly luck.",
+       "Memphis Grizzlies scored far fewer than expected (24 vs about 28): their offence or the opponent's defence was better than our numbers said.",
+       "Golden State Warriors scored far fewer than expected (23 vs about 29): their offence or the opponent's defence was better than our numbers said."
+      ]
+     }
     },
     {
      "id": "q2:points",
@@ -4344,14 +4407,27 @@
      "period": "q2",
      "pred_away": 29,
      "pred_home": 28,
-     "pred_total": 56.6
+     "pred_total": 56.6,
+     "result": {
+      "actual_away": 23,
+      "actual_home": 24,
+      "actual_total": 47,
+      "margin_error": 2,
+      "outcome": "scored",
+      "total_error": -9.600000000000001
+     }
     },
     {
      "id": "q3:winner",
      "kind": "winner",
      "period": "q3",
      "pick": "home",
-     "prob": 0.621
+     "prob": 0.621,
+     "result": {
+      "actual_away": 26,
+      "actual_home": 37,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q3:points",
@@ -4359,14 +4435,27 @@
      "period": "q3",
      "pred_away": 29,
      "pred_home": 31,
-     "pred_total": 60.6
+     "pred_total": 60.6,
+     "result": {
+      "actual_away": 26,
+      "actual_home": 37,
+      "actual_total": 63,
+      "margin_error": 9,
+      "outcome": "scored",
+      "total_error": 2.3999999999999986
+     }
     },
     {
      "id": "q4:winner",
      "kind": "winner",
      "period": "q4",
      "pick": "home",
-     "prob": 0.513
+     "prob": 0.513,
+     "result": {
+      "actual_away": 25,
+      "actual_home": 34,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q4:points",
@@ -4374,7 +4463,15 @@
      "period": "q4",
      "pred_away": 26,
      "pred_home": 26,
-     "pred_total": 52.4
+     "pred_total": 52.4,
+     "result": {
+      "actual_away": 25,
+      "actual_home": 34,
+      "actual_total": 59,
+      "margin_error": 9,
+      "outcome": "scored",
+      "total_error": 6.600000000000001
+     }
     }
    ],
    "game_date": "2026-11-19",
@@ -4397,9 +4494,13 @@
     }
    },
    "matchup": "Golden State Warriors @ Memphis Grizzlies",
-   "result": null,
+   "result": {
+    "away_score": 98,
+    "home_score": 126,
+    "overtime": false
+   },
    "run_date": "2026-11-19",
-   "status": "pending"
+   "status": "graded"
   },
   "21718144": {
    "away": "Portland Trail Blazers",
@@ -4410,7 +4511,12 @@
      "market_prob": null,
      "period": "full",
      "pick": "away",
-     "prob": 0.798
+     "prob": 0.798,
+     "result": {
+      "actual_away": 124,
+      "actual_home": 114,
+      "outcome": "hit"
+     }
     },
     {
      "id": "full:points",
@@ -4419,14 +4525,27 @@
      "period": "full",
      "pred_away": 119,
      "pred_home": 109,
-     "pred_total": 228.3
+     "pred_total": 228.3,
+     "result": {
+      "actual_away": 124,
+      "actual_home": 114,
+      "actual_total": 238,
+      "margin_error": 0,
+      "outcome": "scored",
+      "total_error": 9.699999999999989
+     }
     },
     {
      "id": "h1:winner",
      "kind": "winner",
      "period": "h1",
      "pick": "away",
-     "prob": 0.735
+     "prob": 0.735,
+     "result": {
+      "actual_away": 60,
+      "actual_home": 58,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h1:points",
@@ -4434,14 +4553,27 @@
      "period": "h1",
      "pred_away": 57,
      "pred_home": 52,
-     "pred_total": 108.6
+     "pred_total": 108.6,
+     "result": {
+      "actual_away": 60,
+      "actual_home": 58,
+      "actual_total": 118,
+      "margin_error": 3,
+      "outcome": "scored",
+      "total_error": 9.400000000000006
+     }
     },
     {
      "id": "h2:winner",
      "kind": "winner",
      "period": "h2",
      "pick": "away",
-     "prob": 0.54
+     "prob": 0.54,
+     "result": {
+      "actual_away": 64,
+      "actual_home": 56,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h2:points",
@@ -4449,14 +4581,33 @@
      "period": "h2",
      "pred_away": 58,
      "pred_home": 57,
-     "pred_total": 114.7
+     "pred_total": 114.7,
+     "result": {
+      "actual_away": 64,
+      "actual_home": 56,
+      "actual_total": 120,
+      "margin_error": -7,
+      "outcome": "scored",
+      "total_error": 5.299999999999997
+     }
     },
     {
      "id": "q1:winner",
      "kind": "winner",
      "period": "q1",
      "pick": "home",
-     "prob": 0.5
+     "prob": 0.5,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 21,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Our pick was on a back-to-back and the opponent was rested.",
+       "Lost by a few points: close to a coin flip, mostly luck.",
+       "Milwaukee Bucks scored far fewer than expected (21 vs about 25): their offence or the opponent's defence was better than our numbers said."
+      ]
+     }
     },
     {
      "id": "q1:points",
@@ -4464,14 +4615,33 @@
      "period": "q1",
      "pred_away": 25,
      "pred_home": 25,
-     "pred_total": 50.6
+     "pred_total": 50.6,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 21,
+      "actual_total": 45,
+      "margin_error": -3,
+      "outcome": "scored",
+      "total_error": -5.600000000000001
+     }
     },
     {
      "id": "q2:winner",
      "kind": "winner",
      "period": "q2",
      "pick": "away",
-     "prob": 0.694
+     "prob": 0.694,
+     "result": {
+      "actual_away": 36,
+      "actual_home": 37,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Lost by a few points: close to a coin flip, mostly luck.",
+       "Milwaukee Bucks scored far more than expected (37 vs about 27): their offence beat our read, or the opponent's defence was weaker.",
+       "Portland Trail Blazers scored far more than expected (36 vs about 31): their offence beat our read, or the opponent's defence was weaker."
+      ]
+     }
     },
     {
      "id": "q2:points",
@@ -4479,14 +4649,34 @@
      "period": "q2",
      "pred_away": 31,
      "pred_home": 27,
-     "pred_total": 58.0
+     "pred_total": 58.0,
+     "result": {
+      "actual_away": 36,
+      "actual_home": 37,
+      "actual_total": 73,
+      "margin_error": 5,
+      "outcome": "scored",
+      "total_error": 15.0
+     }
     },
     {
      "id": "q3:winner",
      "kind": "winner",
      "period": "q3",
      "pick": "home",
-     "prob": 0.512
+     "prob": 0.512,
+     "result": {
+      "actual_away": 36,
+      "actual_home": 34,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Our pick was on a back-to-back and the opponent was rested.",
+       "Lost by a few points: close to a coin flip, mostly luck.",
+       "Milwaukee Bucks scored far more than expected (34 vs about 30): their offence beat our read, or the opponent's defence was weaker.",
+       "Portland Trail Blazers scored far more than expected (36 vs about 30): their offence beat our read, or the opponent's defence was weaker."
+      ]
+     }
     },
     {
      "id": "q3:points",
@@ -4494,14 +4684,27 @@
      "period": "q3",
      "pred_away": 30,
      "pred_home": 30,
-     "pred_total": 60.2
+     "pred_total": 60.2,
+     "result": {
+      "actual_away": 36,
+      "actual_home": 34,
+      "actual_total": 70,
+      "margin_error": -2,
+      "outcome": "scored",
+      "total_error": 9.799999999999997
+     }
     },
     {
      "id": "q4:winner",
      "kind": "winner",
      "period": "q4",
      "pick": "away",
-     "prob": 0.528
+     "prob": 0.528,
+     "result": {
+      "actual_away": 28,
+      "actual_home": 22,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q4:points",
@@ -4509,7 +4712,15 @@
      "period": "q4",
      "pred_away": 27,
      "pred_home": 27,
-     "pred_total": 54.4
+     "pred_total": 54.4,
+     "result": {
+      "actual_away": 28,
+      "actual_home": 22,
+      "actual_total": 50,
+      "margin_error": -6,
+      "outcome": "scored",
+      "total_error": -4.399999999999999
+     }
     }
    ],
    "game_date": "2026-11-19",
@@ -4532,9 +4743,13 @@
     }
    },
    "matchup": "Portland Trail Blazers @ Milwaukee Bucks",
-   "result": null,
+   "result": {
+    "away_score": 124,
+    "home_score": 114,
+    "overtime": false
+   },
    "run_date": "2026-11-19",
-   "status": "pending"
+   "status": "graded"
   },
   "21718145": {
    "away": "New York Knicks",
@@ -4545,7 +4760,15 @@
      "market_prob": 0.51,
      "period": "full",
      "pick": "home",
-     "prob": 0.543
+     "prob": 0.543,
+     "result": {
+      "actual_away": 102,
+      "actual_home": 99,
+      "outcome": "miss",
+      "reasons": [
+       "Lost by a few points: close to a coin flip, mostly luck."
+      ]
+     }
     },
     {
      "id": "full:points",
@@ -4554,14 +4777,32 @@
      "period": "full",
      "pred_away": 108,
      "pred_home": 109,
-     "pred_total": 216.9
+     "pred_total": 216.9,
+     "result": {
+      "actual_away": 102,
+      "actual_home": 99,
+      "actual_total": 201,
+      "margin_error": -4,
+      "outcome": "scored",
+      "total_error": -15.900000000000006
+     }
     },
     {
      "id": "h1:winner",
      "kind": "winner",
      "period": "h1",
      "pick": "home",
-     "prob": 0.534
+     "prob": 0.534,
+     "result": {
+      "actual_away": 65,
+      "actual_home": 50,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Lost by a lot: the form gap we relied on did not show up.",
+       "New York Knicks scored far more than expected (65 vs about 54): their offence beat our read, or the opponent's defence was weaker."
+      ]
+     }
     },
     {
      "id": "h1:points",
@@ -4569,14 +4810,27 @@
      "period": "h1",
      "pred_away": 54,
      "pred_home": 55,
-     "pred_total": 108.3
+     "pred_total": 108.3,
+     "result": {
+      "actual_away": 65,
+      "actual_home": 50,
+      "actual_total": 115,
+      "margin_error": -16,
+      "outcome": "scored",
+      "total_error": 6.700000000000003
+     }
     },
     {
      "id": "h2:winner",
      "kind": "winner",
      "period": "h2",
      "pick": "home",
-     "prob": 0.599
+     "prob": 0.599,
+     "result": {
+      "actual_away": 37,
+      "actual_home": 49,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h2:points",
@@ -4584,14 +4838,31 @@
      "period": "h2",
      "pred_away": 53,
      "pred_home": 55,
-     "pred_total": 108.0
+     "pred_total": 108.0,
+     "result": {
+      "actual_away": 37,
+      "actual_home": 49,
+      "actual_total": 86,
+      "margin_error": 10,
+      "outcome": "scored",
+      "total_error": -22.0
+     }
     },
     {
      "id": "q1:winner",
      "kind": "winner",
      "period": "q1",
      "pick": "home",
-     "prob": 0.558
+     "prob": 0.558,
+     "result": {
+      "actual_away": 33,
+      "actual_home": 26,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "New York Knicks scored far more than expected (33 vs about 26): their offence beat our read, or the opponent's defence was weaker."
+      ]
+     }
     },
     {
      "id": "q1:points",
@@ -4599,14 +4870,32 @@
      "period": "q1",
      "pred_away": 26,
      "pred_home": 27,
-     "pred_total": 53.7
+     "pred_total": 53.7,
+     "result": {
+      "actual_away": 33,
+      "actual_home": 26,
+      "actual_total": 59,
+      "margin_error": -8,
+      "outcome": "scored",
+      "total_error": 5.299999999999997
+     }
     },
     {
      "id": "q2:winner",
      "kind": "winner",
      "period": "q2",
      "pick": "home",
-     "prob": 0.503
+     "prob": 0.503,
+     "result": {
+      "actual_away": 32,
+      "actual_home": 24,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Minnesota Timberwolves scored far fewer than expected (24 vs about 27): their offence or the opponent's defence was better than our numbers said.",
+       "New York Knicks scored far more than expected (32 vs about 27): their offence beat our read, or the opponent's defence was weaker."
+      ]
+     }
     },
     {
      "id": "q2:points",
@@ -4614,14 +4903,27 @@
      "period": "q2",
      "pred_away": 27,
      "pred_home": 27,
-     "pred_total": 54.6
+     "pred_total": 54.6,
+     "result": {
+      "actual_away": 32,
+      "actual_home": 24,
+      "actual_total": 56,
+      "margin_error": -8,
+      "outcome": "scored",
+      "total_error": 1.3999999999999986
+     }
     },
     {
      "id": "q3:winner",
      "kind": "winner",
      "period": "q3",
      "pick": "home",
-     "prob": 0.619
+     "prob": 0.619,
+     "result": {
+      "actual_away": 25,
+      "actual_home": 28,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q3:points",
@@ -4629,14 +4931,32 @@
      "period": "q3",
      "pred_away": 27,
      "pred_home": 29,
-     "pred_total": 56.0
+     "pred_total": 56.0,
+     "result": {
+      "actual_away": 25,
+      "actual_home": 28,
+      "actual_total": 53,
+      "margin_error": 1,
+      "outcome": "scored",
+      "total_error": -3.0
+     }
     },
     {
      "id": "q4:winner",
      "kind": "winner",
      "period": "q4",
      "pick": "away",
-     "prob": 0.502
+     "prob": 0.502,
+     "result": {
+      "actual_away": 12,
+      "actual_home": 21,
+      "outcome": "miss",
+      "reasons": [
+       "Short periods are very random; one hot or cold spell decides them.",
+       "Minnesota Timberwolves scored far fewer than expected (21 vs about 26): their offence or the opponent's defence was better than our numbers said.",
+       "New York Knicks scored far fewer than expected (12 vs about 26): their offence or the opponent's defence was better than our numbers said."
+      ]
+     }
     },
     {
      "id": "q4:points",
@@ -4644,7 +4964,15 @@
      "period": "q4",
      "pred_away": 26,
      "pred_home": 26,
-     "pred_total": 52.0
+     "pred_total": 52.0,
+     "result": {
+      "actual_away": 12,
+      "actual_home": 21,
+      "actual_total": 33,
+      "margin_error": 9,
+      "outcome": "scored",
+      "total_error": -19.0
+     }
     }
    ],
    "game_date": "2026-11-19",
@@ -4667,9 +4995,13 @@
     }
    },
    "matchup": "New York Knicks @ Minnesota Timberwolves",
-   "result": null,
+   "result": {
+    "away_score": 102,
+    "home_score": 99,
+    "overtime": false
+   },
    "run_date": "2026-11-19",
-   "status": "pending"
+   "status": "graded"
   },
   "21718146": {
    "away": "LA Clippers",
@@ -4680,7 +5012,12 @@
      "market_prob": 0.909,
      "period": "full",
      "pick": "home",
-     "prob": 0.89
+     "prob": 0.89,
+     "result": {
+      "actual_away": 112,
+      "actual_home": 124,
+      "outcome": "hit"
+     }
     },
     {
      "id": "full:points",
@@ -4689,14 +5026,27 @@
      "period": "full",
      "pred_away": 105,
      "pred_home": 120,
-     "pred_total": 225.1
+     "pred_total": 225.1,
+     "result": {
+      "actual_away": 112,
+      "actual_home": 124,
+      "actual_total": 236,
+      "margin_error": -3,
+      "outcome": "scored",
+      "total_error": 10.900000000000006
+     }
     },
     {
      "id": "h1:winner",
      "kind": "winner",
      "period": "h1",
      "pick": "home",
-     "prob": 0.729
+     "prob": 0.729,
+     "result": {
+      "actual_away": 54,
+      "actual_home": 57,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h1:points",
@@ -4704,14 +5054,27 @@
      "period": "h1",
      "pred_away": 54,
      "pred_home": 60,
-     "pred_total": 113.9
+     "pred_total": 113.9,
+     "result": {
+      "actual_away": 54,
+      "actual_home": 57,
+      "actual_total": 111,
+      "margin_error": -3,
+      "outcome": "scored",
+      "total_error": -2.9000000000000057
+     }
     },
     {
      "id": "h2:winner",
      "kind": "winner",
      "period": "h2",
      "pick": "home",
-     "prob": 0.764
+     "prob": 0.764,
+     "result": {
+      "actual_away": 58,
+      "actual_home": 67,
+      "outcome": "hit"
+     }
     },
     {
      "id": "h2:points",
@@ -4719,14 +5082,27 @@
      "period": "h2",
      "pred_away": 53,
      "pred_home": 59,
-     "pred_total": 111.5
+     "pred_total": 111.5,
+     "result": {
+      "actual_away": 58,
+      "actual_home": 67,
+      "actual_total": 125,
+      "margin_error": 3,
+      "outcome": "scored",
+      "total_error": 13.5
+     }
     },
     {
      "id": "q1:winner",
      "kind": "winner",
      "period": "q1",
      "pick": "home",
-     "prob": 0.654
+     "prob": 0.654,
+     "result": {
+      "actual_away": 21,
+      "actual_home": 24,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q1:points",
@@ -4734,14 +5110,27 @@
      "period": "q1",
      "pred_away": 27,
      "pred_home": 29,
-     "pred_total": 56.3
+     "pred_total": 56.3,
+     "result": {
+      "actual_away": 21,
+      "actual_home": 24,
+      "actual_total": 45,
+      "margin_error": 1,
+      "outcome": "scored",
+      "total_error": -11.299999999999997
+     }
     },
     {
      "id": "q2:winner",
      "kind": "winner",
      "period": "q2",
      "pick": "home",
-     "prob": 0.587
+     "prob": 0.587,
+     "result": {
+      "actual_away": 33,
+      "actual_home": 33,
+      "outcome": "push"
+     }
     },
     {
      "id": "q2:points",
@@ -4749,14 +5138,27 @@
      "period": "q2",
      "pred_away": 28,
      "pred_home": 29,
-     "pred_total": 57.6
+     "pred_total": 57.6,
+     "result": {
+      "actual_away": 33,
+      "actual_home": 33,
+      "actual_total": 66,
+      "margin_error": -1,
+      "outcome": "scored",
+      "total_error": 8.399999999999999
+     }
     },
     {
      "id": "q3:winner",
      "kind": "winner",
      "period": "q3",
      "pick": "home",
-     "prob": 0.691
+     "prob": 0.691,
+     "result": {
+      "actual_away": 34,
+      "actual_home": 35,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q3:points",
@@ -4764,14 +5166,27 @@
      "period": "q3",
      "pred_away": 27,
      "pred_home": 30,
-     "pred_total": 56.2
+     "pred_total": 56.2,
+     "result": {
+      "actual_away": 34,
+      "actual_home": 35,
+      "actual_total": 69,
+      "margin_error": -2,
+      "outcome": "scored",
+      "total_error": 12.799999999999997
+     }
     },
     {
      "id": "q4:winner",
      "kind": "winner",
      "period": "q4",
      "pick": "home",
-     "prob": 0.584
+     "prob": 0.584,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 32,
+      "outcome": "hit"
+     }
     },
     {
      "id": "q4:points",
@@ -4779,7 +5194,15 @@
      "period": "q4",
      "pred_away": 27,
      "pred_home": 28,
-     "pred_total": 55.3
+     "pred_total": 55.3,
+     "result": {
+      "actual_away": 24,
+      "actual_home": 32,
+      "actual_total": 56,
+      "margin_error": 7,
+      "outcome": "scored",
+      "total_error": 0.7000000000000028
+     }
     }
    ],
    "game_date": "2026-11-19",
@@ -4802,8 +5225,1374 @@
     }
    },
    "matchup": "LA Clippers @ San Antonio Spurs",
-   "result": null,
+   "result": {
+    "away_score": 112,
+    "home_score": 124,
+    "overtime": false
+   },
    "run_date": "2026-11-19",
+   "status": "graded"
+  },
+  "21718147": {
+   "away": "Charlotte Hornets",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.713,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.741
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 218.5,
+     "period": "full",
+     "pred_away": 106,
+     "pred_home": 113,
+     "pred_total": 219.2
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.601
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 58,
+     "pred_total": 113.4
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.733
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 50,
+     "pred_home": 55,
+     "pred_total": 105.7
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "away",
+     "prob": 0.555
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 27,
+     "pred_total": 55.3
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.671
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 28,
+     "pred_home": 30,
+     "pred_total": 58.1
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.584
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 27,
+     "pred_home": 28,
+     "pred_total": 54.3
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.662
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 24,
+     "pred_home": 27,
+     "pred_total": 51.3
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718147,
+   "home": "Atlanta Hawks",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -11.6,
+     "avg_points_allowed": 110.2,
+     "avg_points_scored": 98.6,
+     "days_since_last_game": 3,
+     "win_pct": 0.1
+    },
+    "home": {
+     "avg_point_diff": 0.4,
+     "avg_points_allowed": 116.1,
+     "avg_points_scored": 116.5,
+     "days_since_last_game": 2,
+     "win_pct": 0.7
+    }
+   },
+   "matchup": "Charlotte Hornets @ Atlanta Hawks",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718148": {
+   "away": "Orlando Magic",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.714,
+     "period": "full",
+     "pick": "away",
+     "prob": 0.635
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 223.5,
+     "period": "full",
+     "pred_away": 114,
+     "pred_home": 110,
+     "pred_total": 223.5
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "away",
+     "prob": 0.616
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 58,
+     "pred_home": 56,
+     "pred_total": 113.9
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.572
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 53,
+     "pred_home": 55,
+     "pred_total": 108.5
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "away",
+     "prob": 0.52
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 27,
+     "pred_home": 27,
+     "pred_total": 54.4
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "away",
+     "prob": 0.553
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 30,
+     "pred_home": 29,
+     "pred_total": 59.5
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.591
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 26,
+     "pred_home": 28,
+     "pred_total": 53.9
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.503
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 27,
+     "pred_total": 54.5
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718148,
+   "home": "Brooklyn Nets",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 0.2,
+     "avg_points_allowed": 110.1,
+     "avg_points_scored": 110.3,
+     "days_since_last_game": 2,
+     "win_pct": 0.5
+    },
+    "home": {
+     "avg_point_diff": -7.8,
+     "avg_points_allowed": 117.3,
+     "avg_points_scored": 109.5,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    }
+   },
+   "matchup": "Orlando Magic @ Brooklyn Nets",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718149": {
+   "away": "Indiana Pacers",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.688,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.673
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 234.5,
+     "period": "full",
+     "pred_away": 114,
+     "pred_home": 119,
+     "pred_total": 232.8
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.61
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 55,
+     "pred_home": 58,
+     "pred_total": 113.2
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.601
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 57,
+     "pred_home": 59,
+     "pred_total": 115.7
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.558
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 57.8
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.571
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 28,
+     "pred_total": 55.4
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.574
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 29,
+     "pred_home": 30,
+     "pred_total": 58.2
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.546
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 57.4
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718149,
+   "home": "Cleveland Cavaliers",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -5.0,
+     "avg_points_allowed": 114.8,
+     "avg_points_scored": 109.8,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    },
+    "home": {
+     "avg_point_diff": 0.1,
+     "avg_points_allowed": 116.5,
+     "avg_points_scored": 116.6,
+     "days_since_last_game": 2,
+     "win_pct": 0.4
+    }
+   },
+   "matchup": "Indiana Pacers @ Cleveland Cavaliers",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718150": {
+   "away": "Toronto Raptors",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.725,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.744
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 216.5,
+     "period": "full",
+     "pred_away": 106,
+     "pred_home": 113,
+     "pred_total": 219.1
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.623
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 55,
+     "pred_home": 58,
+     "pred_total": 112.8
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.693
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 52,
+     "pred_home": 57,
+     "pred_total": 108.9
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "away",
+     "prob": 0.505
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 56.2
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.643
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 56.6
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.652
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 27,
+     "pred_home": 30,
+     "pred_total": 56.8
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.553
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 26,
+     "pred_home": 26,
+     "pred_total": 52.1
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718150,
+   "home": "Detroit Pistons",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -5.3,
+     "avg_points_allowed": 114.9,
+     "avg_points_scored": 109.6,
+     "days_since_last_game": 2,
+     "win_pct": 0.2
+    },
+    "home": {
+     "avg_point_diff": 6.6,
+     "avg_points_allowed": 109.7,
+     "avg_points_scored": 116.3,
+     "days_since_last_game": 2,
+     "win_pct": 0.7
+    }
+   },
+   "matchup": "Toronto Raptors @ Detroit Pistons",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718151": {
+   "away": "Washington Wizards",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.569,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.638
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 238.5,
+     "period": "full",
+     "pred_away": 117,
+     "pred_home": 121,
+     "pred_total": 238.2
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.635
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 58,
+     "pred_home": 61,
+     "pred_total": 119.0
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.603
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 56,
+     "pred_home": 59,
+     "pred_total": 115.2
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.566
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 30,
+     "pred_home": 31,
+     "pred_total": 60.4
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.586
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 29,
+     "pred_home": 30,
+     "pred_total": 58.6
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.584
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 57.7
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.538
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 57.5
+    },
+    {
+     "edge": 0.069,
+     "id": "tip:full:moneyline:home:None",
+     "kind": "tip",
+     "line": null,
+     "odds": 1.7576,
+     "period": "full",
+     "prob": 0.638,
+     "sent": true,
+     "side": "home",
+     "tip_type": "moneyline"
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718151,
+   "home": "Chicago Bulls",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -12.0,
+     "avg_points_allowed": 122.9,
+     "avg_points_scored": 110.9,
+     "days_since_last_game": 2,
+     "win_pct": 0.2
+    },
+    "home": {
+     "avg_point_diff": -4.2,
+     "avg_points_allowed": 122.6,
+     "avg_points_scored": 118.4,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    }
+   },
+   "matchup": "Washington Wizards @ Chicago Bulls",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718152": {
+   "away": "New Orleans Pelicans",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.857,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.849
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 227.5,
+     "period": "full",
+     "pred_away": 108,
+     "pred_home": 120,
+     "pred_total": 228.6
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.724
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 54,
+     "pred_home": 59,
+     "pred_total": 112.3
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.718
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 56,
+     "pred_home": 61,
+     "pred_total": 116.3
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.597
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 56.9
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.64
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 55.5
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.608
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 29,
+     "pred_home": 31,
+     "pred_total": 59.7
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.623
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 29,
+     "pred_total": 56.7
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718152,
+   "home": "Oklahoma City Thunder",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -13.0,
+     "avg_points_allowed": 125.8,
+     "avg_points_scored": 112.8,
+     "days_since_last_game": 2,
+     "win_pct": 0.3
+    },
+    "home": {
+     "avg_point_diff": 4.8,
+     "avg_points_allowed": 109.3,
+     "avg_points_scored": 114.1,
+     "days_since_last_game": 2,
+     "win_pct": 0.5
+    }
+   },
+   "matchup": "New Orleans Pelicans @ Oklahoma City Thunder",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718153": {
+   "away": "Phoenix Suns",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.648,
+     "period": "full",
+     "pick": "away",
+     "prob": 0.602
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 225.5,
+     "period": "full",
+     "pred_away": 114,
+     "pred_home": 111,
+     "pred_total": 225.4
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "away",
+     "prob": 0.559
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 55,
+     "pred_total": 111.7
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.536
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 56,
+     "pred_home": 56,
+     "pred_total": 112.2
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "away",
+     "prob": 0.537
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 55.5
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.515
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 56.1
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.548
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 56.7
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.515
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 28,
+     "pred_home": 28,
+     "pred_total": 55.5
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718153,
+   "home": "Utah Jazz",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 2.7,
+     "avg_points_allowed": 112.2,
+     "avg_points_scored": 114.9,
+     "days_since_last_game": 2,
+     "win_pct": 0.6
+    },
+    "home": {
+     "avg_point_diff": -5.5,
+     "avg_points_allowed": 114.3,
+     "avg_points_scored": 108.8,
+     "days_since_last_game": 2,
+     "win_pct": 0.2
+    }
+   },
+   "matchup": "Phoenix Suns @ Utah Jazz",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718154": {
+   "away": "Houston Rockets",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.545,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.521
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 226.5,
+     "period": "full",
+     "pred_away": 113,
+     "pred_home": 113,
+     "pred_total": 225.6
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "away",
+     "prob": 0.503
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 56,
+     "pred_total": 111.2
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.555
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 56,
+     "pred_home": 57,
+     "pred_total": 112.4
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.574
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 28,
+     "pred_home": 29,
+     "pred_total": 56.8
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "away",
+     "prob": 0.546
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 28,
+     "pred_home": 27,
+     "pred_total": 54.5
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.548
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 29,
+     "pred_home": 30,
+     "pred_total": 58.3
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.532
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 27,
+     "pred_total": 54.1
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718154,
+   "home": "Denver Nuggets",
+   "inputs": {
+    "away": {
+     "avg_point_diff": 7.3,
+     "avg_points_allowed": 108.7,
+     "avg_points_scored": 116.0,
+     "days_since_last_game": 2,
+     "win_pct": 0.7
+    },
+    "home": {
+     "avg_point_diff": 3.8,
+     "avg_points_allowed": 109.4,
+     "avg_points_scored": 113.2,
+     "days_since_last_game": 2,
+     "win_pct": 0.7
+    }
+   },
+   "matchup": "Houston Rockets @ Denver Nuggets",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718155": {
+   "away": "Sacramento Kings",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": 0.899,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.876
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": 229.5,
+     "period": "full",
+     "pred_away": 108,
+     "pred_home": 122,
+     "pred_total": 230.4
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.783
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 56,
+     "pred_home": 63,
+     "pred_total": 119.2
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.663
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 55,
+     "pred_home": 58,
+     "pred_total": 112.9
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.694
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 27,
+     "pred_home": 30,
+     "pred_total": 57.4
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.604
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 30,
+     "pred_home": 32,
+     "pred_total": 61.9
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.7
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 26,
+     "pred_home": 29,
+     "pred_total": 54.8
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "away",
+     "prob": 0.53
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 29,
+     "pred_home": 29,
+     "pred_total": 58.1
+    }
+   ],
+   "game_date": "2026-11-20",
+   "game_id": 21718155,
+   "home": "Los Angeles Lakers",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -12.5,
+     "avg_points_allowed": 120.2,
+     "avg_points_scored": 107.7,
+     "days_since_last_game": 2,
+     "win_pct": 0.1
+    },
+    "home": {
+     "avg_point_diff": 7.2,
+     "avg_points_allowed": 115.1,
+     "avg_points_scored": 122.3,
+     "days_since_last_game": 2,
+     "win_pct": 0.9
+    }
+   },
+   "matchup": "Sacramento Kings @ Los Angeles Lakers",
+   "result": null,
+   "run_date": "2026-11-20",
+   "status": "pending"
+  },
+  "21718156": {
+   "away": "Milwaukee Bucks",
+   "calls": [
+    {
+     "id": "full:winner",
+     "kind": "winner",
+     "market_prob": null,
+     "period": "full",
+     "pick": "home",
+     "prob": 0.835
+    },
+    {
+     "id": "full:points",
+     "kind": "points",
+     "market_line": null,
+     "period": "full",
+     "pred_away": 108,
+     "pred_home": 120,
+     "pred_total": 228.3
+    },
+    {
+     "id": "h1:winner",
+     "kind": "winner",
+     "period": "h1",
+     "pick": "home",
+     "prob": 0.778
+    },
+    {
+     "id": "h1:points",
+     "kind": "points",
+     "period": "h1",
+     "pred_away": 53,
+     "pred_home": 59,
+     "pred_total": 112.3
+    },
+    {
+     "id": "h2:winner",
+     "kind": "winner",
+     "period": "h2",
+     "pick": "home",
+     "prob": 0.599
+    },
+    {
+     "id": "h2:points",
+     "kind": "points",
+     "period": "h2",
+     "pred_away": 57,
+     "pred_home": 59,
+     "pred_total": 116.0
+    },
+    {
+     "id": "q1:winner",
+     "kind": "winner",
+     "period": "q1",
+     "pick": "home",
+     "prob": 0.533
+    },
+    {
+     "id": "q1:points",
+     "kind": "points",
+     "period": "q1",
+     "pred_away": 27,
+     "pred_home": 27,
+     "pred_total": 54.2
+    },
+    {
+     "id": "q2:winner",
+     "kind": "winner",
+     "period": "q2",
+     "pick": "home",
+     "prob": 0.749
+    },
+    {
+     "id": "q2:points",
+     "kind": "points",
+     "period": "q2",
+     "pred_away": 27,
+     "pred_home": 31,
+     "pred_total": 58.2
+    },
+    {
+     "id": "q3:winner",
+     "kind": "winner",
+     "period": "q3",
+     "pick": "home",
+     "prob": 0.555
+    },
+    {
+     "id": "q3:points",
+     "kind": "points",
+     "period": "q3",
+     "pred_away": 30,
+     "pred_home": 31,
+     "pred_total": 61.5
+    },
+    {
+     "id": "q4:winner",
+     "kind": "winner",
+     "period": "q4",
+     "pick": "home",
+     "prob": 0.565
+    },
+    {
+     "id": "q4:points",
+     "kind": "points",
+     "period": "q4",
+     "pred_away": 27,
+     "pred_home": 28,
+     "pred_total": 54.5
+    }
+   ],
+   "game_date": "2026-11-21",
+   "game_id": 21718156,
+   "home": "Philadelphia 76ers",
+   "inputs": {
+    "away": {
+     "avg_point_diff": -12.8,
+     "avg_points_allowed": 118.0,
+     "avg_points_scored": 105.2,
+     "days_since_last_game": 2,
+     "win_pct": 0.0
+    },
+    "home": {
+     "avg_point_diff": 2.5,
+     "avg_points_allowed": 115.5,
+     "avg_points_scored": 118.0,
+     "days_since_last_game": 3,
+     "win_pct": 0.8
+    }
+   },
+   "matchup": "Milwaukee Bucks @ Philadelphia 76ers",
+   "result": null,
+   "run_date": "2026-11-20",
    "status": "pending"
   }
  },
