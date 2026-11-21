@@ -20259,6 +20259,36 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "b7d5d412a4b2c9a8cc789ebe7b974b6e",
+      "date": "2026-11-20",
+      "player_a": "Carlos Alcaraz",
+      "player_b": "Ben Shelton",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 3,
+      "player_b_rank": 4
+    },
+    {
+      "fixture_id": "f7478c4746314ddc01ef1779bfe4235c",
+      "date": "2026-11-20",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Andrea Lazaro Garcia",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "dcb590e597a23533571361efadda3617",
+      "date": "2026-11-20",
+      "player_a": "Rebeka Masarova",
+      "player_b": "Laura Samson",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
