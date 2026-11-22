@@ -20289,6 +20289,86 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "34e1125a7aac69705044c9177ff75272",
+      "date": "2026-11-21",
+      "player_a": "Alexander Zverev",
+      "player_b": "Daniil Medvedev",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": 1,
+      "player_b_rank": 5
+    },
+    {
+      "fixture_id": "0a6dba18acfca378f9d76612ec2c840b",
+      "date": "2026-11-21",
+      "player_a": "Alexander Zverev",
+      "player_b": "Carlos Alcaraz",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": 1,
+      "player_b_rank": 3
+    },
+    {
+      "fixture_id": "3764f7cfc7596c26e9c3af4b5c9ad07d",
+      "date": "2026-11-21",
+      "player_a": "Leyre Romero Gormaz",
+      "player_b": "Lucia Bronzetti",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "91dc9b55f97c581f1f61505a6bd56eaf",
+      "date": "2026-11-21",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Rebeka Masarova",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "bb2a3f2439a0e8625b88ab291b15628b",
+      "date": "2026-11-21",
+      "player_a": "Josefina Estevez",
+      "player_b": "Camila Markus",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "cc82ce2e41371d36d92db753456f6f4a",
+      "date": "2026-11-21",
+      "player_a": "Abigail Rencheli",
+      "player_b": "Alexandra Osborne",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "3aa9f81ce6a36d2f24e03da6be606ea3",
+      "date": "2026-11-21",
+      "player_a": "Lourdes Ayala",
+      "player_b": "Marina Bulbarella",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0c8510edeaecd798c0ce89a6040504cb",
+      "date": "2026-11-21",
+      "player_a": "Zhibek Kulambayeva",
+      "player_b": "Guadalupe Rondinoni",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
