@@ -20439,6 +20439,66 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "4cd76bf4b965976a7eacef59056276e4",
+      "date": "2026-11-23",
+      "player_a": "Victoria Bosio",
+      "player_b": "Laura Samson",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "8d7dbd388d0d7f923e06747429913369",
+      "date": "2026-11-23",
+      "player_a": "Zhibek Kulambayeva",
+      "player_b": "Veronika Erjavec",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "e99aa27622cc406b6d6f5a58b581f699",
+      "date": "2026-11-23",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Luna Maria Cinalli",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "9a95e512b54c830c3be8b29ade23e53b",
+      "date": "2026-11-23",
+      "player_a": "Lucia Bronzetti",
+      "player_b": "Alicia Herrero Linana",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "745bceb8fd10acac5d0f7ed59491f71b",
+      "date": "2026-11-23",
+      "player_a": "Lourdes Ayala",
+      "player_b": "Irene Burillo",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "0a39730a53747b94e249f774e7b7121f",
+      "date": "2026-11-23",
+      "player_a": "Nadia Podoroska",
+      "player_b": "Leyre Romero Gormaz",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
