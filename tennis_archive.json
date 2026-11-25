@@ -20499,6 +20499,36 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "2af7b1ea5cde48378330a17e25705d9f",
+      "date": "2026-11-24",
+      "player_a": "Sol Ailin Larraya Guidi",
+      "player_b": "Maria Lourdes Carle",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "035ad08715c36d6f5ebb494bbcc5670f",
+      "date": "2026-11-24",
+      "player_a": "Alicia Herrero Linana",
+      "player_b": "Ariana Geerlings",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "fc8d3c6ef6a893e0f643c479eb2b0d36",
+      "date": "2026-11-24",
+      "player_a": "Ipek Oz",
+      "player_b": "Julia Riera",
+      "winner": "player_b",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
