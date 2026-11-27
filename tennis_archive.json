@@ -20569,6 +20569,36 @@
       "surface": "Unknown",
       "player_a_rank": null,
       "player_b_rank": null
+    },
+    {
+      "fixture_id": "f5f18a98b18d8e73be323764b380724f",
+      "date": "2026-11-26",
+      "player_a": "Maria Lourdes Carle",
+      "player_b": "Nadia Podoroska",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "38cd80d3b48931fc88d9f1236d25d5fc",
+      "date": "2026-11-26",
+      "player_a": "Varvara Lepchenko",
+      "player_b": "Laura Samson",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
+    },
+    {
+      "fixture_id": "a97bc96384b63b34c2106508e3e8f436",
+      "date": "2026-11-26",
+      "player_a": "Guiomar Maristany Zuleta De Reales",
+      "player_b": "Maria Lourdes Carle",
+      "winner": "player_a",
+      "surface": "Unknown",
+      "player_a_rank": null,
+      "player_b_rank": null
     }
   ],
   "milestone_alert_sent": true
